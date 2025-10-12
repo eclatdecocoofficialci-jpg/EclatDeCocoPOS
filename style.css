@@ -23,7 +23,10 @@ body {
 .sidebar h1 {
   font-size: 22px;
   font-weight: 700;
-  margin-bottom: 40px;
+  margin-top: 15px;       /* adds space above */
+  margin-bottom: 60px;    /* adds more space below */
+  letter-spacing: 0.5px;  /* makes it softer */
+}
 }
 
 /* Sidebar links */
