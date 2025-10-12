@@ -1,72 +1,243 @@
-/* === Layout Fix for Sidebar and Main Content === */
+/* 🌸 Éclat de Coco POS Layout – Soft Pink Theme */
 
+/* === Base Layout === */
 body {
-  display: flex;
   margin: 0;
   font-family: 'Poppins', sans-serif;
   background-color: #fff5fb;
-}
-
-/* Sidebar */
-.sidebar {
-  width: 260px;
-  background-color: #e91e63;
-  color: white;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding: 30px 20px;
-  box-sizing: border-box;
-}
-
-.sidebar h1 {
-  font-size: 22px;
-  font-weight: 700;
-  margin-top: 15px;       /* adds space above */
-  margin-bottom: 60px;    /* adds more space below */
-  letter-spacing: 0.5px;  /* makes it softer */
-}
-
-/* Sidebar links */
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar ul li {
-  margin: 20px 0;
-  font-size: 16px;
-}
-
-.sidebar ul li a {
-  text-decoration: none;
-  color: white;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Main content */
-.main-content {
-  margin-left: 260px; /* same as sidebar width */
-  padding: 40px;
-  width: calc(100% - 260px);
-  box-sizing: border-box;
-}
-
-.dashboard {
-  max-width: 1000px;
-  margin: auto;
-}
-
-.dashboard h2 {
   color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* === POS Container === */
+.pos-container {
+  display: flex;
+  gap: 25px;
+  width: 100%;
+  max-width: 1300px;
+}
+
+/* === Product Section === */
+.product-section {
+  flex: 1.5;
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.15);
+}
+
+.pos-header h1 {
+  color: #e91e63;
+  margin: 0 0 10px;
+}
+
+#searchProduct {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ffc1e3;
+  border-radius: 10px;
+  outline: none;
+  margin-bottom: 20px;
+  font-size: 15px;
+}
+
+/* === Category Buttons === */
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   margin-bottom: 20px;
 }
 
-/* Make sure chart fits nicely */
-canvas {
-  max-width: 100%;
-  height: auto !important;
+.category-btn {
+  background-color: #ffe6f1;
+  color: #e91e63;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.category-btn:hover, .category-btn.active {
+  background-color: #e91e63;
+  color: white;
+}
+
+.add-btn {
+  background-color: #e91e63;
+  color: white;
+  font-weight: 600;
+}
+
+/* === Product Table === */
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+.product-table th {
+  background-color: #ffd6e7;
+  color: #333;
+  text-align: left;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.product-table td {
+  padding: 10px;
+  border-bottom: 1px solid #ffe3ef;
+  font-size: 14px;
+}
+
+.add-btn {
+  background-color: #e91e63;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.add-btn:hover {
+  background-color: #c2185b;
+}
+
+/* === Cashier Section === */
+.cashier-section {
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.15);
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cashier-section h2 {
+  color: #e91e63;
+  margin-bottom: 15px;
+}
+
+/* === Client Info === */
+.client-form input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ffc1e3;
+  margin-bottom: 10px;
+  outline: none;
+}
+
+/* === Cart Table === */
+.cart-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.cart-table th {
+  background-color: #ffd6e7;
+  color: #333;
+  padding: 8px;
+  font-size: 14px;
+}
+
+.cart-table td {
+  padding: 8px;
+  text-align: center;
+  border-bottom: 1px solid #ffe3ef;
+  font-size: 14px;
+}
+
+/* === Summary Section === */
+.summary {
+  margin-top: 15px;
+  background-color: #ffe6f1;
+  padding: 10px 15px;
+  border-radius: 10px;
+}
+
+.summary p {
+  margin: 5px 0;
+  font-weight: 500;
+}
+
+/* === Payment & Actions === */
+.payment-section {
+  margin-top: 10px;
+}
+
+.payment-section select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ffc1e3;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.actions button {
+  flex: 1;
+  margin: 0 5px;
+  padding: 10px 0;
+  background-color: #e91e63;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.actions button:hover {
+  background-color: #c2185b;
+}
+
+/* === Numeric Keypad (Soft Pink) === */
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.keypad button {
+  background-color: #ffe6f1;
+  color: #e91e63;
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 18px;
+  font-weight: 600;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.keypad button:hover {
+  background-color: #e91e63;
+  color: white;
+}
+
+/* === Responsive for iPad === */
+@media (max-width: 1024px) {
+  .pos-container {
+    flex-direction: column;
+  }
+
+  .product-section, .cashier-section {
+    width: 100%;
+  }
 }
