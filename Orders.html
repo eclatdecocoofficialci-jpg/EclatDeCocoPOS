@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Éclat de Coco POS - Orders</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #fff5fb;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+    }
+
+    .pos-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 40px;
+      margin-left: 260px; /* same as sidebar width */
+      box-sizing: border-box;
+    }
+
+    /* === Product grid === */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 15px;
+      flex: 2;
+    }
+
+    .product {
+      background-color: white;
+      border: 1px solid #ffd1e8;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .product:hover {
+      background-color: #ffe6f2;
+      transform: scale(1.05);
+    }
+
+    .product img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    /* === Order summary === */
+    .order-summary {
+      flex: 1;
+      background-color: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-left: 20px;
+    }
+
+    .order-summary h2 {
+      margin-top: 0;
+      color: #e91e63;
+    }
+
+    .order-items {
+      margin-top: 15px;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+
+    .order-total {
+      margin-top: 20px;
+      font-weight: 600;
+      font-size: 18px;
+      color: #e91e63;
+      border-top: 1px solid #ffd1e8;
+      padding-top: 10px;
+    }
+
+    .pay-btn {
+      background-color: #e91e63;
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 15px;
+    }
+
+    .pay-btn:hover {
+      background-color: #c2185b;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Éclat de Coco</h2>
+    <ul>
+      <li><a href="index.html">🏠 Dashboard</a></li>
+      <li><a href="#">🛒 Sales</a></li>
+      <li><a href="#">🧴 Products</a></li>
+      <li><a href="#">👩‍💼 Customers</a></li>
+      <li class="active"><a href="orders.html">📦 Orders</a></li>
+      <li><a href="#">🚚 Suppliers</a></li>
+      <li><a href="#">💸 Expenses</a></li>
+    </ul>
+  </div>
+
+  <div class="pos-container">
+    <div class="product-grid">
+      <div class="product">
+        <img src="https://via.placeholder.com/60" alt="Savon">
+        <p>Savon Rose Vanilla</p>
+        <strong>1500 CFA</strong>
+      </div>
+      <div class="product">
+        <img src="https://via.placeholder.com/60" alt="Lotion">
+        <p>Lotion Coco</p>
+        <strong>2500 CFA</strong>
+      </div>
+      <div class="product">
+        <img src="https://via.placeholder.com/60" alt="Sérum">
+        <p>Sérum Brillance</p>
+        <strong>3500 CFA</strong>
+      </div>
+    </div>
+
+    <div class="order-summary">
+      <h2>🧾 Order Summary</h2>
+      <div class="order-items">
+        <div class="order-item"><span>Savon Rose Vanilla</span><span>1500 CFA</span></div>
+        <div class="order-item"><span>Lotion Coco</span><span>2500 CFA</span></div>
+      </div>
+      <div class="order-total">Total: 4000 CFA</div>
+      <button class="pay-btn">💖 Payer Maintenant</button>
+    </div>
+  </div>
+</body>
+</html>
