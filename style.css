@@ -1,83 +1,114 @@
+/* ===== Éclat de Coco Dashboard Style ===== */
+
+/* General layout */
 body {
-  margin: 0;
   font-family: 'Poppins', sans-serif;
-  background: #f8f9fc;
+  background-color: #fdf6fa;
+  margin: 0;
   display: flex;
+  height: 100vh;
+  overflow: hidden;
 }
 
+/* Sidebar */
 .sidebar {
   width: 250px;
-  background: #e91e63;
+  background-color: #e91e63;
   color: white;
-  height: 100vh;
-  padding: 20px;
-  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
 }
 
 .sidebar h2 {
+  font-size: 22px;
   margin-bottom: 30px;
-  text-align: center;
+  font-weight: 600;
 }
 
-.sidebar ul {
-  list-style: none;
-  padding: 0;
+.sidebar a {
+  text-decoration: none;
+  color: white;
+  width: 100%;
+  padding: 15px 30px;
+  display: flex;
+  align-items: center;
+  transition: background 0.3s;
+  font-size: 16px;
 }
 
-.sidebar ul li {
-  padding: 15px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  border-radius: 6px;
+.sidebar a:hover {
+  background-color: #f06292;
+  border-radius: 8px;
 }
 
-.sidebar ul li.active,
-.sidebar ul li:hover {
-  background: white;
-  color: #e91e63;
-}
-
+/* Main dashboard area */
 .main {
   flex: 1;
-  padding: 20px 40px;
+  padding: 30px;
+  overflow-y: auto;
 }
 
-.header {
+header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.header input {
-  padding: 8px 15px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
+header h1 {
+  font-size: 28px;
+  color: #333;
 }
 
+.search-bar input {
+  padding: 8px 15px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  width: 200px;
+}
+
+/* Stats boxes */
 .stats {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
   margin-top: 30px;
 }
 
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  flex: 1;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+.stat-box {
+  background-color: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
   text-align: center;
 }
 
-.card.highlight {
-  background: #e91e63;
-  color: white;
+.stat-box h3 {
+  color: #e91e63;
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
-.chart {
+.stat-box p {
+  font-size: 24px;
+  color: #333;
+  font-weight: bold;
+}
+
+/* Section titles */
+.section-title {
+  margin-top: 40px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #444;
+}
+
+/* Graph area */
+.chart-container {
   background: white;
+  border-radius: 12px;
   padding: 20px;
-  border-radius: 10px;
-  margin-top: 30px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-top: 20px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
 }
