@@ -1,56 +1,79 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Éclat de Coco - Dashboard</title>
+  <title>Éclat de Coco POS Dashboard</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="sidebar">
     <h2>Éclat de Coco</h2>
     <ul>
       <li class="active">🏠 Dashboard</li>
-      <li>💸 Ventes</li>
-      <li>🧴 Produits</li>
-      <li>👩‍💼 Clients</li>
-      <li>🚚 Fournisseurs</li>
-      <li>💰 Dépenses</li>
+      <li>🛒 Sales</li>
+      <li>🧴 Products</li>
+      <li>👩‍💼 Customers</li>
+      <li>🚚 Suppliers</li>
+      <li>💸 Expenses</li>
     </ul>
   </div>
 
-  <div class="main">
-    <div class="header">
+  <div class="main-content">
+    <header>
       <h1>Dashboard</h1>
-      <input type="text" placeholder="Rechercher...">
-    </div>
+      <input type="text" placeholder="Search...">
+    </header>
 
-    <div class="stats">
+    <section class="cards">
       <div class="card">
-        <h3>Total Clients</h3>
+        <h3>Customers</h3>
         <p>54</p>
       </div>
       <div class="card">
-        <h3>Total Produits</h3>
+        <h3>Products</h3>
         <p>79</p>
       </div>
       <div class="card">
-        <h3>Total Ventes</h3>
+        <h3>Sales</h3>
         <p>124</p>
       </div>
       <div class="card highlight">
-        <h3>Revenus</h3>
+        <h3>Revenue</h3>
         <p>6 000 CFA</p>
       </div>
-    </div>
+    </section>
 
-    <div class="chart">
-      <h2>Ventes Mensuelles</h2>
+    <section class="charts">
+      <h2>Sales Overview</h2>
       <canvas id="salesChart"></canvas>
-    </div>
+    </section>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="script.js"></script>
+  <script>
+    const ctx = document.getElementById('salesChart');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'Monthly Sales (CFA)',
+          data: [1200, 1900, 3000, 5000, 2300, 4000],
+          borderColor: '#ff4da6',
+          backgroundColor: 'rgba(255,77,166,0.1)',
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  </script>
 </body>
 </html>
