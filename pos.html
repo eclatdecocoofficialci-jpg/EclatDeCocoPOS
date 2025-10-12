@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,11 +10,11 @@
 
 <body>
   <div class="pos-container">
-    <!-- Left side: Products area -->
-    <div class="products-section">
+    <!-- 🧴 SECTION PRODUITS -->
+    <div class="product-section">
       <header class="pos-header">
-        <h1>Point of Sale</h1>
-        <input type="text" id="searchBox" placeholder="Search by name, code, or category...">
+        <h1>Point de Vente</h1>
+        <input type="text" id="searchProduct" placeholder="🔍 Rechercher par nom, code ou catégorie...">
       </header>
 
       <div class="categories">
@@ -23,16 +23,15 @@
         <button class="category-btn">Body Butter</button>
         <button class="category-btn">Masque Cheveux</button>
         <button class="category-btn">Dessert Savons</button>
-        <button class="category-btn add-btn">+ Add New</button>
+        <button class="category-btn add-btn">+ Ajouter Nouveau</button>
       </div>
 
       <table class="product-table">
         <thead>
           <tr>
             <th>Code</th>
-            <th>Product</th>
-            <th>Price (FCFA)</th>
-            <th>Quantity</th>
+            <th>Produit</th>
+            <th>Prix (FCFA)</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -40,76 +39,93 @@
           <tr>
             <td>SA001</td>
             <td>Rose Vanilla Soap</td>
-            <td>2500</td>
-            <td>1</td>
-            <td><button class="add-btn-small">Add</button></td>
+            <td>1500</td>
+            <td><button class="add-btn" onclick="addToCart('SA001','Rose Vanilla Soap',1500)">+</button></td>
           </tr>
           <tr>
             <td>SA002</td>
             <td>Lavender Bliss Soap</td>
             <td>2000</td>
-            <td>1</td>
-            <td><button class="add-btn-small">Add</button></td>
+            <td><button class="add-btn" onclick="addToCart('SA002','Lavender Bliss Soap',2000)">+</button></td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Right side: Cashier section -->
+    <!-- 💵 SECTION CAISSE -->
     <div class="cashier-section">
-      <h2>Cashier</h2>
-      <table class="cashier-table">
+      <h2>🧾 Caisse</h2>
+
+      <div class="client-form">
+        <input type="text" id="clientName" placeholder="Nom du client">
+        <input type="text" id="clientPhone" placeholder="Téléphone">
+        <input type="text" id="clientAddress" placeholder="Adresse">
+      </div>
+
+      <table class="cart-table">
         <thead>
           <tr>
-            <th>Product</th>
-            <th>Qty</th>
-            <th>Price</th>
+            <th>Produit</th>
+            <th>Qté</th>
+            <th>Prix</th>
             <th>Total</th>
           </tr>
         </thead>
-        <tbody id="cashierList"></tbody>
+        <tbody id="cartItems"></tbody>
       </table>
 
-      <div class="cashier-total">
-        <p><strong>Total:</strong> <span id="totalAmount">0 FCFA</span></p>
+      <div class="summary">
+        <p>Sous-total : <span id="subtotal">0</span> FCFA</p>
+        <p>Total : <span id="total">0</span> FCFA</p>
       </div>
 
-      <div class="cashier-buttons">
-        <button class="save-btn">💾 Save</button>
-        <button class="print-btn" onclick="window.print()">🧾 Print Invoice</button>
+      <div class="payment-section">
+        <label>Méthode de paiement :</label>
+        <select id="paymentMethod">
+          <option>Cash</option>
+          <option>Wave</option>
+          <option>Orange Money</option>
+          <option>Moov Money</option>
+          <option>Visa</option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <button onclick="saveOrder()">💾 Enregistrer</button>
+        <button onclick="printReceipt()">🖨️ Imprimer Reçu</button>
       </div>
     </div>
   </div>
 
   <script>
-    // Add product to cashier
-    const productList = document.getElementById('productList');
-    const cashierList = document.getElementById('cashierList');
-    const totalAmount = document.getElementById('totalAmount');
+    const cartItems = document.getElementById('cartItems');
+    const subtotalEl = document.getElementById('subtotal');
+    const totalEl = document.getElementById('total');
+    let subtotal = 0;
 
-    let total = 0;
+    function addToCart(code, name, price) {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${name}</td>
+        <td>1</td>
+        <td>${price}</td>
+        <td>${price}</td>
+      `;
+      cartItems.appendChild(row);
+      subtotal += price;
+      subtotalEl.textContent = subtotal;
+      totalEl.textContent = subtotal;
+    }
 
-    productList.addEventListener('click', (e) => {
-      if (e.target.classList.contains('add-btn-small')) {
-        const row = e.target.closest('tr');
-        const name = row.children[1].innerText;
-        const price = parseFloat(row.children[2].innerText);
-        const qty = parseInt(row.children[3].innerText);
-        const subtotal = price * qty;
+    function saveOrder() {
+      alert("✅ Commande enregistrée avec succès !");
+    }
 
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-          <td>${name}</td>
-          <td>${qty}</td>
-          <td>${price.toFixed(0)}</td>
-          <td>${subtotal.toFixed(0)}</td>
-        `;
-        cashierList.appendChild(newRow);
-
-        total += subtotal;
-        totalAmount.textContent = total.toFixed(0) + ' FCFA';
-      }
-    });
+    function printReceipt() {
+      window.print();
+    }
   </script>
+
+  <script src="script.js"></script>
 </body>
 </html>
