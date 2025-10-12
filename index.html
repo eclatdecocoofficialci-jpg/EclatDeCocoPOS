@@ -7,100 +7,91 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="container">
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+      <h2>✨ Éclat de Coco - POS Dashboard</h2>
+      <button onclick="openPopup('categoryPopup')">+ Add Category</button>
+      <button onclick="openPopup('productPopup')">+ Add Product</button>
 
-  <!-- ======= LEFT SIDEBAR: CATEGORIES ======= -->
-  <section id="sidebar">
-    <h2>Categories</h2>
-    <div id="categoryContainer"></div>
-    <button onclick="openPopup('categoryPopup')">+ Add Category</button>
-  </section>
+      <h3>Categories</h3>
+      <div id="categoryContainer"></div>
 
-  <!-- ======= CENTER: PRODUCTS ======= -->
-  <section id="main">
-    <h2>Products</h2>
-    <table id="productTable">
-      <tr><th>Code</th><th>Product</th><th>Price (CFA)</th><th>Cost</th><th>Action</th></tr>
-    </table>
-    <button onclick="openPopup('productPopup')">+ Add Product</button>
-  </section>
-
-  <!-- ======= RIGHT: CASHIER ======= -->
-  <section id="cashier">
-    <h2>Cashier</h2>
-
-    <div>
-      <label>Customer Name:</label>
-      <input type="text" id="clientName" placeholder="Enter customer name" />
-      <label>Address:</label>
-      <input type="text" id="clientAddress" placeholder="Enter address" />
-      <label>Phone:</label>
-      <input type="text" id="clientPhone" placeholder="Enter phone number" />
-
-      <label>Payment Method:</label>
-      <select id="paymentMethod">
-        <option value="Cash">Cash</option>
-        <option value="Wave">Wave</option>
-        <option value="Orange Money">Orange Money</option>
-        <option value="Visa Card">Visa Card</option>
-      </select>
+      <h3>Products</h3>
+      <table id="productTable">
+        <tr>
+          <th>Code</th>
+          <th>Product</th>
+          <th>Price (CFA)</th>
+          <th>Cost</th>
+          <th>Action</th>
+        </tr>
+      </table>
     </div>
 
-    <table id="cartTable">
-      <tr><th>Product</th><th>Qty</th><th>Unit</th><th>Total</th></tr>
-    </table>
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+      <h3>🧾 Cashier / Receipt</h3>
 
-    <div id="totals">
-      <p><strong>Subtotal:</strong> <span id="subtotal">0</span> CFA</p>
-      <p><strong>Total:</strong> <span id="total">0</span> CFA</p>
+      <div class="cart-section">
+        <table id="cartTable">
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Unit</th>
+            <th>Total</th>
+          </tr>
+        </table>
+      </div>
+
+      <div class="total-box">
+        Subtotal: <span id="subtotal">0</span> CFA <br>
+        Total: <span id="total">0</span> CFA
+      </div>
+
+      <div>
+        <h4>Customer Details</h4>
+        <input type="text" id="clientName" placeholder="Customer name" />
+        <input type="text" id="clientAddress" placeholder="Address" />
+        <input type="text" id="clientPhone" placeholder="Phone" />
+
+        <h4>Payment Method</h4>
+        <select id="paymentMethod">
+          <option value="Cash">💵 Cash</option>
+          <option value="Wave">🌊 Wave</option>
+          <option value="Orange Money">🟧 Orange Money</option>
+          <option value="Visa">💳 Visa</option>
+        </select>
+
+        <button onclick="checkout()">✅ Confirm & Print</button>
+        <button onclick="clearCart()">🧹 Clear Cart</button>
+      </div>
     </div>
-
-    <div id="checkoutSection">
-      <button onclick="checkout()">🧾 Print Receipt</button>
-    </div>
-  </section>
-
-  <!-- ======= POPUP: ADD CATEGORY ======= -->
-  <div id="categoryPopup" class="popup">
-    <h3>Add Category</h3>
-    <input type="text" id="newCategory" placeholder="Category name" />
-    <button onclick="addCategory(document.getElementById('newCategory').value)">Add</button>
-    <button onclick="closePopup('categoryPopup')">Close</button>
   </div>
 
-  <!-- ======= POPUP: ADD PRODUCT ======= -->
+  <!-- ADD CATEGORY POPUP -->
+  <div id="categoryPopup" class="popup">
+    <div class="popup-content">
+      <span class="close-btn" onclick="closePopup('categoryPopup')">&times;</span>
+      <h3>Add Category</h3>
+      <input type="text" id="categoryName" placeholder="Category name" />
+      <button onclick="addCategoryFromPopup()">Add</button>
+    </div>
+  </div>
+
+  <!-- ADD PRODUCT POPUP -->
   <div id="productPopup" class="popup">
-    <h3>Add Product</h3>
-    <label>Category:</label>
-    <select id="productCategory"></select>
-    <label>Product Name:</label>
-    <input type="text" id="productName" />
-    <label>Price (CFA):</label>
-    <input type="number" id="productPrice" />
-    <label>Cost (CFA):</label>
-    <input type="number" id="productCost" />
-    <button onclick="addProduct(
-      document.getElementById('productCategory').value,
-      document.getElementById('productName').value,
-      document.getElementById('productPrice').value,
-      document.getElementById('productCost').value
-    )">Add</button>
-    <button onclick="closePopup('productPopup')">Close</button>
+    <div class="popup-content">
+      <span class="close-btn" onclick="closePopup('productPopup')">&times;</span>
+      <h3>Add Product</h3>
+      <select id="productCategory"></select>
+      <input type="text" id="productName" placeholder="Product name" />
+      <input type="number" id="productPrice" placeholder="Price (CFA)" />
+      <input type="number" id="productCost" placeholder="Cost (CFA)" />
+      <button onclick="addProductFromPopup()">Add</button>
+    </div>
   </div>
 
   <script src="script.js"></script>
-
-  <script>
-    function openPopup(id) {
-      document.getElementById(id).classList.add("active");
-      if (id === "productPopup") populateCategoryDropdown();
-    }
-    function closePopup(id) {
-      document.getElementById(id).classList.remove("active");
-    }
-    function populateCategoryDropdown() {
-      const select = document.getElementById("productCategory");
-      select.innerHTML = categories.map(c => `<option>${c.name}</option>`).join("");
-    }
-  </script>
 </body>
 </html>
