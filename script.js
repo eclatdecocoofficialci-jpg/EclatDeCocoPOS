@@ -1,93 +1,98 @@
-// ================== GLOBAL DATA ==================
+// ============ GLOBAL VARIABLES ============
 let categories = JSON.parse(localStorage.getItem("categories")) || [];
 let products = JSON.parse(localStorage.getItem("products")) || [];
 let sales = JSON.parse(localStorage.getItem("sales")) || [];
-let customers = JSON.parse(localStorage.getItem("customers")) || [];
-let currentCart = [];
 
-// ================== SAVE DATA ==================
+// ============ SAVE DATA ============
 function saveData() {
   localStorage.setItem("categories", JSON.stringify(categories));
   localStorage.setItem("products", JSON.stringify(products));
   localStorage.setItem("sales", JSON.stringify(sales));
-  localStorage.setItem("customers", JSON.stringify(customers));
 }
 
-// ================== CATEGORY FUNCTIONS ==================
-function addCategoryFromPopup() {
-  const name = document.getElementById("categoryName").value.trim();
+// ============ CATEGORIES ============
+function addCategory(name) {
   if (!name) return alert("Enter a category name");
-  if (categories.find(c => c.name === name)) return alert("Category already exists");
+  if (categories.find(c => c.name.toLowerCase() === name.toLowerCase()))
+    return alert("Category already exists");
 
-  const code = name.substring(0, 2).toUpperCase();
-  categories.push({ name, code });
+  categories.push({ name, code: name.substring(0, 2).toUpperCase() });
   saveData();
-  closePopup("categoryPopup");
   renderCategories();
-  updateCategoryDropdown();
 }
 
+// Render categories in sidebar
 function renderCategories() {
   const container = document.getElementById("categoryContainer");
+  if (!container) return;
   container.innerHTML = "";
+
   categories.forEach(cat => {
     const box = document.createElement("div");
     box.className = "category-box";
-    box.innerHTML = `<p>${cat.name}</p>`;
+    box.innerText = cat.name;
     box.onclick = () => openCategory(cat.name);
     container.appendChild(box);
   });
 }
 
-// ================== PRODUCT FUNCTIONS ==================
-function updateCategoryDropdown() {
-  const dropdown = document.getElementById("productCategory");
-  dropdown.innerHTML = categories.map(c => `<option value="${c.name}">${c.name}</option>`).join("");
-}
-
-function addProductFromPopup() {
-  const category = document.getElementById("productCategory").value;
-  const name = document.getElementById("productName").value.trim();
-  const price = parseFloat(document.getElementById("productPrice").value);
-  const cost = parseFloat(document.getElementById("productCost").value) || 0;
-
-  if (!category || !name || !price) return alert("Please fill all fields");
+// ============ PRODUCTS ============
+function addProduct(category, name, price, cost) {
+  if (!category || !name || !price) return alert("All fields are required");
 
   const cat = categories.find(c => c.name === category);
   const code = cat.code + String(products.length + 1).padStart(3, "0");
 
-  products.push({ category, code, name, price, cost });
+  products.push({
+    category,
+    code,
+    name,
+    price: parseFloat(price),
+    cost: parseFloat(cost) || 0
+  });
+
   saveData();
-  closePopup("productPopup");
   openCategory(category);
 }
 
-// ================== DISPLAY PRODUCTS ==================
+// Show all products in selected category
 function openCategory(category) {
   const table = document.getElementById("productTable");
-  const filtered = products.filter(p => p.category === category);
+  if (!table) return;
 
+  const filtered = products.filter(p => p.category === category);
   table.innerHTML = `
-    <tr><th>Code</th><th>Product</th><th>Price</th><th>Cost</th><th>Action</th></tr>
-    ${filtered.map(p => `
+    <tr>
+      <th>Code</th>
+      <th>Product</th>
+      <th>Price (CFA)</th>
+      <th>Cost</th>
+      <th>Action</th>
+    </tr>
+    ${filtered
+      .map(
+        p => `
       <tr>
         <td>${p.code}</td>
         <td>${p.name}</td>
         <td>${p.price}</td>
         <td>${p.cost}</td>
         <td><button onclick="addToCart('${p.code}')">+</button></td>
-      </tr>
-    `).join("")}
+      </tr>`
+      )
+      .join("")}
   `;
 }
 
-// ================== CART FUNCTIONS ==================
+// ============ CART ============
+let currentCart = [];
+
 function addToCart(code) {
   const product = products.find(p => p.code === code);
   if (!product) return;
 
   const existing = currentCart.find(i => i.code === code);
-  if (existing) existing.qty++;
+  if (existing) existing.qty += 1;
   else currentCart.push({ ...product, qty: 1 });
 
   renderCart();
@@ -95,16 +100,24 @@ function addToCart(code) {
 
 function renderCart() {
   const tbody = document.getElementById("cartTable");
-  tbody.innerHTML = "";
+  if (!tbody) return;
 
   let total = 0;
+  tbody.innerHTML = `
+    <tr><th>Product</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+  `;
+
   currentCart.forEach(item => {
-    const subtotal = item.qty * item.price;
+    const subtotal = item.price * item.qty;
     total += subtotal;
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${item.name}</td>
-      <td>${item.qty}</td>
+      <td>
+        <button onclick="changeQty('${item.code}', -1)">-</button>
+        ${item.qty}
+        <button onclick="changeQty('${item.code}', 1)">+</button>
+      </td>
       <td>${item.price}</td>
       <td>${subtotal}</td>
     `;
@@ -115,12 +128,16 @@ function renderCart() {
   document.getElementById("total").innerText = total.toFixed(0);
 }
 
-function clearCart() {
-  currentCart = [];
+function changeQty(code, delta) {
+  const item = currentCart.find(i => i.code === code);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0)
+    currentCart = currentCart.filter(i => i.code !== code);
   renderCart();
 }
 
-// ================== CHECKOUT ==================
+// ============ CHECKOUT ============
 function checkout() {
   if (currentCart.length === 0) return alert("Cart is empty!");
 
@@ -130,10 +147,11 @@ function checkout() {
   const paymentMethod = document.getElementById("paymentMethod").value;
 
   const date = new Date().toLocaleDateString("fr-FR");
-  const id = "INV" + Date.now().toString().slice(-5);
+  const id = "INV" + Date.now().toString().slice(-6);
+
   const total = parseFloat(document.getElementById("total").innerText);
 
-  const sale = { id, date, clientName, address, phone, paymentMethod, items: currentCart, total };
+  const sale = { id, date, clientName, address, phone, items: currentCart, total, paymentMethod };
   sales.push(sale);
   saveData();
 
@@ -142,74 +160,48 @@ function checkout() {
   renderCart();
 }
 
-// ================== PRINT RECEIPT (A5) ==================
+// ============ PRINT RECEIPT ============
 function printReceipt(sale) {
-  const receiptWindow = window.open("", "", "width=800,height=600");
+  const receiptWindow = window.open("", "", "width=400,height=600");
   receiptWindow.document.write(`
     <html>
-    <head>
-      <title>Facture ${sale.id}</title>
-      <style>
-        body { font-family: Arial; color:#000; width: 90%; margin: 20px auto; }
-        h2 { text-align:center; color:#d63384; }
-        table { width:100%; border-collapse: collapse; }
-        th, td { border-bottom:1px solid #ccc; padding:8px; text-align:left; font-size:13px; }
-        th { background:#ffe6f2; }
-        .footer { text-align:center; margin-top:15px; font-size:12px; }
-      </style>
-    </head>
-    <body>
-      <h2>ÉCLAT DE COCO</h2>
-      <p style="text-align:center;">100% Natural Products 🌿<br>
-      WhatsApp: +225 0777000803<br>
-      📧 eclatdecocoofficiel@hotmail.com<br>
-      Instagram: @Eclatdecoco.official</p>
-      <hr>
-
-      <p><strong>Facture N°:</strong> ${sale.id}<br>
-      <strong>Date:</strong> ${sale.date}<br>
-      <strong>Client:</strong> ${sale.clientName}<br>
-      ${sale.address} - ${sale.phone}</p>
-
-      <table>
-        <tr><th>Produit</th><th>Qté</th><th>Prix Unitaire</th><th>Total</th></tr>
-        ${sale.items.map(i => `
-          <tr>
-            <td>${i.name}</td>
-            <td>${i.qty}</td>
-            <td>${i.price}</td>
-            <td>${(i.qty * i.price).toFixed(0)}</td>
-          </tr>
-        `).join("")}
-      </table>
-
-      <p><strong>Sous-total:</strong> ${sale.total} CFA</p>
-      <p><strong>Le total est ${sale.total} CFA sans la livraison</strong></p>
-      <p><strong>Méthode de paiement:</strong> ${sale.paymentMethod}</p>
-      <hr>
-      <div class="footer">
-        ⚠️ Aucun retour possible<br>
-        Merci pour votre confiance 💖
-      </div>
-      <script>window.print();</script>
-    </body>
+      <head><title>Facture ${sale.id}</title></head>
+      <body style="font-family:Arial; color:#000; text-align:center; font-size:13px;">
+        <h2>ÉCLAT DE COCO</h2>
+        <p>Produits Naturels 🌿</p>
+        <p>WhatsApp: +225 0777000803</p>
+        <p>📧 eclatdecocoofficiel@hotmail.com</p>
+        <p>Instagram: @Eclatdecoco.official</p>
+        <hr>
+        <p><strong>Facture N°:</strong> ${sale.id}<br><strong>Date:</strong> ${sale.date}</p>
+        <p><strong>Client:</strong> ${sale.clientName}<br>${sale.address}<br>${sale.phone}</p>
+        <table width="100%" border="0" style="text-align:left;">
+          <tr><th>Produit</th><th>Qté</th><th>PU</th><th>Total</th></tr>
+          ${sale.items.map(i => `
+            <tr>
+              <td>${i.name}</td>
+              <td>${i.qty}</td>
+              <td>${i.price}</td>
+              <td>${(i.qty * i.price).toFixed(0)}</td>
+            </tr>
+          `).join("")}
+        </table>
+        <hr>
+        <p><strong>Sous-total:</strong> ${sale.total} CFA</p>
+        <p><strong>Mode de paiement:</strong> ${sale.paymentMethod}</p>
+        <p><strong>Total:</strong> ${sale.total} CFA</p>
+        <hr>
+        <p><em>⚠️ Aucun retour ou échange possible</em></p>
+        <p>Merci pour votre confiance 💖</p>
+        <script>window.print();</script>
+      </body>
     </html>
   `);
   receiptWindow.document.close();
 }
 
-// ================== POPUP CONTROLS ==================
-function openPopup(id) {
-  document.getElementById(id).style.display = "flex";
-}
-
-function closePopup(id) {
-  document.getElementById(id).style.display = "none";
-}
-
-// ================== INITIALIZE ==================
+// ============ INIT ============
 document.addEventListener("DOMContentLoaded", () => {
   renderCategories();
   renderCart();
-  updateCategoryDropdown();
 });
