@@ -1,182 +1,206 @@
-/* ===========================
-   Éclat de Coco – Pink POS Theme
-   =========================== */
-
-:root {
-  --main-pink: #ffb6c1;
-  --dark-pink: #ff69b4;
-  --light-bg: #fff7fa;
-  --text-dark: #333;
-  --border-color: #f3c1cf;
-  --shadow: 0 2px 8px rgba(255, 182, 193, 0.4);
-  --radius: 8px;
-  --transition: 0.3s ease;
-}
-
+/* ======== GLOBAL ======== */
 body {
-  font-family: "Poppins", sans-serif;
-  background-color: var(--light-bg);
-  color: var(--text-dark);
+  font-family: 'Poppins', sans-serif;
+  background-color: #ffeef6;
   margin: 0;
   padding: 0;
+  color: #333;
+}
+
+h1, h2, h3, h4 {
+  color: #ff5ea1;
+  font-weight: 600;
+}
+
+.container {
   display: flex;
+  flex-direction: row;
   height: 100vh;
   overflow: hidden;
 }
 
-/* ====== SIDEBAR LEFT (Categories) ====== */
-#sidebar {
-  width: 25%;
-  background-color: white;
-  border-right: 2px solid var(--border-color);
-  padding: 15px;
+/* ======== LEFT SECTION ======== */
+.left-panel {
+  width: 65%;
+  background-color: #fff;
+  border-right: 2px solid #ffb6d1;
+  padding: 20px;
   overflow-y: auto;
 }
 
-h2 {
-  text-align: center;
-  color: var(--dark-pink);
-  margin-bottom: 10px;
+/* CATEGORY BOXES */
+.category-box {
+  display: inline-block;
+  background-color: #ffb6d1;
+  color: white;
+  padding: 15px 20px;
+  margin: 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 500;
+  box-shadow: 0 3px 6px rgba(255, 182, 209, 0.4);
 }
 
-.category-box {
-  background-color: var(--main-pink);
-  color: white;
-  text-align: center;
-  padding: 10px;
-  margin: 6px 0;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  cursor: pointer;
-  font-weight: 500;
-  transition: var(--transition);
-}
 .category-box:hover {
-  background-color: var(--dark-pink);
+  background-color: #ff8cb7;
   transform: scale(1.05);
 }
 
-/* ====== PRODUCT SECTION (Middle) ====== */
-#main {
-  width: 45%;
-  padding: 15px;
-  overflow-y: auto;
-}
-
+/* PRODUCT TABLE */
 #productTable {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
-}
-#productTable th {
-  background-color: var(--dark-pink);
-  color: white;
-  padding: 8px;
-  border: none;
-}
-#productTable td {
-  border-bottom: 1px solid var(--border-color);
-  text-align: center;
-  padding: 8px;
-}
-#productTable tr:hover {
-  background-color: #ffe6ee;
+  margin-top: 20px;
 }
 
-/* ====== CASHIER RIGHT ====== */
-#cashier {
-  width: 30%;
-  background-color: white;
-  border-left: 2px solid var(--border-color);
-  padding: 15px;
-  box-shadow: var(--shadow);
+#productTable th {
+  background-color: #ffd1e3;
+  color: #333;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+#productTable td {
+  text-align: center;
+  padding: 8px;
+  border-bottom: 1px solid #ffdce9;
+}
+
+#productTable button {
+  background-color: #ff5ea1;
+  border: none;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#productTable button:hover {
+  background-color: #ff3388;
+}
+
+/* ======== RIGHT PANEL (CASHIER / RECEIPT) ======== */
+.right-panel {
+  width: 35%;
+  background-color: #fff0f7;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border-left: 2px solid #ffb6d1;
+  padding: 20px;
+}
+
+.cart-section {
+  flex: 1;
+  overflow-y: auto;
 }
 
 #cartTable {
   width: 100%;
   border-collapse: collapse;
 }
-#cartTable th {
-  background-color: var(--dark-pink);
-  color: white;
+
+#cartTable th, #cartTable td {
   padding: 6px;
-}
-#cartTable td {
-  border-bottom: 1px solid #f4c2d0;
   text-align: center;
-  padding: 6px;
 }
 
-button {
-  background-color: var(--main-pink);
-  border: none;
-  color: white;
-  padding: 6px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: var(--transition);
-  font-weight: 500;
-}
-button:hover {
-  background-color: var(--dark-pink);
+#cartTable tr:nth-child(even) {
+  background-color: #ffe4ef;
 }
 
-input, select {
-  width: 100%;
-  padding: 6px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border-color);
-  margin: 5px 0;
-}
-
-#totals {
-  text-align: right;
-  margin-top: 10px;
-  font-size: 14px;
-}
-
-#checkoutSection {
+.total-box {
+  background-color: #ffb6d1;
+  color: #fff;
   text-align: center;
-  margin-top: 15px;
-}
-#checkoutSection button {
-  width: 90%;
+  border-radius: 10px;
   padding: 10px;
   font-size: 16px;
+  margin-top: 15px;
   font-weight: 600;
 }
 
-/* ====== ADD CATEGORY / PRODUCT POPUP ====== */
-.popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  padding: 20px;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  display: none;
-  z-index: 1000;
-}
-.popup.active {
-  display: block;
-}
-.popup h3 {
-  color: var(--dark-pink);
-}
-.popup button {
-  margin-top: 10px;
+button {
+  background-color: #ff5ea1;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 14px;
+  font-weight: 500;
 }
 
-/* ====== SCROLLBAR ====== */
+button:hover {
+  background-color: #ff3388;
+}
+
+/* ======== FORM STYLES ======== */
+input, select {
+  border: 1px solid #ffb6d1;
+  border-radius: 8px;
+  padding: 8px;
+  width: 100%;
+  margin-bottom: 8px;
+  background-color: #fff8fb;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #ff5ea1;
+  box-shadow: 0 0 5px rgba(255, 94, 161, 0.4);
+}
+
+/* ======== POPUP ======== */
+.popup {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content {
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 15px;
+  width: 300px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.popup-content h3 {
+  margin-top: 0;
+  color: #ff5ea1;
+  text-align: center;
+}
+
+.close-btn {
+  float: right;
+  cursor: pointer;
+  color: #ff5ea1;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.close-btn:hover {
+  color: #ff3388;
+}
+
+/* ======== SCROLLBAR ======== */
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-thumb {
-  background-color: var(--main-pink);
+  background-color: #ffb6d1;
   border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #ff8cb7;
 }
