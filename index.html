@@ -1,109 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Éclat de Coco POS Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Éclat de Coco - Dashboard</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
   <div class="sidebar">
     <h2>Éclat de Coco</h2>
     <ul>
-      <li onclick="showSection('dashboard')">🏠 Dashboard</li>
-      <li onclick="showSection('sales')">💸 Sales</li>
-      <li onclick="showSection('products')">🧴 Products</li>
-      <li onclick="showSection('customers')">👩‍💼 Customers</li>
-      <li onclick="showSection('suppliers')">🚚 Suppliers</li>
-      <li onclick="showSection('expenses')">💰 Expenses</li>
+      <li class="active">🏠 Dashboard</li>
+      <li>💸 Ventes</li>
+      <li>🧴 Produits</li>
+      <li>👩‍💼 Clients</li>
+      <li>🚚 Fournisseurs</li>
+      <li>💰 Dépenses</li>
     </ul>
   </div>
 
   <div class="main">
-    <!-- DASHBOARD -->
-    <section id="dashboard" class="active">
-      <h1>Dashboard Overview</h1>
-      <div class="cards">
-        <div class="card">
-          <h3>Total Sales</h3>
-          <p id="totalSales">0 CFA</p>
-        </div>
-        <div class="card">
-          <h3>Total Expenses</h3>
-          <p id="totalExpenses">0 CFA</p>
-        </div>
-        <div class="card">
-          <h3>Profit</h3>
-          <p id="totalProfit">0 CFA</p>
-        </div>
+    <div class="header">
+      <h1>Dashboard</h1>
+      <input type="text" placeholder="Rechercher...">
+    </div>
+
+    <div class="stats">
+      <div class="card">
+        <h3>Total Clients</h3>
+        <p>54</p>
       </div>
+      <div class="card">
+        <h3>Total Produits</h3>
+        <p>79</p>
+      </div>
+      <div class="card">
+        <h3>Total Ventes</h3>
+        <p>124</p>
+      </div>
+      <div class="card highlight">
+        <h3>Revenus</h3>
+        <p>6 000 CFA</p>
+      </div>
+    </div>
 
+    <div class="chart">
+      <h2>Ventes Mensuelles</h2>
       <canvas id="salesChart"></canvas>
-    </section>
-
-    <!-- SALES -->
-    <section id="sales">
-      <h1>Sales Management</h1>
-      <button onclick="newSale()">+ New Sale</button>
-      <table id="salesTable">
-        <thead>
-          <tr><th>ID</th><th>Date</th><th>Customer</th><th>Total</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
-
-    <!-- PRODUCTS -->
-    <section id="products">
-      <h1>Products</h1>
-      <button onclick="addProductPrompt()">+ Add Product</button>
-      <table id="productTable">
-        <thead>
-          <tr><th>Code</th><th>Name</th><th>Price</th><th>Stock</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
-
-    <!-- CUSTOMERS -->
-    <section id="customers">
-      <h1>Customers</h1>
-      <button onclick="addCustomerPrompt()">+ Add Customer</button>
-      <table id="customerTable">
-        <thead>
-          <tr><th>Name</th><th>Phone</th><th>Email</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
-
-    <!-- SUPPLIERS -->
-    <section id="suppliers">
-      <h1>Suppliers</h1>
-      <button onclick="addSupplierPrompt()">+ Add Supplier</button>
-      <table id="supplierTable">
-        <thead>
-          <tr><th>Name</th><th>Phone</th><th>Product</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
-
-    <!-- EXPENSES -->
-    <section id="expenses">
-      <h1>Expenses</h1>
-      <button onclick="addExpensePrompt()">+ Add Expense</button>
-      <table id="expenseTable">
-        <thead>
-          <tr><th>Date</th><th>Description</th><th>Amount</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
+    </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
