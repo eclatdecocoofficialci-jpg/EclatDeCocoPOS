@@ -1,162 +1,183 @@
-// ============ GLOBAL VARIABLES ============
-let categories = JSON.parse(localStorage.getItem("categories")) || [];
-let products = JSON.parse(localStorage.getItem("products")) || [];
-let sales = JSON.parse(localStorage.getItem("sales")) || [];
-let customers = JSON.parse(localStorage.getItem("customers")) || [];
+// === ÉCLAT DE COCO POS SYSTEM SCRIPT ===
+// Version: 2025 Pro Pink Edition
+// Offline Supported (LocalStorage + Service Worker)
 
-// ============ HELPER FUNCTIONS ============
-function saveData() {
-  localStorage.setItem("categories", JSON.stringify(categories));
-  localStorage.setItem("products", JSON.stringify(products));
-  localStorage.setItem("sales", JSON.stringify(sales));
-  localStorage.setItem("customers", JSON.stringify(customers));
-}
+document.addEventListener("DOMContentLoaded", () => {
+  const productForm = document.getElementById("productForm");
+  const productTable = document.getElementById("productTableBody");
+  const categorySelect = document.getElementById("categorySelect");
+  const orderTable = document.getElementById("orderTableBody");
+  const subtotalElement = document.getElementById("subtotal");
+  const totalElement = document.getElementById("total");
+  const invoiceTable = document.getElementById("invoiceTableBody");
+  const customerSelect = document.getElementById("customerSelect");
+  const expenseTable = document.getElementById("expenseTableBody");
+  const printBtn = document.getElementById("printReceipt");
 
-// ============ CATEGORY MANAGEMENT ============
-function addCategory(name) {
-  if (!name) return alert("Enter a category name");
-  if (categories.find(c => c.name === name)) return alert("Category already exists");
-  categories.push({ name, code: name.substring(0, 2).toUpperCase() });
-  saveData();
-  renderCategories();
-}
+  let products = JSON.parse(localStorage.getItem("products")) || [];
+  let categories = JSON.parse(localStorage.getItem("categories")) || ["Savon", "Lotion", "Sérum"];
+  let orders = JSON.parse(localStorage.getItem("orders")) || [];
+  let customers = JSON.parse(localStorage.getItem("customers")) || [];
+  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
-function renderCategories() {
-  const container = document.getElementById("categoryContainer");
-  if (!container) return;
-  container.innerHTML = "";
-  categories.forEach(cat => {
-    const box = document.createElement("div");
-    box.className = "category-box";
-    box.innerHTML = `<h3>${cat.name}</h3>`;
-    box.onclick = () => openCategory(cat.name);
-    container.appendChild(box);
-  });
-}
+  // === Utility Functions ===
+  const saveData = () => {
+    localStorage.setItem("products", JSON.stringify(products));
+    localStorage.setItem("categories", JSON.stringify(categories));
+    localStorage.setItem("orders", JSON.stringify(orders));
+    localStorage.setItem("customers", JSON.stringify(customers));
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+  };
 
-// ============ PRODUCT MANAGEMENT ============
-function addProduct(category, name, price, cost) {
-  if (!category || !name || !price) return alert("All fields required");
-  const cat = categories.find(c => c.name === category);
-  const code = cat.code + String(products.length + 1).padStart(3, "0");
-  products.push({ category, code, name, price: parseFloat(price), cost: parseFloat(cost) || 0 });
-  saveData();
-  openCategory(category);
-}
+  const generateProductCode = (category) => {
+    const codePrefix = category.substring(0, 2).toUpperCase();
+    const count = products.filter(p => p.category === category).length + 1;
+    return `${codePrefix}${String(count).padStart(3, "0")}`;
+  };
 
-function openCategory(category) {
-  const table = document.getElementById("productTable");
-  if (!table) return;
-  const filtered = products.filter(p => p.category === category);
-  table.innerHTML = `
-    <tr><th>Code</th><th>Produit</th><th>Prix (CFA)</th><th>Coût</th><th>Action</th></tr>
-    ${filtered.map(p => `
-      <tr>
+  const generateOrderID = () => {
+    const lastOrder = orders[orders.length - 1];
+    const lastID = lastOrder ? lastOrder.id : 1000;
+    return lastID + 1;
+  };
+
+  const updateProductTable = () => {
+    productTable.innerHTML = "";
+    products.forEach(p => {
+      const row = `<tr>
         <td>${p.code}</td>
         <td>${p.name}</td>
-        <td>${p.price}</td>
-        <td>${p.cost}</td>
-        <td><button onclick="addToCart('${p.code}')">+</button></td>
-      </tr>
-    `).join("")}
-  `;
-}
+        <td>${p.category}</td>
+        <td>${p.price} CFA</td>
+        <td>${p.quantity}</td>
+        <td><button class="deleteProduct" data-code="${p.code}">🗑️</button></td>
+      </tr>`;
+      productTable.insertAdjacentHTML("beforeend", row);
+    });
+  };
 
-// ============ CART & SALES ============
-let currentCart = [];
+  const updateCategorySelect = () => {
+    categorySelect.innerHTML = "";
+    categories.forEach(cat => {
+      const opt = document.createElement("option");
+      opt.value = cat;
+      opt.textContent = cat;
+      categorySelect.appendChild(opt);
+    });
+  };
 
-function addToCart(code) {
-  const product = products.find(p => p.code === code);
-  if (!product) return;
-  const existing = currentCart.find(i => i.code === code);
-  if (existing) existing.qty += 1;
-  else currentCart.push({ ...product, qty: 1 });
-  renderCart();
-}
+  const updateOrderTable = () => {
+    orderTable.innerHTML = "";
+    let subtotal = 0;
 
-function renderCart() {
-  const tbody = document.getElementById("cartTable");
-  if (!tbody) return;
-  let total = 0;
-  tbody.innerHTML = currentCart.map(item => {
-    const subtotal = item.price * item.qty;
-    total += subtotal;
-    return `
-      <tr>
-        <td>${item.name}</td>
-        <td>${item.qty}</td>
-        <td>${item.price}</td>
-        <td>${subtotal}</td>
-      </tr>
-    `;
-  }).join("");
+    products.forEach(p => {
+      if (p.inOrder) {
+        const totalPrice = p.inOrder * p.price;
+        subtotal += totalPrice;
+        orderTable.insertAdjacentHTML("beforeend", `
+          <tr>
+            <td>${p.name}</td>
+            <td>${p.inOrder}</td>
+            <td>${p.price}</td>
+            <td>${totalPrice}</td>
+          </tr>
+        `);
+      }
+    });
 
-  document.getElementById("subtotal").innerText = total.toFixed(0);
-  document.getElementById("total").innerText = total.toFixed(0);
-}
+    subtotalElement.textContent = `${subtotal} CFA`;
+    totalElement.textContent = `${subtotal} CFA`; // same without shipping
+  };
 
-// ============ CHECKOUT ============
-function checkout() {
-  if (currentCart.length === 0) return alert("Panier vide !");
-  const clientName = document.getElementById("clientName").value || "Client";
-  const address = document.getElementById("clientAddress").value || "-";
-  const phone = document.getElementById("clientPhone").value || "-";
+  // === Add Product ===
+  productForm.addEventListener("submit", e => {
+    e.preventDefault();
+    const name = document.getElementById("productName").value;
+    const price = parseFloat(document.getElementById("productPrice").value);
+    const quantity = parseInt(document.getElementById("productQuantity").value);
+    const category = categorySelect.value;
+    const code = generateProductCode(category);
 
-  const date = new Date().toLocaleDateString("fr-FR");
-  const id = "INV" + Date.now().toString().slice(-6);
+    products.push({ code, name, category, price, quantity });
+    saveData();
+    updateProductTable();
+    productForm.reset();
+  });
 
-  const total = parseFloat(document.getElementById("total").innerText);
+  // === Delete Product ===
+  document.addEventListener("click", e => {
+    if (e.target.classList.contains("deleteProduct")) {
+      const code = e.target.dataset.code;
+      products = products.filter(p => p.code !== code);
+      saveData();
+      updateProductTable();
+    }
+  });
 
-  const sale = { id, date, clientName, address, phone, items: currentCart, total };
-  sales.push(sale);
-  saveData();
+  // === Add Category ===
+  document.getElementById("addCategory").addEventListener("click", () => {
+    const newCat = prompt("Enter new category:");
+    if (newCat && !categories.includes(newCat)) {
+      categories.push(newCat);
+      saveData();
+      updateCategorySelect();
+    }
+  });
 
-  printReceipt(sale);
-  currentCart = [];
-  renderCart();
-}
+  // === Print Receipt ===
+  printBtn.addEventListener("click", () => {
+    const date = new Date().toLocaleDateString("fr-FR");
+    const orderID = generateOrderID();
+    const customer = document.getElementById("customerName").value || "Client(e)";
+    let itemsHTML = "";
 
-// ============ PRINT RECEIPT ============
-function printReceipt(sale) {
-  const receiptWindow = window.open("", "", "width=400,height=600");
-  receiptWindow.document.write(`
-    <html>
-      <head><title>Facture ${sale.id}</title></head>
-      <body style="font-family:Arial; color:#000; text-align:center; font-size:13px;">
-        <h2>ÉCLAT DE COCO</h2>
-        <p>100% Natural Products 🌿</p>
-        <p>WhatsApp: +225 0777000803</p>
-        <p>📧 eclatdecocoofficiel@hotmail.com</p>
-        <p>Instagram: @Eclatdecoco.official</p>
+    products.filter(p => p.inOrder).forEach(p => {
+      itemsHTML += `
+        <tr>
+          <td>${p.name}</td>
+          <td>${p.inOrder}</td>
+          <td>${p.price}</td>
+          <td>${p.inOrder * p.price}</td>
+        </tr>`;
+    });
+
+    const receiptHTML = `
+      <div style="font-family: monospace; width: 250px;">
+        <h3 style="text-align:center;">Bienvenue à Éclat de Coco</h3>
+        <p style="text-align:center;">ID: ${orderID} | ${date}</p>
+        <p>Client: ${customer}</p>
         <hr>
-        <p><strong>Facture N°:</strong> ${sale.id}<br><strong>Date:</strong> ${sale.date}</p>
-        <p><strong>Client:</strong> ${sale.clientName}<br>${sale.address}<br>${sale.phone}</p>
-        <table width="100%" border="0" style="text-align:left;">
-          <tr><th>Produit</th><th>Qté</th><th>PU</th><th>Total</th></tr>
-          ${sale.items.map(i => `
-            <tr>
-              <td>${i.name}</td>
-              <td>${i.qty}</td>
-              <td>${i.price}</td>
-              <td>${(i.qty * i.price).toFixed(0)}</td>
-            </tr>
-          `).join("")}
+        <table style="width:100%;font-size:12px;">
+          <thead><tr><th>Produit</th><th>Qté</th><th>PU</th><th>Total</th></tr></thead>
+          <tbody>${itemsHTML}</tbody>
         </table>
         <hr>
-        <p><strong>Sous-total:</strong> ${sale.total} CFA</p>
-        <p><strong>Le total est ${sale.total} CFA sans la livraison</strong></p>
+        <p><strong>Sous-total:</strong> ${subtotalElement.textContent}</p>
+        <p><strong>Total:</strong> ${totalElement.textContent}</p>
+        <p>Le total est ${totalElement.textContent} sans la livraison</p>
         <hr>
-        <p><em>⚠️ Aucun retour possible</em></p>
-        <p>Merci pour votre confiance 💖</p>
-        <script>window.print();</script>
-      </body>
-    </html>
-  `);
-  receiptWindow.document.close();
-}
+        <p style="font-size:10px;text-align:center;">
+        Éclat de Coco<br>
+        100% Natural Products 🌿<br>
+        WhatsApp : +225 0777000803<br>
+        📧 eclatdecocoofficiel@hotmail.com<br>
+        Instagram : @Eclatdecoco.official<br>
+        ⚠️ Aucun retour possible
+        </p>
+      </div>
+    `;
 
-// ============ INITIALIZE ============
-document.addEventListener("DOMContentLoaded", () => {
-  renderCategories();
-  renderCart();
+    const win = window.open("", "PrintReceipt");
+    win.document.write(receiptHTML);
+    win.print();
+    win.close();
+
+    orders.push({ id: orderID, date, customer, total: subtotalElement.textContent });
+    saveData();
+  });
+
+  // === Init ===
+  updateCategorySelect();
+  updateProductTable();
+  updateOrderTable();
 });
