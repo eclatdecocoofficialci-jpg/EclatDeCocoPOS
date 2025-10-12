@@ -1,0 +1,207 @@
+/* ===== GENERAL PAGE LAYOUT ===== */
+body {
+  font-family: "Poppins", sans-serif;
+  background: #fff5fa;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+header {
+  background: linear-gradient(90deg, #ff9ecb, #ff7eb6);
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  height: calc(100vh - 80px);
+}
+
+/* ===== CATEGORY BOXES ===== */
+.sidebar {
+  width: 25%;
+  background: #ffe6f0;
+  padding: 1rem;
+  overflow-y: auto;
+  border-right: 2px solid #ffc3d9;
+}
+
+.sidebar h2 {
+  text-align: center;
+  color: #ff4f8b;
+  margin-bottom: 1rem;
+}
+
+.category-box {
+  background: white;
+  border: 2px solid #ffc1d7;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  text-align: center;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.category-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 3px 8px rgba(255, 128, 171, 0.3);
+}
+
+.category-box h3 {
+  color: #ff4f8b;
+  margin: 0;
+}
+
+/* ===== MAIN SECTION ===== */
+.main {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+h2.section-title {
+  color: #ff4f8b;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* ===== PRODUCT TABLE ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+}
+
+th {
+  background: #ffb8d4;
+  color: white;
+  padding: 0.8rem;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+td {
+  padding: 0.8rem;
+  border-bottom: 1px solid #f4c6d8;
+  text-align: center;
+}
+
+tr:hover {
+  background-color: #fff0f6;
+}
+
+/* ===== BUTTONS ===== */
+button, .btn {
+  background: #ff4f8b;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.3rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+button:hover, .btn:hover {
+  background: #ff2a72;
+}
+
+/* ===== RECEIPT LAYOUT ===== */
+.receipt {
+  background: white;
+  width: 280px;
+  padding: 15px;
+  font-size: 13px;
+  color: #333;
+  border: 1px dashed #ffb3c9;
+  border-radius: 6px;
+  margin: auto;
+}
+
+.receipt h3 {
+  text-align: center;
+  margin: 0;
+  color: #ff4f8b;
+}
+
+.receipt small {
+  display: block;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.receipt table {
+  width: 100%;
+  font-size: 12px;
+}
+
+.receipt th, .receipt td {
+  text-align: left;
+  padding: 3px 0;
+}
+
+.receipt-footer {
+  border-top: 1px dashed #ffb3c9;
+  padding-top: 10px;
+  margin-top: 10px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.receipt-footer p {
+  margin: 2px 0;
+}
+
+.print-btn {
+  display: block;
+  margin: 1rem auto;
+  width: 100%;
+}
+
+/* ===== REPORTS SECTION ===== */
+.report-summary {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1rem;
+}
+
+.report-card {
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #ffb3cc;
+  padding: 1rem;
+  width: 30%;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(255, 150, 180, 0.2);
+}
+
+.report-card h4 {
+  color: #ff4f8b;
+  margin-bottom: 0.5rem;
+}
+
+/* ===== SCROLL ===== */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #ff9ecb;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #ff6fa5;
+}
