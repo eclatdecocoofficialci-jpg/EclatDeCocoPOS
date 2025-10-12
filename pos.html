@@ -1,64 +1,115 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Éclat de Coco — Caisse</title>
+  <title>POS - Éclat de Coco</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
-  <div class="sidebar">
-    <h2>Éclat de Coco</h2>
-    <ul>
-      <li><a href="index.html">🏠 Dashboard</a></li>
-      <li><a href="sales.html">💰 Sales</a></li>
-      <li><a href="products.html">🧴 Products</a></li>
-      <li><a href="customers.html">👩‍💼 Customers</a></li>
-      <li class="active"><a href="pos.html">🧾 Orders</a></li>
-      <li><a href="suppliers.html">🚚 Suppliers</a></li>
-      <li><a href="expenses.html">💸 Expenses</a></li>
-    </ul>
-  </div>
+  <div class="pos-container">
+    <!-- Left side: Products area -->
+    <div class="products-section">
+      <header class="pos-header">
+        <h1>Point of Sale</h1>
+        <input type="text" id="searchBox" placeholder="Search by name, code, or category...">
+      </header>
 
-  <div class="main-content">
-    <header>
-      <h1>💖 Caisse - Point de Vente</h1>
-      <input type="text" placeholder="Rechercher un produit...">
-    </header>
-
-    <section class="pos-container">
-      <div class="products-grid">
-        <div class="product-card">🧼 Savon Vanille<br><small>1 500 CFA</small></div>
-        <div class="product-card">🧴 Lotion Rose<br><small>2 000 CFA</small></div>
-        <div class="product-card">💧 Sérum Nuit<br><small>3 500 CFA</small></div>
+      <div class="categories">
+        <button class="category-btn active">Savons</button>
+        <button class="category-btn">Lotion</button>
+        <button class="category-btn">Body Butter</button>
+        <button class="category-btn">Masque Cheveux</button>
+        <button class="category-btn">Dessert Savons</button>
+        <button class="category-btn add-btn">+ Add New</button>
       </div>
 
-      <div class="cart-summary">
-        <h2>🛍 Panier</h2>
-        <ul id="cartItems"></ul>
-        <p><strong>Total :</strong> <span id="totalAmount">0 CFA</span></p>
-        <button class="pay-btn">💳 Payer</button>
+      <table class="product-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Product</th>
+            <th>Price (FCFA)</th>
+            <th>Quantity</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="productList">
+          <tr>
+            <td>SA001</td>
+            <td>Rose Vanilla Soap</td>
+            <td>2500</td>
+            <td>1</td>
+            <td><button class="add-btn-small">Add</button></td>
+          </tr>
+          <tr>
+            <td>SA002</td>
+            <td>Lavender Bliss Soap</td>
+            <td>2000</td>
+            <td>1</td>
+            <td><button class="add-btn-small">Add</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Right side: Cashier section -->
+    <div class="cashier-section">
+      <h2>Cashier</h2>
+      <table class="cashier-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="cashierList"></tbody>
+      </table>
+
+      <div class="cashier-total">
+        <p><strong>Total:</strong> <span id="totalAmount">0 FCFA</span></p>
       </div>
-    </section>
 
-    <script>
-      const products = document.querySelectorAll('.product-card');
-      const cartItems = document.getElementById('cartItems');
-      const totalAmount = document.getElementById('totalAmount');
-      let total = 0;
-
-      products.forEach(product => {
-        product.addEventListener('click', () => {
-          const price = parseInt(product.querySelector('small').textContent.replace(' CFA', '').replace(/\s/g, ''));
-          const name = product.textContent.trim();
-          const li = document.createElement('li');
-          li.textContent = name;
-          cartItems.appendChild(li);
-          total += price;
-          totalAmount.textContent = total.toLocaleString() + ' CFA';
-        });
-      });
-    </script>
+      <div class="cashier-buttons">
+        <button class="save-btn">💾 Save</button>
+        <button class="print-btn" onclick="window.print()">🧾 Print Invoice</button>
+      </div>
+    </div>
   </div>
+
+  <script>
+    // Add product to cashier
+    const productList = document.getElementById('productList');
+    const cashierList = document.getElementById('cashierList');
+    const totalAmount = document.getElementById('totalAmount');
+
+    let total = 0;
+
+    productList.addEventListener('click', (e) => {
+      if (e.target.classList.contains('add-btn-small')) {
+        const row = e.target.closest('tr');
+        const name = row.children[1].innerText;
+        const price = parseFloat(row.children[2].innerText);
+        const qty = parseInt(row.children[3].innerText);
+        const subtotal = price * qty;
+
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+          <td>${name}</td>
+          <td>${qty}</td>
+          <td>${price.toFixed(0)}</td>
+          <td>${subtotal.toFixed(0)}</td>
+        `;
+        cashierList.appendChild(newRow);
+
+        total += subtotal;
+        totalAmount.textContent = total.toFixed(0) + ' FCFA';
+      }
+    });
+  </script>
 </body>
 </html>
