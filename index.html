@@ -3,158 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Éclat de Coco POS</title>
-  <link rel="manifest" href="manifest.json">
+  <title>Eclat de Coco - POS</title>
   <link rel="stylesheet" href="style.css">
-  <script defer src="script.js"></script>
+  <link rel="icon" type="image/png" href="icon-192.png">
 </head>
 
 <body>
-  <header class="app-header">
-    <h1>Éclat de Coco POS</h1>
-    <p>100% Natural Products 🌿</p>
+  <header>
+    <h1>ÉCLAT DE COCO - POS SYSTEM</h1>
+    <p>Natural Beauty Products 💖</p>
   </header>
 
-  <nav class="tabs">
-    <button data-tab="cashier" class="active">Cashier</button>
-    <button data-tab="inventory">Inventory</button>
-    <button data-tab="invoices">Sales Invoices</button>
-    <button data-tab="suppliers">Suppliers</button>
-    <button data-tab="customers">Customers</button>
-    <button data-tab="expenses">Expenses</button>
-    <button data-tab="reports">Reports</button>
-  </nav>
+  <div class="pos-container">
 
-  <main>
-    <!-- CASHIER TAB -->
-    <section id="cashier" class="tab-content active">
-      <div class="cashier-container">
-        <div class="category-section">
-          <h3>Product Categories</h3>
-          <div id="categoryBoxes" class="category-boxes"></div>
-          <button id="addCategoryBtn" class="pink-btn">+ Add Category</button>
-        </div>
-
-        <div class="product-section">
-          <h3>Cashier Panel</h3>
-          <input type="text" id="searchProduct" placeholder="Search by name, category, or barcode">
-          <div id="productList" class="product-list"></div>
-
-          <div class="receipt-box">
-            <h3>Receipt</h3>
-            <div id="receiptArea">
-              <h2>Bienvenue à Éclat de Coco</h2>
-              <p>Date : <span id="currentDate"></span></p>
-              <p>ID Commande : <span id="orderId"></span></p>
-              <p>Nom du client : <span id="receiptCustomer"></span></p>
-              <p>Adresse : <span id="receiptAddress"></span></p>
-              <p>Téléphone : <span id="receiptPhone"></span></p>
-              <table id="receiptTable">
-                <thead>
-                  <tr><th>Produit</th><th>Qté</th><th>PU</th><th>Total</th></tr>
-                </thead>
-                <tbody></tbody>
-              </table>
-              <p>Sous-total : <span id="subtotal">0</span> CFA</p>
-              <p>Total : <span id="total">0</span> CFA</p>
-              <p class="note">Le total est calculé sans la livraison.</p>
-              <p>Mode de paiement : <span id="paymentMethodDisplay"></span></p>
-              <hr>
-              <p><strong>Éclat de Coco</strong><br>
-              100% Natural Products 🌿<br>
-              WhatsApp : +225 0777000803<br>
-              📧 eclatdecocoofficiel@hotmail.com<br>
-              Instagram : @Eclatdecoco.official<br>
-              ⚠️ Aucun retour possible</p>
-            </div>
-            <button id="printReceipt" class="pink-btn">🖨 Print Receipt</button>
-          </div>
-        </div>
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+      <!-- CATEGORY SECTION -->
+      <div class="category-section">
+        <h2>Categories</h2>
+        <div id="categoryContainer" class="category-grid"></div>
+        <button class="add-category" onclick="openCategoryPopup()">+ Add Category</button>
       </div>
-    </section>
 
-    <!-- INVENTORY TAB -->
-    <section id="inventory" class="tab-content">
-      <h2>Product Inventory</h2>
-      <table id="inventoryTable">
-        <thead>
-          <tr><th>Code</th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <button id="addProductBtn" class="pink-btn">+ Add New Product</button>
-    </section>
-
-    <!-- SALES INVOICES TAB -->
-    <section id="invoices" class="tab-content">
-      <h2>Sales Invoices</h2>
-      <table id="invoiceTable">
-        <thead>
-          <tr><th>Date</th><th>Order ID</th><th>Customer</th><th>Total</th><th>Payment</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
-
-    <!-- SUPPLIERS TAB -->
-    <section id="suppliers" class="tab-content">
-      <h2>Suppliers</h2>
-      <table id="supplierTable">
-        <thead>
-          <tr><th>Name</th><th>Contact</th><th>Address</th><th>Notes</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <button id="addSupplierBtn" class="pink-btn">+ Add Supplier</button>
-    </section>
-
-    <!-- CUSTOMERS TAB -->
-    <section id="customers" class="tab-content">
-      <h2>Customers</h2>
-      <table id="customerTable">
-        <thead>
-          <tr><th>Name</th><th>Phone</th><th>Address</th><th>Notes</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <button id="addCustomerBtn" class="pink-btn">+ Add Customer</button>
-    </section>
-
-    <!-- EXPENSES TAB -->
-    <section id="expenses" class="tab-content">
-      <h2>Expenses</h2>
-      <table id="expenseTable">
-        <thead>
-          <tr><th>Date</th><th>Description</th><th>Amount (CFA)</th><th>Category</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <button id="addExpenseBtn" class="pink-btn">+ Add Expense</button>
-    </section>
-
-    <!-- REPORTS TAB -->
-    <section id="reports" class="tab-content">
-      <h2>Reports & Statistics</h2>
-      <div class="report-summary">
-        <p>Total Sales : <span id="reportSales">0</span> CFA</p>
-        <p>Total Expenses : <span id="reportExpenses">0</span> CFA</p>
-        <p>Net Profit : <span id="reportProfit">0</span> CFA</p>
-        <p>New Customers : <span id="reportCustomers">0</span></p>
+      <!-- PRODUCT SECTION -->
+      <div class="product-section">
+        <h2>Products</h2>
+        <table class="product-table" id="productTable">
+          <tr><th>Code</th><th>Name</th><th>Price (CFA)</th><th>Cost</th><th>Action</th></tr>
+        </table>
+        <button onclick="openProductPopup()">+ Add Product</button>
       </div>
-      <canvas id="salesChart"></canvas>
-    </section>
-  </main>
+    </div>
 
-  <footer>
-    <p>© 2025 Éclat de Coco POS | All rights reserved</p>
-  </footer>
-  <!-- Register Service Worker for offline use -->
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(() => console.log('✅ Service Worker registered successfully'))
-      .catch(err => console.log('❌ Service Worker registration failed:', err));
-  }
-</script>
+    <!-- RIGHT PANEL (CASHIER) -->
+    <div class="right-panel">
+      <h2>Cashier / Receipt</h2>
+      <table class="receipt-table" id="cartTable">
+        <tr><th>Product</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+      </table>
+
+      <div class="totals">
+        <p><strong>Subtotal:</strong> <span id="subtotal">0</span> CFA</p>
+        <p><strong>Total:</strong> <span id="total">0</span> CFA</p>
+      </div>
+
+      <div class="payment-section">
+        <h3>Payment Method</h3>
+        <select id="paymentMethod">
+          <option value="Cash">💵 Cash</option>
+          <option value="Wave">🌊 Wave</option>
+          <option value="Orange Money">🟠 Orange Money</option>
+          <option value="Visa">💳 Visa</option>
+        </select>
+      </div>
+
+      <div class="client-info">
+        <h3>Customer Details</h3>
+        <input type="text" id="clientName" placeholder="Client Name">
+        <input type="text" id="clientAddress" placeholder="Address">
+        <input type="text" id="clientPhone" placeholder="Phone">
+      </div>
+
+      <div class="btn-group">
+        <button onclick="checkout()">Checkout & Print</button>
+        <button onclick="clearCart()">Clear Cart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATEGORY POPUP -->
+  <div class="popup" id="categoryPopup">
+    <div class="popup-content">
+      <h2>Add Category</h2>
+      <input type="text" id="newCategoryName" placeholder="Category name">
+      <button onclick="addCategoryFromPopup()">Add</button>
+      <button onclick="closePopup('categoryPopup')">Cancel</button>
+    </div>
+  </div>
+
+  <!-- PRODUCT POPUP -->
+  <div class="popup" id="productPopup">
+    <div class="popup-content">
+      <h2>Add Product</h2>
+      <select id="productCategory"></select>
+      <input type="text" id="productName" placeholder="Product name">
+      <input type="number" id="productPrice" placeholder="Price (CFA)">
+      <input type="number" id="productCost" placeholder="Cost (CFA)">
+      <button onclick="addProductFromPopup()">Add</button>
+      <button onclick="closePopup('productPopup')">Cancel</button>
+    </div>
+  </div>
+
+  <!-- LOGIN POPUP -->
+  <div class="popup active" id="loginPopup">
+    <div class="popup-content">
+      <h2>Enter Access Code</h2>
+      <input type="password" id="accessCode" placeholder="PIN Code">
+      <button onclick="checkAccess()">Login</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
