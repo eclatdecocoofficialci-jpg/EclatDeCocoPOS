@@ -1,17 +1,14 @@
 {
-  "name": "Éclat de Coco POS",
-  "short_name": "CocoPOS",
-  "start_url": "./index.html",
+  "name": "EclatDeCoco POS",
+  "short_name": "EclatPOS",
+  "description": "Éclat de Coco | Gestion de ventes, factures et clients en toute simplicité.",
+  "lang": "fr",
+  "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#fff6f8",
-  "theme_color": "#d36fa4",
-  "description": "Offline-ready POS system for Éclat de Coco",
+  "background_color": "#ffffff",
+  "theme_color": "#f8c6d8",
+  "orientation": "portrait-primary",
   "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
