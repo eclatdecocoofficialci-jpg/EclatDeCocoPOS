@@ -1,143 +1,200 @@
-/* 🌸 Éclat de Coco POS Layout – Soft Pink Theme */
+/* 🌸 Éclat de Coco POS & Dashboard Style */
 
-/* === Base Layout === */
+/* === GLOBAL === */
 body {
+  display: flex;
   margin: 0;
   font-family: 'Poppins', sans-serif;
   background-color: #fff5fb;
   color: #333;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 20px;
+}
+
+/* === SIDEBAR === */
+.sidebar {
+  width: 260px;
+  background-color: #e91e63;
+  color: white;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 30px 20px;
   box-sizing: border-box;
 }
 
-/* === POS Container === */
+.sidebar h1 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 15px;
+  margin-bottom: 60px;
+  letter-spacing: 0.5px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin: 20px 0;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.sidebar ul li:hover {
+  transform: translateX(5px);
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* === MAIN CONTENT === */
+.main-content {
+  margin-left: 260px;
+  padding: 40px;
+  width: calc(100% - 260px);
+  box-sizing: border-box;
+}
+
+/* === POS LAYOUT === */
 .pos-container {
   display: flex;
   gap: 25px;
-  width: 100%;
-  max-width: 1300px;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #fff5fb;
 }
 
-/* === Product Section === */
+/* === PRODUCT SECTION === */
 .product-section {
-  flex: 1.5;
-  background-color: #ffffff;
+  flex: 1.6;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.1);
   padding: 25px;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.15);
+  border: 2px solid #f8bbd0;
 }
 
-.pos-header h1 {
-  color: #e91e63;
-  margin: 0 0 10px;
-}
-
-#searchProduct {
-  width: 100%;
-  padding: 10px 15px;
-  border: 1px solid #ffc1e3;
-  border-radius: 10px;
-  outline: none;
+.pos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
-  font-size: 15px;
 }
 
-/* === Category Buttons === */
+.pos-header input {
+  width: 60%;
+  padding: 8px 12px;
+  border: 1px solid #f8bbd0;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.pos-header input:focus {
+  border-color: #e91e63;
+}
+
+/* Category Buttons */
 .categories {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .category-btn {
-  background-color: #ffe6f1;
+  background-color: #f8bbd0;
   color: #e91e63;
   border: none;
+  padding: 8px 14px;
   border-radius: 10px;
-  padding: 10px 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.category-btn:hover, .category-btn.active {
+.category-btn:hover,
+.category-btn.active {
   background-color: #e91e63;
   color: white;
 }
 
-.add-btn {
-  background-color: #e91e63;
-  color: white;
-  font-weight: 600;
+.category-btn.add-btn {
+  background-color: #fff0f6;
+  color: #e91e63;
+  border: 1px dashed #e91e63;
 }
 
-/* === Product Table === */
+/* Product Table */
 .product-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: #fff;
+  margin-top: 10px;
 }
 
 .product-table th {
-  background-color: #ffd6e7;
-  color: #333;
-  text-align: left;
+  background-color: #ffe4ec;
+  color: #e91e63;
   padding: 10px;
-  font-size: 14px;
+  text-align: center;
 }
 
 .product-table td {
-  padding: 10px;
-  border-bottom: 1px solid #ffe3ef;
+  padding: 8px;
+  text-align: center;
+  border-bottom: 1px solid #f8bbd0;
+}
+
+.product-table button {
+  background-color: #e91e63;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
   font-size: 14px;
 }
 
-.add-btn {
-  background-color: #e91e63;
-  border: none;
-  color: white;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.2s;
+.product-table button:hover {
+  background-color: #d81b60;
 }
 
-.add-btn:hover {
-  background-color: #c2185b;
-}
-
-/* === Cashier Section === */
+/* === CASHIER SECTION === */
 .cashier-section {
   flex: 1;
-  background-color: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.15);
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.1);
   padding: 25px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  border: 2px solid #f8bbd0;
 }
 
 .cashier-section h2 {
   color: #e91e63;
-  margin-bottom: 15px;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-/* === Client Info === */
+/* Client Info */
 .client-form input {
   width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ffc1e3;
+  padding: 8px 10px;
   margin-bottom: 10px;
-  outline: none;
+  border-radius: 8px;
+  border: 1px solid #f8bbd0;
 }
 
-/* === Cart Table === */
+.client-form input:focus {
+  border-color: #e91e63;
+}
+
+/* Cart Table */
 .cart-table {
   width: 100%;
   border-collapse: collapse;
@@ -145,33 +202,32 @@ body {
 }
 
 .cart-table th {
-  background-color: #ffd6e7;
-  color: #333;
+  background-color: #ffe4ec;
+  color: #e91e63;
   padding: 8px;
-  font-size: 14px;
 }
 
 .cart-table td {
-  padding: 8px;
+  padding: 6px;
   text-align: center;
-  border-bottom: 1px solid #ffe3ef;
-  font-size: 14px;
+  border-bottom: 1px solid #f8bbd0;
 }
 
-/* === Summary Section === */
+/* Summary */
 .summary {
   margin-top: 15px;
-  background-color: #ffe6f1;
-  padding: 10px 15px;
-  border-radius: 10px;
+  border-top: 1px solid #f8bbd0;
+  padding-top: 10px;
 }
 
 .summary p {
+  display: flex;
+  justify-content: space-between;
   margin: 5px 0;
   font-weight: 500;
 }
 
-/* === Payment & Actions === */
+/* Payment */
 .payment-section {
   margin-top: 10px;
 }
@@ -179,65 +235,80 @@ body {
 .payment-section select {
   width: 100%;
   padding: 8px;
+  border: 1px solid #f8bbd0;
   border-radius: 8px;
-  border: 1px solid #ffc1e3;
 }
 
+/* Buttons */
 .actions {
+  margin-top: 20px;
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  gap: 10px;
 }
 
 .actions button {
   flex: 1;
-  margin: 0 5px;
-  padding: 10px 0;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
   background-color: #e91e63;
   color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
   font-weight: 600;
-  transition: all 0.3s;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
 .actions button:hover {
-  background-color: #c2185b;
+  background-color: #d81b60;
 }
 
-/* === Numeric Keypad (Soft Pink) === */
-.keypad {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-top: 15px;
-}
-
-.keypad button {
-  background-color: #ffe6f1;
-  color: #e91e63;
-  border: none;
+/* === RECEIPT STYLE === */
+.receipt {
+  background-color: #fff;
+  border: 1px solid #f8bbd0;
   border-radius: 10px;
   padding: 15px;
-  font-size: 18px;
-  font-weight: 600;
-  transition: 0.2s;
-  cursor: pointer;
+  width: 320px;
+  margin: 20px auto;
+  display: none;
+  box-shadow: 0 3px 10px rgba(233, 30, 99, 0.1);
 }
 
-.keypad button:hover {
-  background-color: #e91e63;
-  color: white;
+.receipt h2 {
+  color: #e91e63;
+  margin-bottom: 5px;
 }
 
-/* === Responsive for iPad === */
-@media (max-width: 1024px) {
-  .pos-container {
-    flex-direction: column;
-  }
+.receipt p {
+  font-size: 13px;
+  margin: 3px 0;
+}
 
-  .product-section, .cashier-section {
-    width: 100%;
-  }
+.receipt table {
+  width: 100%;
+  margin-top: 10px;
+  border-collapse: collapse;
+}
+
+.receipt th {
+  text-align: left;
+  color: #e91e63;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #f8bbd0;
+}
+
+.receipt td {
+  padding: 5px 0;
+  font-size: 13px;
+}
+
+.receipt hr {
+  border: none;
+  border-top: 1px dashed #f8bbd0;
+  margin: 10px 0;
+}
+
+.receipt strong {
+  color: #e91e63;
 }
