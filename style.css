@@ -1,114 +1,70 @@
-/* ===== Éclat de Coco Dashboard Style ===== */
+/* === Layout Fix for Sidebar and Main Content === */
 
-/* General layout */
 body {
-  font-family: 'Poppins', sans-serif;
-  background-color: #fdf6fa;
-  margin: 0;
   display: flex;
-  height: 100vh;
-  overflow: hidden;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #fff5fb;
 }
 
 /* Sidebar */
 .sidebar {
-  width: 250px;
+  width: 260px;
   background-color: #e91e63;
   color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 20px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 30px 20px;
+  box-sizing: border-box;
 }
 
-.sidebar h2 {
+.sidebar h1 {
   font-size: 22px;
-  margin-bottom: 30px;
-  font-weight: 600;
+  font-weight: 700;
+  margin-bottom: 40px;
 }
 
-.sidebar a {
-  text-decoration: none;
-  color: white;
-  width: 100%;
-  padding: 15px 30px;
-  display: flex;
-  align-items: center;
-  transition: background 0.3s;
+/* Sidebar links */
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin: 20px 0;
   font-size: 16px;
 }
 
-.sidebar a:hover {
-  background-color: #f06292;
-  border-radius: 8px;
-}
-
-/* Main dashboard area */
-.main {
-  flex: 1;
-  padding: 30px;
-  overflow-y: auto;
-}
-
-header {
+.sidebar ul li a {
+  text-decoration: none;
+  color: white;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 10px;
 }
 
-header h1 {
-  font-size: 28px;
+/* Main content */
+.main-content {
+  margin-left: 260px; /* same as sidebar width */
+  padding: 40px;
+  width: calc(100% - 260px);
+  box-sizing: border-box;
+}
+
+.dashboard {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.dashboard h2 {
   color: #333;
+  margin-bottom: 20px;
 }
 
-.search-bar input {
-  padding: 8px 15px;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  width: 200px;
-}
-
-/* Stats boxes */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-  margin-top: 30px;
-}
-
-.stat-box {
-  background-color: white;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-  text-align: center;
-}
-
-.stat-box h3 {
-  color: #e91e63;
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-.stat-box p {
-  font-size: 24px;
-  color: #333;
-  font-weight: bold;
-}
-
-/* Section titles */
-.section-title {
-  margin-top: 40px;
-  font-size: 20px;
-  font-weight: 600;
-  color: #444;
-}
-
-/* Graph area */
-.chart-container {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  margin-top: 20px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+/* Make sure chart fits nicely */
+canvas {
+  max-width: 100%;
+  height: auto !important;
 }
