@@ -1,157 +1,211 @@
-/* ===================== GLOBAL STYLE ===================== */
+/* ======= GLOBAL STYLE ======= */
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: #fff5fa;
-  color: #333;
+  background-color: #ffeef8;
   margin: 0;
   padding: 0;
+  color: #333;
 }
 
+/* ======= HEADER ======= */
 header {
-  background-color: #ffb6c1;
+  background-color: #ff8fcf;
   color: white;
   text-align: center;
   padding: 15px;
   font-size: 22px;
   font-weight: 600;
   letter-spacing: 1px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
 }
 
-/* ===================== LAYOUT ===================== */
-.container {
+/* ======= MAIN LAYOUT ======= */
+main {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  padding: 15px;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* LEFT SIDE: Categories + Products */
+#leftPanel {
+  width: 65%;
+  display: flex;
+  flex-direction: column;
   gap: 15px;
 }
 
-.left-panel {
-  flex: 1;
-  min-width: 250px;
-  max-width: 300px;
-  background: #ffe6ef;
+/* RIGHT SIDE: Cashier */
+#rightPanel {
+  width: 35%;
+  background: white;
   border-radius: 10px;
-  padding: 10px;
-  box-shadow: 0 0 8px rgba(255, 182, 193, 0.4);
-}
-
-.right-panel {
-  flex: 2;
-  background: #fff;
-  border-radius: 10px;
+  box-shadow: 0px 3px 8px rgba(0,0,0,0.1);
   padding: 15px;
-  box-shadow: 0 0 8px rgba(255, 182, 193, 0.3);
 }
 
-/* ===================== CATEGORY BOXES ===================== */
+/* ======= CATEGORY BOXES ======= */
+#categoryContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .category-box {
   background: white;
-  border: 2px solid #ffb6c1;
+  border: 2px solid #ff8fcf;
   border-radius: 10px;
+  padding: 12px 15px;
+  width: 130px;
   text-align: center;
-  padding: 15px;
-  margin: 10px 0;
+  font-weight: 600;
+  color: #ff4fa3;
   cursor: pointer;
-  transition: 0.3s;
-  font-weight: 500;
+  transition: 0.2s;
 }
 
 .category-box:hover {
-  background-color: #ffb6c1;
+  background: #ff8fcf;
   color: white;
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
-/* ===================== PRODUCT TABLE ===================== */
-table {
+/* ======= PRODUCT TABLE ======= */
+#productTable {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-th, td {
-  border: 1px solid #ffd1dc;
+#productTable th, #productTable td {
+  border-bottom: 1px solid #ffd5ec;
+  padding: 10px;
+  text-align: center;
+}
+
+#productTable th {
+  background-color: #ffb6e6;
+  color: white;
+  font-weight: 600;
+}
+
+#productTable td button {
+  background: #ff8fcf;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#productTable td button:hover {
+  background: #ff4fa3;
+}
+
+/* ======= CASHIER TABLE ======= */
+#cartTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+}
+
+#cartTable th, #cartTable td {
+  border-bottom: 1px solid #ffd5ec;
   padding: 8px;
   text-align: center;
 }
 
-th {
-  background-color: #ffe4ec;
-  color: #333;
-}
-
-/* ===================== CART SECTION ===================== */
-.cart {
-  background: #fff0f5;
-  border-radius: 10px;
-  padding: 10px;
-  margin-top: 10px;
-  box-shadow: 0 0 8px rgba(255, 192, 203, 0.3);
-}
-
-.cart table {
-  border: none;
-}
-
-.cart th {
-  background-color: #ffc1cc;
+#cartTable th {
+  background: #ffb6e6;
   color: white;
 }
 
-.cart-summary {
-  text-align: right;
+#cartTable button {
+  background: #ff8fcf;
+  border: none;
+  color: white;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
   font-size: 16px;
-  margin-top: 10px;
+  cursor: pointer;
+}
+
+#cartTable button:hover {
+  background: #ff4fa3;
+}
+
+/* ======= TOTAL SECTION ======= */
+.total-section {
+  background: #fff0f8;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 16px;
   font-weight: 600;
 }
 
-/* ===================== BUTTONS ===================== */
+.total-section span {
+  float: right;
+  color: #ff4fa3;
+}
+
+/* ======= BUTTONS ======= */
 button {
-  background-color: #ffb6c1;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 14px;
+  background-color: #ff8fcf;
   color: white;
-  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 15px;
   cursor: pointer;
   transition: 0.3s;
+  font-weight: 600;
 }
 
 button:hover {
-  background-color: #ff7f9f;
+  background-color: #ff4fa3;
 }
 
-/* ===================== INPUTS ===================== */
-input, select {
-  width: 95%;
+/* ======= POPUPS ======= */
+.popup {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 320px;
+  box-shadow: 0px 3px 8px rgba(0,0,0,0.2);
+}
+
+.popup-content input, select {
+  width: 90%;
   padding: 8px;
-  border: 1px solid #ffd1dc;
+  margin: 8px 0;
+  border: 2px solid #ffd5ec;
   border-radius: 6px;
-  margin: 5px 0;
-  font-family: 'Poppins', sans-serif;
 }
 
-input:focus {
-  outline: none;
-  border-color: #ffb6c1;
-  box-shadow: 0 0 5px rgba(255, 182, 193, 0.5);
+.popup-content h3 {
+  color: #ff4fa3;
 }
 
-/* ===================== RECEIPT PRINT STYLE ===================== */
-@media print {
-  body {
-    background: white;
-    color: black;
-    font-size: 12px;
-  }
-
-  button, .container, header {
-    display: none;
-  }
-
-  .receipt {
-    display: block;
-  }
+/* ======= FOOTER ======= */
+footer {
+  text-align: center;
+  font-size: 13px;
+  color: #777;
+  padding: 10px;
+  background: #ffeef8;
+  margin-top: 15px;
 }
