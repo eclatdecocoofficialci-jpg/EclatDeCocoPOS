@@ -1,211 +1,182 @@
-/* ======= GLOBAL STYLE ======= */
+/* ===========================
+   Éclat de Coco – Pink POS Theme
+   =========================== */
+
+:root {
+  --main-pink: #ffb6c1;
+  --dark-pink: #ff69b4;
+  --light-bg: #fff7fa;
+  --text-dark: #333;
+  --border-color: #f3c1cf;
+  --shadow: 0 2px 8px rgba(255, 182, 193, 0.4);
+  --radius: 8px;
+  --transition: 0.3s ease;
+}
+
 body {
-  font-family: 'Poppins', sans-serif;
-  background-color: #ffeef8;
+  font-family: "Poppins", sans-serif;
+  background-color: var(--light-bg);
+  color: var(--text-dark);
   margin: 0;
   padding: 0;
-  color: #333;
-}
-
-/* ======= HEADER ======= */
-header {
-  background-color: #ff8fcf;
-  color: white;
-  text-align: center;
-  padding: 15px;
-  font-size: 22px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-}
-
-/* ======= MAIN LAYOUT ======= */
-main {
   display: flex;
-  gap: 20px;
-  padding: 20px;
-}
-
-/* LEFT SIDE: Categories + Products */
-#leftPanel {
-  width: 65%;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-/* RIGHT SIDE: Cashier */
-#rightPanel {
-  width: 35%;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0px 3px 8px rgba(0,0,0,0.1);
-  padding: 15px;
-}
-
-/* ======= CATEGORY BOXES ======= */
-#categoryContainer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.category-box {
-  background: white;
-  border: 2px solid #ff8fcf;
-  border-radius: 10px;
-  padding: 12px 15px;
-  width: 130px;
-  text-align: center;
-  font-weight: 600;
-  color: #ff4fa3;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.category-box:hover {
-  background: #ff8fcf;
-  color: white;
-  transform: scale(1.05);
-}
-
-/* ======= PRODUCT TABLE ======= */
-#productTable {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 10px;
+  height: 100vh;
   overflow: hidden;
 }
 
-#productTable th, #productTable td {
-  border-bottom: 1px solid #ffd5ec;
-  padding: 10px;
+/* ====== SIDEBAR LEFT (Categories) ====== */
+#sidebar {
+  width: 25%;
+  background-color: white;
+  border-right: 2px solid var(--border-color);
+  padding: 15px;
+  overflow-y: auto;
+}
+
+h2 {
   text-align: center;
+  color: var(--dark-pink);
+  margin-bottom: 10px;
 }
 
-#productTable th {
-  background-color: #ffb6e6;
+.category-box {
+  background-color: var(--main-pink);
   color: white;
-  font-weight: 600;
-}
-
-#productTable td button {
-  background: #ff8fcf;
-  border: none;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 6px;
+  text-align: center;
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
   cursor: pointer;
-  font-size: 16px;
+  font-weight: 500;
+  transition: var(--transition);
+}
+.category-box:hover {
+  background-color: var(--dark-pink);
+  transform: scale(1.05);
 }
 
-#productTable td button:hover {
-  background: #ff4fa3;
+/* ====== PRODUCT SECTION (Middle) ====== */
+#main {
+  width: 45%;
+  padding: 15px;
+  overflow-y: auto;
 }
 
-/* ======= CASHIER TABLE ======= */
+#productTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+#productTable th {
+  background-color: var(--dark-pink);
+  color: white;
+  padding: 8px;
+  border: none;
+}
+#productTable td {
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+  padding: 8px;
+}
+#productTable tr:hover {
+  background-color: #ffe6ee;
+}
+
+/* ====== CASHIER RIGHT ====== */
+#cashier {
+  width: 30%;
+  background-color: white;
+  border-left: 2px solid var(--border-color);
+  padding: 15px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 #cartTable {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 15px;
 }
-
-#cartTable th, #cartTable td {
-  border-bottom: 1px solid #ffd5ec;
-  padding: 8px;
-  text-align: center;
-}
-
 #cartTable th {
-  background: #ffb6e6;
+  background-color: var(--dark-pink);
   color: white;
+  padding: 6px;
+}
+#cartTable td {
+  border-bottom: 1px solid #f4c2d0;
+  text-align: center;
+  padding: 6px;
 }
 
-#cartTable button {
-  background: #ff8fcf;
+button {
+  background-color: var(--main-pink);
   border: none;
   color: white;
-  border-radius: 50%;
-  width: 25px;
-  height: 25px;
-  font-size: 16px;
+  padding: 6px 10px;
+  border-radius: 5px;
   cursor: pointer;
+  transition: var(--transition);
+  font-weight: 500;
+}
+button:hover {
+  background-color: var(--dark-pink);
 }
 
-#cartTable button:hover {
-  background: #ff4fa3;
+input, select {
+  width: 100%;
+  padding: 6px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  margin: 5px 0;
 }
 
-/* ======= TOTAL SECTION ======= */
-.total-section {
-  background: #fff0f8;
-  border-radius: 8px;
+#totals {
+  text-align: right;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+#checkoutSection {
+  text-align: center;
+  margin-top: 15px;
+}
+#checkoutSection button {
+  width: 90%;
   padding: 10px;
   font-size: 16px;
   font-weight: 600;
 }
 
-.total-section span {
-  float: right;
-  color: #ff4fa3;
-}
-
-/* ======= BUTTONS ======= */
-button {
-  background-color: #ff8fcf;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 15px;
-  cursor: pointer;
-  transition: 0.3s;
-  font-weight: 600;
-}
-
-button:hover {
-  background-color: #ff4fa3;
-}
-
-/* ======= POPUPS ======= */
+/* ====== ADD CATEGORY / PRODUCT POPUP ====== */
 .popup {
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.4);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-}
-
-.popup-content {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background: white;
   padding: 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: none;
+  z-index: 1000;
+}
+.popup.active {
+  display: block;
+}
+.popup h3 {
+  color: var(--dark-pink);
+}
+.popup button {
+  margin-top: 10px;
+}
+
+/* ====== SCROLLBAR ====== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--main-pink);
   border-radius: 10px;
-  text-align: center;
-  width: 320px;
-  box-shadow: 0px 3px 8px rgba(0,0,0,0.2);
-}
-
-.popup-content input, select {
-  width: 90%;
-  padding: 8px;
-  margin: 8px 0;
-  border: 2px solid #ffd5ec;
-  border-radius: 6px;
-}
-
-.popup-content h3 {
-  color: #ff4fa3;
-}
-
-/* ======= FOOTER ======= */
-footer {
-  text-align: center;
-  font-size: 13px;
-  color: #777;
-  padding: 10px;
-  background: #ffeef8;
-  margin-top: 15px;
 }
