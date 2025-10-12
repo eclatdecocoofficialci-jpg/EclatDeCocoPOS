@@ -1,97 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Éclat de Coco POS</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <script src="script.js" defer></script>
 </head>
 <body>
+
   <div class="container">
-    <!-- LEFT PANEL -->
-    <div class="left-panel">
-      <h2>✨ Éclat de Coco - POS Dashboard</h2>
-      <button onclick="openPopup('categoryPopup')">+ Add Category</button>
-      <button onclick="openPopup('productPopup')">+ Add Product</button>
-
-      <h3>Categories</h3>
+    <!-- ===== LEFT SIDE - CATEGORIES ===== -->
+    <div class="sidebar">
+      <h2>Categories</h2>
       <div id="categoryContainer"></div>
-
-      <h3>Products</h3>
-      <table id="productTable">
-        <tr>
-          <th>Code</th>
-          <th>Product</th>
-          <th>Price (CFA)</th>
-          <th>Cost</th>
-          <th>Action</th>
-        </tr>
-      </table>
+      <button onclick="document.getElementById('addCategoryPopup').style.display='flex'">
+        + Add Category
+      </button>
     </div>
 
-    <!-- RIGHT PANEL -->
-    <div class="right-panel">
-      <h3>🧾 Cashier / Receipt</h3>
-
-      <div class="cart-section">
-        <table id="cartTable">
+    <!-- ===== MIDDLE - PRODUCTS TABLE ===== -->
+    <div class="main">
+      <h2>Products</h2>
+      <div class="table-container">
+        <table id="productTable">
           <tr>
+            <th>Code</th>
             <th>Product</th>
-            <th>Qty</th>
-            <th>Unit</th>
-            <th>Total</th>
+            <th>Price (CFA)</th>
+            <th>Cost</th>
+            <th>Action</th>
           </tr>
         </table>
       </div>
 
-      <div class="total-box">
-        Subtotal: <span id="subtotal">0</span> CFA <br>
-        Total: <span id="total">0</span> CFA
+      <button onclick="document.getElementById('addProductPopup').style.display='flex'" style="margin-top:15px;">
+        + Add Product
+      </button>
+    </div>
+
+    <!-- ===== RIGHT SIDE - CASHIER ===== -->
+    <div class="cashier">
+      <div>
+        <h2>Cashier</h2>
+        <input type="text" id="clientName" placeholder="Customer Name">
+        <input type="text" id="clientAddress" placeholder="Address">
+        <input type="text" id="clientPhone" placeholder="Phone Number">
+        <select id="paymentMethod">
+          <option value="Cash">Cash</option>
+          <option value="Orange Money">Orange Money</option>
+          <option value="Wave">Wave</option>
+          <option value="Visa Card">Visa Card</option>
+        </select>
+
+        <div class="cart">
+          <table id="cartTable">
+            <tr>
+              <th>Product</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Total</th>
+            </tr>
+          </table>
+
+          <p><strong>Subtotal:</strong> <span id="subtotal">0</span> CFA</p>
+          <p><strong>Total:</strong> <span id="total">0</span> CFA</p>
+        </div>
       </div>
 
       <div>
-        <h4>Customer Details</h4>
-        <input type="text" id="clientName" placeholder="Customer name" />
-        <input type="text" id="clientAddress" placeholder="Address" />
-        <input type="text" id="clientPhone" placeholder="Phone" />
-
-        <h4>Payment Method</h4>
-        <select id="paymentMethod">
-          <option value="Cash">💵 Cash</option>
-          <option value="Wave">🌊 Wave</option>
-          <option value="Orange Money">🟧 Orange Money</option>
-          <option value="Visa">💳 Visa</option>
-        </select>
-
-        <button onclick="checkout()">✅ Confirm & Print</button>
-        <button onclick="clearCart()">🧹 Clear Cart</button>
+        <button onclick="checkout()">🧾 Print Receipt</button>
       </div>
     </div>
   </div>
 
-  <!-- ADD CATEGORY POPUP -->
-  <div id="categoryPopup" class="popup">
+  <!-- ===== POPUP: ADD CATEGORY ===== -->
+  <div class="popup" id="addCategoryPopup">
     <div class="popup-content">
-      <span class="close-btn" onclick="closePopup('categoryPopup')">&times;</span>
       <h3>Add Category</h3>
-      <input type="text" id="categoryName" placeholder="Category name" />
-      <button onclick="addCategoryFromPopup()">Add</button>
+      <input type="text" id="newCategoryName" placeholder="Category name">
+      <button onclick="addCategory(document.getElementById('newCategoryName').value); document.getElementById('addCategoryPopup').style.display='none';">
+        Save
+      </button>
+      <button onclick="document.getElementById('addCategoryPopup').style.display='none'">Cancel</button>
     </div>
   </div>
 
-  <!-- ADD PRODUCT POPUP -->
-  <div id="productPopup" class="popup">
+  <!-- ===== POPUP: ADD PRODUCT ===== -->
+  <div class="popup" id="addProductPopup">
     <div class="popup-content">
-      <span class="close-btn" onclick="closePopup('productPopup')">&times;</span>
       <h3>Add Product</h3>
       <select id="productCategory"></select>
-      <input type="text" id="productName" placeholder="Product name" />
-      <input type="number" id="productPrice" placeholder="Price (CFA)" />
-      <input type="number" id="productCost" placeholder="Cost (CFA)" />
-      <button onclick="addProductFromPopup()">Add</button>
+      <input type="text" id="productName" placeholder="Product name">
+      <input type="number" id="productPrice" placeholder="Price (CFA)">
+      <input type="number" id="productCost" placeholder="Cost">
+      <button onclick="
+        addProduct(
+          document.getElementById('productCategory').value,
+          document.getElementById('productName').value,
+          document.getElementById('productPrice').value,
+          document.getElementById('productCost').value
+        ); 
+        document.getElementById('addProductPopup').style.display='none';
+      ">
+        Save
+      </button>
+      <button onclick="document.getElementById('addProductPopup').style.display='none'">Cancel</button>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    // Keep select list of categories always updated
+    document.addEventListener("click", () => {
+      const select = document.getElementById("productCategory");
+      if (select) {
+        select.innerHTML = categories.map(c => `<option>${c.name}</option>`).join("");
+      }
+    });
+  </script>
 </body>
 </html>
