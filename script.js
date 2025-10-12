@@ -1,12 +1,11 @@
-// ============ GLOBAL VARIABLES ============
+// ================== GLOBAL DATA ==================
 let categories = JSON.parse(localStorage.getItem("categories")) || [];
 let products = JSON.parse(localStorage.getItem("products")) || [];
 let sales = JSON.parse(localStorage.getItem("sales")) || [];
 let customers = JSON.parse(localStorage.getItem("customers")) || [];
-
 let currentCart = [];
 
-// ============ SAVE DATA ============
+// ================== SAVE DATA ==================
 function saveData() {
   localStorage.setItem("categories", JSON.stringify(categories));
   localStorage.setItem("products", JSON.stringify(products));
@@ -14,46 +13,60 @@ function saveData() {
   localStorage.setItem("customers", JSON.stringify(customers));
 }
 
-// ============ CATEGORY MANAGEMENT ============
-function addCategory(name) {
+// ================== CATEGORY FUNCTIONS ==================
+function addCategoryFromPopup() {
+  const name = document.getElementById("categoryName").value.trim();
   if (!name) return alert("Enter a category name");
   if (categories.find(c => c.name === name)) return alert("Category already exists");
-  categories.push({ name, code: name.substring(0, 2).toUpperCase() });
+
+  const code = name.substring(0, 2).toUpperCase();
+  categories.push({ name, code });
   saveData();
-  renderCategories();
   closePopup("categoryPopup");
+  renderCategories();
+  updateCategoryDropdown();
 }
 
 function renderCategories() {
   const container = document.getElementById("categoryContainer");
-  if (!container) return;
   container.innerHTML = "";
   categories.forEach(cat => {
     const box = document.createElement("div");
     box.className = "category-box";
-    box.innerHTML = `<h3>${cat.name}</h3>`;
+    box.innerHTML = `<p>${cat.name}</p>`;
     box.onclick = () => openCategory(cat.name);
     container.appendChild(box);
   });
 }
 
-// ============ PRODUCT MANAGEMENT ============
-function addProduct(category, name, price, cost) {
-  if (!category || !name || !price) return alert("All fields are required");
-  const cat = categories.find(c => c.name === category);
-  if (!cat) return alert("Category not found");
-  const count = products.filter(p => p.category === category).length + 1;
-  const code = cat.code + String(count).padStart(3, "0");
-  products.push({ category, code, name, price: parseFloat(price), cost: parseFloat(cost) || 0 });
-  saveData();
-  openCategory(category);
-  closePopup("productPopup");
+// ================== PRODUCT FUNCTIONS ==================
+function updateCategoryDropdown() {
+  const dropdown = document.getElementById("productCategory");
+  dropdown.innerHTML = categories.map(c => `<option value="${c.name}">${c.name}</option>`).join("");
 }
 
+function addProductFromPopup() {
+  const category = document.getElementById("productCategory").value;
+  const name = document.getElementById("productName").value.trim();
+  const price = parseFloat(document.getElementById("productPrice").value);
+  const cost = parseFloat(document.getElementById("productCost").value) || 0;
+
+  if (!category || !name || !price) return alert("Please fill all fields");
+
+  const cat = categories.find(c => c.name === category);
+  const code = cat.code + String(products.length + 1).padStart(3, "0");
+
+  products.push({ category, code, name, price, cost });
+  saveData();
+  closePopup("productPopup");
+  openCategory(category);
+}
+
+// ================== DISPLAY PRODUCTS ==================
 function openCategory(category) {
   const table = document.getElementById("productTable");
-  if (!table) return;
   const filtered = products.filter(p => p.category === category);
+
   table.innerHTML = `
     <tr><th>Code</th><th>Product</th><th>Price</th><th>Cost</th><th>Action</th></tr>
     ${filtered.map(p => `
@@ -68,50 +81,59 @@ function openCategory(category) {
   `;
 }
 
-// ============ CART MANAGEMENT ============
+// ================== CART FUNCTIONS ==================
 function addToCart(code) {
   const product = products.find(p => p.code === code);
   if (!product) return;
+
   const existing = currentCart.find(i => i.code === code);
-  if (existing) existing.qty += 1;
+  if (existing) existing.qty++;
   else currentCart.push({ ...product, qty: 1 });
+
   renderCart();
 }
 
 function renderCart() {
   const tbody = document.getElementById("cartTable");
-  if (!tbody) return;
+  tbody.innerHTML = "";
+
   let total = 0;
-  tbody.innerHTML = currentCart.map(item => {
-    const subtotal = item.price * item.qty;
+  currentCart.forEach(item => {
+    const subtotal = item.qty * item.price;
     total += subtotal;
-    return `
-      <tr>
-        <td>${item.name}</td>
-        <td>${item.qty}</td>
-        <td>${item.price}</td>
-        <td>${subtotal}</td>
-      </tr>
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${item.name}</td>
+      <td>${item.qty}</td>
+      <td>${item.price}</td>
+      <td>${subtotal}</td>
     `;
-  }).join("");
+    tbody.appendChild(row);
+  });
 
   document.getElementById("subtotal").innerText = total.toFixed(0);
   document.getElementById("total").innerText = total.toFixed(0);
 }
 
-// ============ CHECKOUT & RECEIPT ============
+function clearCart() {
+  currentCart = [];
+  renderCart();
+}
+
+// ================== CHECKOUT ==================
 function checkout() {
   if (currentCart.length === 0) return alert("Cart is empty!");
+
   const clientName = document.getElementById("clientName").value || "Client";
   const address = document.getElementById("clientAddress").value || "-";
   const phone = document.getElementById("clientPhone").value || "-";
-  const payment = document.getElementById("paymentMethod").value;
-  const date = new Date().toLocaleDateString("fr-FR");
-  const id = "ID ORDER " + (sales.length + 1001);
+  const paymentMethod = document.getElementById("paymentMethod").value;
 
+  const date = new Date().toLocaleDateString("fr-FR");
+  const id = "INV" + Date.now().toString().slice(-5);
   const total = parseFloat(document.getElementById("total").innerText);
 
-  const sale = { id, date, clientName, address, phone, payment, items: currentCart, total };
+  const sale = { id, date, clientName, address, phone, paymentMethod, items: currentCart, total };
   sales.push(sale);
   saveData();
 
@@ -120,58 +142,74 @@ function checkout() {
   renderCart();
 }
 
-// ============ PRINT RECEIPT ============
+// ================== PRINT RECEIPT (A5) ==================
 function printReceipt(sale) {
-  const receiptWindow = window.open("", "", "width=400,height=600");
+  const receiptWindow = window.open("", "", "width=800,height=600");
   receiptWindow.document.write(`
     <html>
-      <head>
-        <title>Facture ${sale.id}</title>
-        <style>
-          body { font-family: Arial; text-align: center; font-size: 13px; color: #000; }
-          table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-          th, td { padding: 4px; text-align: left; }
-          hr { border: 0; border-top: 1px solid #000; margin: 8px 0; }
-        </style>
-      </head>
-      <body>
-        <h2>Bienvenue à Éclat de Coco</h2>
-        <p>100% Natural Products 🌿</p>
-        <p>WhatsApp : +225 0777000803</p>
-        <p>📧 eclatdecocoofficiel@hotmail.com</p>
-        <p>Instagram : @Eclatdecoco.official</p>
-        <hr>
-        <p><strong>Date :</strong> ${sale.date}<br><strong>ID :</strong> ${sale.id}</p>
-        <p><strong>Client :</strong> ${sale.clientName}<br>${sale.address}<br>${sale.phone}</p>
-        <table>
-          <tr><th>Produit</th><th>Qté</th><th>PU</th><th>Total</th></tr>
-          ${sale.items.map(i => `
-            <tr>
-              <td>${i.name}</td>
-              <td>${i.qty}</td>
-              <td>${i.price}</td>
-              <td>${(i.qty * i.price).toFixed(0)}</td>
-            </tr>
-          `).join("")}
-        </table>
-        <hr>
-        <p><strong>Sous-total :</strong> ${sale.total} CFA</p>
-        <p><strong>Le total est ${sale.total} CFA sans la livraison</strong></p>
-        <p><strong>Méthode de paiement :</strong> ${sale.payment}</p>
-        <hr>
-        <p>⚠️ Aucun retour possible</p>
-        <p>Merci pour votre confiance 💖</p>
-        <p>Abidjan - Côte d'Ivoire</p>
-        <p>Pour plus d'informations, contactez-nous !</p>
-        <script>window.print();</script>
-      </body>
+    <head>
+      <title>Facture ${sale.id}</title>
+      <style>
+        body { font-family: Arial; color:#000; width: 90%; margin: 20px auto; }
+        h2 { text-align:center; color:#d63384; }
+        table { width:100%; border-collapse: collapse; }
+        th, td { border-bottom:1px solid #ccc; padding:8px; text-align:left; font-size:13px; }
+        th { background:#ffe6f2; }
+        .footer { text-align:center; margin-top:15px; font-size:12px; }
+      </style>
+    </head>
+    <body>
+      <h2>ÉCLAT DE COCO</h2>
+      <p style="text-align:center;">100% Natural Products 🌿<br>
+      WhatsApp: +225 0777000803<br>
+      📧 eclatdecocoofficiel@hotmail.com<br>
+      Instagram: @Eclatdecoco.official</p>
+      <hr>
+
+      <p><strong>Facture N°:</strong> ${sale.id}<br>
+      <strong>Date:</strong> ${sale.date}<br>
+      <strong>Client:</strong> ${sale.clientName}<br>
+      ${sale.address} - ${sale.phone}</p>
+
+      <table>
+        <tr><th>Produit</th><th>Qté</th><th>Prix Unitaire</th><th>Total</th></tr>
+        ${sale.items.map(i => `
+          <tr>
+            <td>${i.name}</td>
+            <td>${i.qty}</td>
+            <td>${i.price}</td>
+            <td>${(i.qty * i.price).toFixed(0)}</td>
+          </tr>
+        `).join("")}
+      </table>
+
+      <p><strong>Sous-total:</strong> ${sale.total} CFA</p>
+      <p><strong>Le total est ${sale.total} CFA sans la livraison</strong></p>
+      <p><strong>Méthode de paiement:</strong> ${sale.paymentMethod}</p>
+      <hr>
+      <div class="footer">
+        ⚠️ Aucun retour possible<br>
+        Merci pour votre confiance 💖
+      </div>
+      <script>window.print();</script>
+    </body>
     </html>
   `);
   receiptWindow.document.close();
 }
 
-// ============ INITIALIZE ============
+// ================== POPUP CONTROLS ==================
+function openPopup(id) {
+  document.getElementById(id).style.display = "flex";
+}
+
+function closePopup(id) {
+  document.getElementById(id).style.display = "none";
+}
+
+// ================== INITIALIZE ==================
 document.addEventListener("DOMContentLoaded", () => {
   renderCategories();
   renderCart();
+  updateCategoryDropdown();
 });
