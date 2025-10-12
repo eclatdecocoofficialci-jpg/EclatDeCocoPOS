@@ -1,11 +1,6 @@
 {
   "name": "Éclat de Coco POS",
-  "short_name": "Eclat POS",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#fff5fa",
-  "theme_color": "#ffb6c1",
-  "description": "Point de vente Éclat de Coco - gestion des ventes, inventaire et reçus élégants.",
+  "short_name": "CocoPOS",
   "icons": [
     {
       "src": "icon-192.png",
@@ -17,5 +12,9 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff8ecf"
 }
