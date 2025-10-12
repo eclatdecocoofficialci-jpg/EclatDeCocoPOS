@@ -6,24 +6,93 @@
   <title>POS - Éclat de Coco</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Temporary layout beautify */
+    body {
+      background-color: #fff5fb;
+      font-family: 'Poppins', sans-serif;
+    }
+    .pos-container {
+      display: flex;
+      justify-content: space-between;
+      padding: 30px;
+      gap: 20px;
+    }
+    .product-section, .cashier-section {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(233, 30, 99, 0.1);
+    }
+    .product-section {
+      flex: 1.5;
+    }
+    .cashier-section {
+      flex: 1;
+      border: 2px solid #f8bbd0;
+    }
+    h1, h2 {
+      color: #e91e63;
+      text-align: center;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+    }
+    button {
+      background-color: #e91e63;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #d81b60;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #f1f1f1;
+      text-align: center;
+    }
+    .summary p {
+      font-size: 15px;
+      margin: 6px 0;
+    }
+    .receipt {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #f8bbd0;
+      width: 320px;
+      margin: 20px auto;
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
   <div class="pos-container">
-    <!-- 🧴 SECTION PRODUITS -->
+    <!-- 🧴 PRODUITS -->
     <div class="product-section">
-      <header class="pos-header">
-        <h1>Point de Vente</h1>
-        <input type="text" id="searchProduct" placeholder="🔍 Rechercher par nom, code ou catégorie...">
-      </header>
+      <h1>Point de Vente</h1>
+      <input type="text" id="searchProduct" placeholder="🔍 Rechercher par nom, code ou catégorie...">
 
       <div class="categories">
-        <button class="category-btn active">Savons</button>
+        <button class="category-btn">Savons</button>
         <button class="category-btn">Lotion</button>
         <button class="category-btn">Body Butter</button>
         <button class="category-btn">Masque Cheveux</button>
         <button class="category-btn">Dessert Savons</button>
-        <button class="category-btn add-btn">+ Ajouter Nouveau</button>
+        <button class="category-btn">+ Ajouter Nouveau</button>
       </div>
 
       <table class="product-table">
@@ -40,27 +109,28 @@
             <td>SA001</td>
             <td>Rose Vanilla Soap</td>
             <td>1500</td>
-            <td><button class="add-btn" onclick="addToCart('SA001','Rose Vanilla Soap',1500)">+</button></td>
+            <td><button onclick="addToCart('SA001','Rose Vanilla Soap',1500)">+</button></td>
           </tr>
           <tr>
             <td>SA002</td>
             <td>Lavender Bliss Soap</td>
             <td>2000</td>
-            <td><button class="add-btn" onclick="addToCart('SA002','Lavender Bliss Soap',2000)">+</button></td>
+            <td><button onclick="addToCart('SA002','Lavender Bliss Soap',2000)">+</button></td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- 💵 SECTION CAISSE -->
+    <!-- 💵 CAISSE -->
     <div class="cashier-section">
       <h2>🧾 Caisse</h2>
-
       <div class="client-form">
         <input type="text" id="clientName" placeholder="Nom du client">
         <input type="text" id="clientPhone" placeholder="Téléphone">
         <input type="text" id="clientAddress" placeholder="Adresse">
       </div>
+
+      <p><strong>ID Commande :</strong> <span id="orderId">1001</span></p>
 
       <table class="cart-table">
         <thead>
@@ -75,8 +145,8 @@
       </table>
 
       <div class="summary">
-        <p>Sous-total : <span id="subtotal">0</span> FCFA</p>
-        <p>Total : <span id="total">0</span> FCFA</p>
+        <p><strong>Sous-total :</strong> <span id="subtotal">0</span> FCFA</p>
+        <p><strong>Total :</strong> <span id="total">0</span> FCFA</p>
       </div>
 
       <div class="payment-section">
@@ -94,38 +164,96 @@
         <button onclick="saveOrder()">💾 Enregistrer</button>
         <button onclick="printReceipt()">🖨️ Imprimer Reçu</button>
       </div>
+
+      <!-- 🧾 REÇU -->
+      <div class="receipt" id="receiptPreview">
+        <h2 style="text-align:center; color:#e91e63;">💗 Bienvenue chez Éclat de Coco</h2>
+        <p style="text-align:center; font-size:13px;">🌿 100% Produits Organiques 🌿</p>
+        <hr>
+
+        <p><strong>Nom du Client :</strong> <span id="receiptClientName"></span></p>
+        <p><strong>Adresse :</strong> <span id="receiptClientAddress"></span></p>
+        <p><strong>Téléphone :</strong> <span id="receiptClientPhone"></span></p>
+        <p><strong>ID Commande :</strong> <span id="receiptOrderID"></span></p>
+        <p><strong>Date :</strong> <span id="receiptDate"></span></p>
+
+        <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+          <thead>
+            <tr style="border-bottom:1px solid #ccc;">
+              <th style="text-align:left;">Produit</th>
+              <th>Qté</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="receiptItems"></tbody>
+        </table>
+
+        <hr>
+        <p style="text-align:right;"><strong>Total:</strong> <span id="receiptTotal"></span> FCFA</p>
+
+        <p style="text-align:center; font-style:italic; margin-top:15px;">Merci pour votre achat 💖</p>
+
+        <div style="text-align:center; font-size:12px; margin-top:20px; color:#555;">
+          <p>📞 WhatsApp : <strong>0777000803</strong></p>
+          <p>📧 Gmail : <strong>eclatdecocoofficialci@gmail.com</strong></p>
+          <p>📸 Instagram : <strong>@eclatdecoco.official</strong></p>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    const cartItems = document.getElementById('cartItems');
-    const subtotalEl = document.getElementById('subtotal');
-    const totalEl = document.getElementById('total');
     let subtotal = 0;
+    let orderNumber = 1001;
 
     function addToCart(code, name, price) {
-      const row = document.createElement('tr');
+      const cart = document.getElementById("cartItems");
+      const row = document.createElement("tr");
       row.innerHTML = `
         <td>${name}</td>
         <td>1</td>
         <td>${price}</td>
         <td>${price}</td>
       `;
-      cartItems.appendChild(row);
+      cart.appendChild(row);
       subtotal += price;
-      subtotalEl.textContent = subtotal;
-      totalEl.textContent = subtotal;
+      document.getElementById("subtotal").textContent = subtotal;
+      document.getElementById("total").textContent = subtotal;
     }
 
     function saveOrder() {
       alert("✅ Commande enregistrée avec succès !");
+      orderNumber++;
+      document.getElementById("orderId").textContent = orderNumber;
     }
 
     function printReceipt() {
+      const name = document.getElementById("clientName").value;
+      const phone = document.getElementById("clientPhone").value;
+      const address = document.getElementById("clientAddress").value;
+      const receipt = document.getElementById("receiptPreview");
+      const date = new Date().toLocaleDateString();
+
+      document.getElementById("receiptClientName").textContent = name;
+      document.getElementById("receiptClientPhone").textContent = phone;
+      document.getElementById("receiptClientAddress").textContent = address;
+      document.getElementById("receiptOrderID").textContent = document.getElementById("orderId").textContent;
+      document.getElementById("receiptDate").textContent = date;
+      document.getElementById("receiptTotal").textContent = subtotal;
+
+      // Copy cart items to receipt
+      const cartRows = document.querySelectorAll("#cartItems tr");
+      const receiptBody = document.getElementById("receiptItems");
+      receiptBody.innerHTML = "";
+      cartRows.forEach(r => {
+        const cloned = r.cloneNode(true);
+        cloned.deleteCell(2); // remove price column
+        receiptBody.appendChild(cloned);
+      });
+
+      receipt.style.display = "block";
       window.print();
     }
   </script>
-
-  <script src="script.js"></script>
 </body>
 </html>
