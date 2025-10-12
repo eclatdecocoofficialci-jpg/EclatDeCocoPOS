@@ -1,0 +1,1322 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Éclat de Coco POS</title>
+	<style>
+		:root {
+			--bg1: #fff6f8;
+			--accent: #d36fa4;
+			--soft: #ffd6e6;
+			--card: #fff;
+			--muted: #6b444a;
+			--gold: #b8845a;
+			--success: #2aa44f;
+		}
+
+		* {
+			box-sizing: border-box;
+			font-family: Inter, system-ui, -apple-system, Segoe UI, Arial;
+		}
+
+		body {
+			margin: 0;
+			background: linear-gradient(to bottom, #fff6f8, #ffe6f0);
+			color: #3a2226;
+			-webkit-font-smoothing: antialiased
+		}
+
+		/* LOCK */
+		#lock {
+			position: fixed;
+			inset: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: linear-gradient(to bottom, #fff0f5, #ffd6e8);
+			z-index: 9999
+		}
+
+		.lock-card {
+			background: #fff;
+			border-radius: 14px;
+			padding: 28px;
+			width: 92%;
+			max-width: 460px;
+			text-align: center;
+			box-shadow: 0 18px 60px rgba(0, 0, 0, 0.12)
+		}
+
+		.lock-card img {
+			width: 120px;
+			height: 120px;
+			object-fit: contain;
+			border-radius: 12px;
+			margin-bottom: 8px
+		}
+
+		.lock-card h1 {
+			margin: 6px 0;
+			color: var(--accent);
+			font-size: 20px
+		}
+
+		.lock-card p {
+			margin: 0;
+			color: #666
+		}
+
+		.pin {
+			width: 62%;
+			padding: 12px;
+			margin-top: 12px;
+			border-radius: 10px;
+			border: 2px solid #ffdbe6;
+			text-align: center;
+			font-size: 18px
+		}
+
+		.btn {
+			background: linear-gradient(90deg, var(--accent), #ff9ecf);
+			color: #fff;
+			border: none;
+			padding: 10px 12px;
+			border-radius: 10px;
+			cursor: pointer;
+			font-weight: 700
+		}
+
+		.btn.ghost {
+			background: transparent;
+			color: var(--accent);
+			border: 2px solid #ffd6ea
+		}
+
+		header {
+			background: linear-gradient(90deg, var(--accent), #f2b5c4);
+			color: white;
+			padding: 12px;
+			text-align: center;
+			box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06)
+		}
+
+		.container {
+			max-width: 1200px;
+			margin: 12px auto;
+			padding: 12px
+		}
+
+		.topbar {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 12px;
+			margin-bottom: 12px
+		}
+
+		.tabs {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap
+		}
+
+		.tab {
+			background: transparent;
+			border: 2px solid transparent;
+			padding: 8px 12px;
+			border-radius: 10px;
+			color: var(--muted);
+			font-weight: 700;
+			cursor: pointer
+		}
+
+		.tab.active {
+			background: linear-gradient(90deg, var(--accent), #ff9ecf);
+			color: white;
+			border-color: rgba(255, 255, 255, 0.12)
+		}
+
+		.summary-row {
+			display: flex;
+			gap: 12px;
+			flex-wrap: wrap;
+			margin-bottom: 12px
+		}
+
+		.summary-card {
+			background: var(--card);
+			border-radius: 12px;
+			padding: 12px;
+			border: 2px solid #ffe3ec;
+			flex: 1;
+			min-width: 160px
+		}
+
+		.summary-card h4 {
+			margin: 0;
+			color: var(--accent);
+			font-size: 13px
+		}
+
+		.summary-card p {
+			margin: 6px 0 0;
+			font-weight: 800
+		}
+
+		.main-area {
+			display: flex;
+			gap: 12px
+		}
+
+		/* left main column */
+		.left {
+			flex: 1
+		}
+
+		.card {
+			background: var(--card);
+			padding: 12px;
+			border-radius: 12px;
+			border: 2px solid #ffe3ec
+		}
+
+		/* product grid */
+		.product-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+			gap: 12px;
+			margin-top: 10px
+		}
+
+		.product-card {
+			background: #fff;
+			border-radius: 10px;
+			padding: 10px;
+			border: 1px solid #fff0f4;
+			box-shadow: 0 6px 18px rgba(217, 72, 117, 0.04)
+		}
+
+		.product-card h5 {
+			margin: 0;
+			color: #b3315a
+		}
+
+		.muted {
+			font-size: 13px;
+			color: var(--muted)
+		}
+
+		/* right column (chart + pos) */
+		.right {
+			width: 420px;
+			flex-shrink: 0;
+			display: flex;
+			flex-direction: column;
+			gap: 12px
+		}
+
+		#miniChartCard {
+			height: 180px
+		}
+
+		canvas {
+			max-width: 100%
+		}
+
+		.checkout {
+			display: flex;
+			flex-direction: column;
+			gap: 10px
+		}
+
+		.search-box {
+			display: flex;
+			gap: 8px
+		}
+
+		.search-box input {
+			flex: 1;
+			padding: 10px;
+			border-radius: 10px;
+			border: 1px solid #ffdfe8
+		}
+
+		.cart-list {
+			max-height: 36vh;
+			overflow: auto;
+			padding: 8px;
+			border-radius: 8px;
+			background: #fff7fb;
+			border: 1px dashed #ffdfe8
+		}
+
+		.cart-row {
+			display: flex;
+			justify-content: space-between;
+			padding: 8px;
+			border-bottom: 1px solid #fff0f3
+		}
+
+		.cart-row .small {
+			font-size: 13px;
+			color: #666
+		}
+
+		.calc-area {
+			background: #fff;
+			padding: 8px;
+			border-radius: 10px;
+			border: 1px solid #ffe6ef
+		}
+
+		.calc-display {
+			width: 100%;
+			padding: 12px;
+			border-radius: 8px;
+			border: 1px solid #ffdfe8;
+			font-size: 20px;
+			text-align: right
+		}
+
+		.num-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 8px;
+			margin-top: 8px
+		}
+
+		.num-btn {
+			padding: 14px;
+			border-radius: 10px;
+			border: none;
+			background: #ff9bb1;
+			color: #fff;
+			font-weight: 800;
+			font-size: 18px;
+			cursor: pointer
+		}
+
+		select,
+		input,
+		textarea {
+			padding: 10px;
+			border-radius: 8px;
+			border: 1px solid #ffdbe6;
+			background: #fff8fb
+		}
+
+		.table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 8px
+		}
+
+		.table th,
+		.table td {
+			border: 1px solid #ffe6ef;
+			padding: 8px;
+			text-align: left;
+			font-size: 13px
+		}
+
+		.small-muted {
+			font-size: 13px;
+			color: var(--muted)
+		}
+
+		.flex-row {
+			display: flex;
+			gap: 8px;
+			align-items: center
+		}
+
+		.two-col {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 8px
+		}
+
+		@media(max-width:980px) {
+			.main-area {
+				flex-direction: column
+			}
+
+			.right {
+				width: 100%
+			}
+
+			.search-box {
+				flex-direction: column
+			}
+		}
+	</style>
+</head>
+
+<body>
+
+	<!-- LOCK -->
+	<div id="lock">
+		<div class="lock-card">
+			<img src="eclat_de_coco_official.png" alt="logo" onerror="this.style.display='none'" />
+			<h1>ÉCLAT DE COCO OFFICIAL</h1>
+			<p>100% Organic Products</p>
+			<input id="pin" class="pin" type="password" placeholder="Enter PIN">
+			<div style="margin-top:12px"><button class="btn" onclick="attemptUnlock()">Unlock</button></div>
+			<p class="small-muted" style="margin-top:8px">PIN: 1234 (default — change in Settings)</p>
+		</div>
+	</div>
+
+	<header><strong>Éclat de Coco POS</strong></header>
+
+	<div class="container" id="app" style="display:none">
+		<div class="topbar">
+			<div class="tabs">
+				<button class="tab active" data-tab="dashboard" onclick="openTab('dashboard')">🏠 Dashboard</button>
+				<button class="tab" data-tab="pos" onclick="openTab('pos')">🧾 POS</button>
+				<button class="tab" data-tab="products" onclick="openTab('products')">🛍 Products</button>
+				<button class="tab" data-tab="inventory" onclick="openTab('inventory')">📦 Inventory</button>
+				<button class="tab" data-tab="customers" onclick="openTab('customers')">👩‍💼 Customers</button>
+				<button class="tab" data-tab="suppliers" onclick="openTab('suppliers')">🏢 Suppliers</button>
+				<button class="tab" data-tab="expenses" onclick="openTab('expenses')">💸 Expenses</button>
+				<button class="tab" data-tab="settings" onclick="openTab('settings')">⚙️ Settings</button>
+			</div>
+
+			<div style="display:flex;gap:8px;align-items:center">
+				<select id="currency" onchange="renderAll()">
+					<option value="FCFA">FCFA</option>
+					<option value="$">$</option>
+				</select>
+				<button class="btn" onclick="exportData()">Export</button>
+			</div>
+		</div>
+
+		<!-- SUMMARY -->
+		<div class="summary-row">
+			<div class="summary-card">
+				<h4>Daily Sales</h4>
+				<p id="dailyVal">0 FCFA</p>
+			</div>
+			<div class="summary-card">
+				<h4>Weekly Sales</h4>
+				<p id="weeklyVal">0 FCFA</p>
+			</div>
+			<div class="summary-card">
+				<h4>Monthly Sales</h4>
+				<p id="monthlyVal">0 FCFA</p>
+			</div>
+			<div class="summary-card">
+				<h4>Total Stock</h4>
+				<p id="stockVal">0</p>
+			</div>
+			<div class="summary-card">
+				<h4>Customers</h4>
+				<p id="custVal">0</p>
+			</div>
+		</div>
+
+		<!-- TABS CONTENT -->
+		<div id="tab-dashboard" class="card" style="display:block;margin-bottom:12px">
+			<h3>Dashboard</h3>
+			<div style="display:flex;gap:12px;align-items:flex-start">
+				<div style="flex:1">
+					<p class="small-muted">Overview</p>
+					<table class="table">
+						<tr>
+							<th>Total Income</th>
+							<td id="totalIncome">0</td>
+						</tr>
+						<tr>
+							<th>Total Expenses</th>
+							<td id="totalExpenses">0</td>
+						</tr>
+						<tr>
+							<th>Net</th>
+							<td id="totalNet">0</td>
+						</tr>
+						<tr>
+							<th>Orders</th>
+							<td id="totalOrders">0</td>
+						</tr>
+					</table>
+				</div>
+				<div id="miniChartCard" style="width:320px;height:220px;background:#fff;border-radius:10px;padding:8px;border:1px solid #ffe6ef">
+					<canvas id="miniChart" width="320" height="180"></canvas>
+				</div>
+			</div>
+		</div>
+
+		<!-- POS (Order Entry / Calculator) -->
+		<div id="tab-pos" class="card" style="display:none;margin-bottom:12px">
+			<h3>POS — Create Order</h3>
+			<div class="main-area">
+				<div class="left">
+					<div class="card">
+						<div style="display:flex;gap:8px;align-items:center">
+							<div style="flex:1" class="search-box">
+								<input id="posSearch" placeholder="Search by name, barcode, or category" oninput="posSearchChanged(this.value)" />
+								<select id="filterCategory" onchange="posSearchChanged(document.getElementById('posSearch').value)">
+									<option value="">All categories</option>
+								</select>
+							</div>
+							<button class="btn" onclick="openAddProductModal()">+ New</button>
+						</div>
+
+						<div id="posResults" class="product-grid" style="margin-top:12px;min-height:120px"></div>
+					</div>
+
+					<div style="height:12px"></div>
+
+					<div class="card">
+						<h4>Quick Add / Calculator</h4>
+						<div style="display:flex;gap:8px;align-items:center">
+							<input id="quickCode" placeholder="Enter barcode or name" />
+							<input id="quickQty" placeholder="Qty" style="width:100px" />
+							<button class="btn" onclick="quickAdd()">Add</button>
+						</div>
+
+						<div style="margin-top:12px" class="calc-area">
+							<input id="calcDisplay" class="calc-display" placeholder="Calculator input / price" />
+							<div class="num-grid">
+								<button class="num-btn" onclick="pressCalc('7')">7</button>
+								<button class="num-btn" onclick="pressCalc('8')">8</button>
+								<button class="num-btn" onclick="pressCalc('9')">9</button>
+								<button class="num-btn" onclick="pressCalc('4')">4</button>
+								<button class="num-btn" onclick="pressCalc('5')">5</button>
+								<button class="num-btn" onclick="pressCalc('6')">6</button>
+								<button class="num-btn" onclick="pressCalc('1')">1</button>
+								<button class="num-btn" onclick="pressCalc('2')">2</button>
+								<button class="num-btn" onclick="pressCalc('3')">3</button>
+								<button class="num-btn" onclick="pressCalc('0')">0</button>
+								<button class="num-btn" onclick="pressCalc('.')">.</button>
+								<button class="num-btn" onclick="pressCalc('C')">C</button>
+							</div>
+							<div style="display:flex;gap:8px;margin-top:8px">
+								<button class="btn" onclick="applyCalcAsPrice()">Use as Price</button>
+								<button class="btn ghost" onclick="clearCalc()">Clear</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="right">
+					<div class="card">
+						<h4>Cart</h4>
+						<div>
+							<label class="small-muted">Customer</label>
+							<select id="cartCustomer">
+								<option value="">Walk-in</option>
+							</select>
+						</div>
+						<div class="cart-list" id="cartList"></div>
+						<div style="display:flex;justify-content:space-between;margin-top:8px">
+							<div class="small-muted">Subtotal</div>
+							<div id="cartSubtotal">0</div>
+						</div>
+						<div style="margin-top:8px">
+							<label class="small-muted">Payment</label>
+							<select id="cartPayment">
+								<option value="cash">Cash</option>
+								<option value="visa">Visa</option>
+								<option value="wave">Wave</option>
+								<option value="orange">Orange Money</option>
+							</select>
+						</div>
+						<div style="display:flex;gap:8px;margin-top:10px">
+							<button class="btn" onclick="completeOrder()">Complete Order</button>
+							<button class="btn ghost" onclick="showReceiptPreview()">Show Receipt</button>
+						</div>
+						<div id="posAlerts" class="small-muted" style="margin-top:10px"></div>
+					</div>
+
+					<div class="card" style="margin-top:8px">
+						<h4>Mini Chart</h4>
+						<canvas id="rightMiniChart" width="360" height="120"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- PRODUCTS management -->
+		<div id="tab-products" class="card" style="display:none;margin-bottom:12px">
+			<h3>Products</h3>
+			<div class="two-col">
+				<input id="prod_name" placeholder="Name">
+				<input id="prod_category" placeholder="Category">
+				<input id="prod_price" placeholder="Price">
+				<input id="prod_cost" placeholder="Cost">
+				<input id="prod_qty" placeholder="Quantity">
+				<input id="prod_supplier" placeholder="Supplier">
+			</div>
+			<div class="flex-row" style="margin-top:8px">
+				<input id="prod_barcode" placeholder="Barcode">
+				<button class="btn" onclick="genProductBarcode()">Generate Barcode</button>
+				<button class="btn" onclick="addProduct()">Save Product</button>
+			</div>
+
+			<div style="margin-top:12px">
+				<input id="prod_search" placeholder="Search products..." oninput="renderProducts()" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ffdfe8" />
+			</div>
+
+			<div id="productsArea" class="product-grid"></div>
+		</div>
+
+		<!-- INVENTORY view -->
+		<div id="tab-inventory" class="card" style="display:none;margin-bottom:12px">
+			<h3>Inventory</h3>
+			<div class="flex-row" style="margin-bottom:8px">
+				<input id="inv_search" placeholder="Search inventory..." oninput="renderInventory()" style="flex:1" />
+				<button class="btn" onclick="renderInventory()">Search</button>
+				<button class="btn ghost" onclick="openAdjustStock()">Adjust Stock</button>
+			</div>
+			<table class="table" id="inventoryTable">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Price</th>
+						<th>Qty</th>
+						<th>Category</th>
+						<th>Supplier</th>
+						<th>Barcode</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+
+		<!-- CUSTOMERS -->
+		<div id="tab-customers" class="card" style="display:none;margin-bottom:12px">
+			<h3>Customers</h3>
+			<div class="two-col">
+				<input id="c_name" placeholder="Name">
+				<input id="c_phone" placeholder="Phone">
+				<input id="c_address" placeholder="Address">
+				<input id="c_notes" placeholder="Notes">
+			</div>
+			<div style="margin-top:8px">
+				<button class="btn" onclick="addCustomer()">Add Customer</button>
+			</div>
+			<table class="table" id="customersTable">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Phone</th>
+						<th>Address</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+
+		<!-- SUPPLIERS -->
+		<div id="tab-suppliers" class="card" style="display:none;margin-bottom:12px">
+			<h3>Suppliers</h3>
+			<div class="two-col">
+				<input id="s_name" placeholder="Name">
+				<input id="s_phone" placeholder="Phone">
+				<input id="s_email" placeholder="Email">
+				<input id="s_address" placeholder="Address">
+			</div>
+			<div style="margin-top:8px">
+				<button class="btn" onclick="addSupplier()">Add Supplier</button>
+			</div>
+			<table class="table" id="suppliersTable">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Phone</th>
+						<th>Email</th>
+						<th>Address</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+
+		<!-- EXPENSES -->
+		<div id="tab-expenses" class="card" style="display:none;margin-bottom:12px">
+			<h3>Expenses</h3>
+			<div class="two-col">
+				<input id="exp_type" placeholder="Type (Delivery, Rent...)">
+				<input id="exp_amount" placeholder="Amount">
+				<input id="exp_date" type="date" />
+				<select id="exp_status">
+					<option value="paid">Paid</option>
+					<option value="pending">Pending</option>
+				</select>
+			</div>
+			<div style="margin-top:8px"><button class="btn" onclick="addExpense()">Add Expense</button></div>
+			<table class="table" id="expensesTable">
+				<thead>
+					<tr>
+						<th>Type</th>
+						<th>Amount</th>
+						<th>Date</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+
+		<!-- SETTINGS -->
+		<div id="tab-settings" class="card" style="display:none;margin-bottom:12px">
+			<h3>Settings</h3>
+			<div class="two-col">
+				<input id="set_phone" placeholder="Phone" value="+225 07 77 000 803">
+				<input id="set_email" placeholder="Email" value="eclatdecocoofficialci@gmail.com">
+				<input id="set_logo" placeholder="Logo file name" value="eclat_de_coco_official.png">
+				<input id="set_pin" placeholder="Change PIN (4 digits)">
+			</div>
+			<div style="margin-top:8px">
+				<button class="btn" onclick="saveSettings()">Save Settings</button>
+				<button class="btn ghost" onclick="resetData()">Reset Demo</button>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Receipt preview modal -->
+	<div id="receiptModal" style="display:none;position:fixed;inset:8% 6%;background:#fff;border-radius:12px;padding:12px;box-shadow:0 30px 80px rgba(0,0,0,0.2);z-index:9999;overflow:auto">
+		<div style="display:flex;justify-content:space-between;align-items:center">
+			<h3>Reçu Preview</h3>
+			<div><button class="btn" onclick="printReceipt()">🖨️ Print Receipt</button> <button class="btn ghost" onclick="closeReceipt()">Close</button></div>
+		</div>
+		<div id="receiptContent" style="margin-top:8px"></div>
+	</div>
+
+	<script>
+		/* -------------------- Data model & persistence -------------------- */
+		const STORAGE_KEY = 'ECLAT_POS_V2';
+		let DATA = { products: [], customers: [], suppliers: [], orders: [], expenses: [], settings: { phone: '+225 07 77 000 803', email: 'eclatdecocoofficialci@gmail.com', pin: '1234', logo: 'eclat_de_coco_official.png' } };
+
+		function loadData() { try { const raw = localStorage.getItem(STORAGE_KEY); if (raw) DATA = JSON.parse(raw); } catch (e) { console.error(e); } }
+
+		function saveData() {
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
+			updateUI();
+		}
+		loadData();
+
+		/* demo product (if none) */
+		if (DATA.products.length === 0) {
+			DATA.products.push({ id: 'P' + Date.now(), name: 'Crème Coco', category: 'Soins', price: 12000, cost: 6000, qty: 10, supplier: 'Eclat Supplier', barcode: '', benefit: 6000 });
+			saveData();
+		}
+
+		/* -------------------- Helpers -------------------- */
+		function $(id) { return document.getElementById(id); }
+
+		function fmt(n) { return (n || 0).toLocaleString(); }
+
+		function escapeHtml(s) { if (!s) return ''; return String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;'); }
+
+		/* -------------------- Unlock / Tabs -------------------- */
+		function attemptUnlock() {
+			const pin = $('pin').value || '';
+			const good = DATA.settings && DATA.settings.pin ? DATA.settings.pin : '1234';
+			if (pin === good) {
+				document.getElementById('lock').style.display = 'none';
+				document.getElementById('app').style.display = 'block';
+				initAfterLogin();
+			} else { alert('Access Denied'); }
+		}
+
+		function openTab(tab) {
+			// tabs UI
+			document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+			// hide all tab panels (id = tab-*)
+			document.querySelectorAll('[id^="tab-"]').forEach(el => el.style.display = el.id === 'tab-' + tab ? 'block' : 'none');
+			if (tab === 'dashboard') drawMiniChart();
+			if (tab === 'pos') fillPosResults();
+			if (tab === 'products') renderProducts();
+			if (tab === 'inventory') renderInventory();
+			if (tab === 'customers') renderCustomers();
+			if (tab === 'suppliers') renderSuppliers();
+			if (tab === 'expenses') renderExpenses();
+		}
+
+		/* -------------------- Initialization after login -------------------- */
+		function initAfterLogin() {
+			renderAll();
+			openTab('pos'); // default open POS as you requested
+			populateCategoryFilter();
+			populateCustomerSelect();
+			drawRightMiniChart();
+		}
+
+		/* -------------------- PRODUCTS -------------------- */
+		function genProductBarcode() {
+			const r = Math.floor(1e12 + Math.random() * 9e12);
+			$('prod_barcode').value = String(r);
+		}
+
+		function addProduct() {
+			const name = $('prod_name').value.trim();
+			if (!name) return alert('Name required');
+			const p = { id: 'P' + Date.now(), name, category: $('prod_category').value.trim(), price: Number($('prod_price').value) || 0, cost: Number($('prod_cost').value) || 0, qty: Number($('prod_qty').value) || 0, supplier: $('prod_supplier').value.trim(), barcode: $('prod_barcode').value.trim() };
+			p.benefit = p.price - p.cost;
+			DATA.products.unshift(p);
+			saveData();
+			['prod_name', 'prod_category', 'prod_price', 'prod_cost', 'prod_qty', 'prod_supplier', 'prod_barcode'].forEach(id => $(id).value = '');
+		}
+
+		function renderProducts() {
+			const area = $('productsArea');
+			area.innerHTML = '';
+			const q = ($('prod_search') ? $('prod_search').value.toLowerCase() : '').trim();
+			const list = DATA.products.filter(p => p.name.toLowerCase().includes(q) || (p.barcode || '').includes(q) || (p.category || '').toLowerCase().includes(q));
+			if (list.length === 0) { area.innerHTML = '<div class="muted">No products</div>'; return; }
+			list.forEach(p => {
+				const el = document.createElement('div');
+				el.className = 'product-card';
+				el.innerHTML = `<h5>${escapeHtml(p.name)}</h5><div class="muted">Price: <b>${fmt(p.price)} ${$('currency').value}</b> • Stock: <b>${p.qty}</b></div><div class="muted">Cat: ${escapeHtml(p.category||'')} • Sup: ${escapeHtml(p.supplier||'')}</div>
+      <div style="margin-top:8px;display:flex;gap:6px"><button class="btn" onclick="openQuickAdd('${p.id}')">Add</button><button class="btn ghost" onclick="editProduct('${p.id}')">Edit</button><button class="btn ghost" onclick="deleteProduct('${p.id}')">Delete</button></div>`;
+				area.appendChild(el);
+			});
+		}
+
+		/* edit / delete */
+		function editProduct(id) {
+			const p = DATA.products.find(x => x.id === id);
+			if (!p) return;
+			const name = prompt('Name', p.name);
+			if (name === null) return;
+			p.name = name;
+			const price = prompt('Price', p.price);
+			if (price !== null) p.price = Number(price) || p.price;
+			const qty = prompt('Qty', p.qty);
+			if (qty !== null) p.qty = Number(qty) || p.qty;
+			saveData();
+		}
+
+		function deleteProduct(id) {
+			if (!confirm('Delete this product?')) return;
+			DATA.products = DATA.products.filter(x => x.id !== id);
+			saveData();
+		}
+
+		/* -------------------- INVENTORY -------------------- */
+		function renderInventory() {
+			const tbody = document.querySelector('#inventoryTable tbody');
+			tbody.innerHTML = '';
+			const q = ($('inv_search') ? $('inv_search').value.toLowerCase() : '').trim();
+			DATA.products.filter(p => p.name.toLowerCase().includes(q) || (p.barcode || '').includes(q) || (p.category || '').toLowerCase().includes(q)).forEach(p => {
+				const tr = document.createElement('tr');
+				const status = (p.qty || 0) <= 0 ? '<span style="color:#c33">Out of stock</span>' : (p.qty <= 5 ? `<span style="color:orange">Low (${p.qty})</span>` : `<span style="color:green">In stock</span>`);
+				tr.innerHTML = `<td>${escapeHtml(p.name)}</td><td>${fmt(p.price)} ${$('currency').value}</td><td>${p.qty}</td><td>${escapeHtml(p.category||'')}</td><td>${escapeHtml(p.supplier||'')}</td><td>${escapeHtml(p.barcode||'')}</td><td>${status}</td>`;
+				tbody.appendChild(tr);
+			});
+		}
+
+		/* adjust stock modal (simple prompt) */
+		function openAdjustStock() {
+			const name = prompt('Enter product name or barcode to adjust');
+			if (!name) return;
+			const p = DATA.products.find(x => x.name.toLowerCase() === name.toLowerCase() || (x.barcode || '') === name);
+			if (!p) return alert('Product not found');
+			const qty = parseInt(prompt('New quantity', p.qty), 10);
+			if (isNaN(qty)) return;
+			p.qty = qty;
+			saveData();
+		}
+
+		/* -------------------- SUPPLIERS -------------------- */
+		function addSupplier() {
+			const name = $('s_name').value.trim();
+			if (!name) return alert('Name required');
+			DATA.suppliers.unshift({ id: 'S' + Date.now(), name, phone: $('s_phone').value.trim(), email: $('s_email').value.trim(), address: $('s_address').value.trim(), invoices: [] });
+			['s_name', 's_phone', 's_email', 's_address'].forEach(id => $(id).value = '');
+			saveData();
+		}
+
+		function renderSuppliers() {
+			const tb = document.querySelector('#suppliersTable tbody');
+			tb.innerHTML = '';
+			DATA.suppliers.forEach(s => {
+				const tr = document.createElement('tr');
+				tr.innerHTML = `<td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.phone)}</td><td>${escapeHtml(s.email)}</td><td>${escapeHtml(s.address)}</td>`;
+				tb.appendChild(tr);
+			});
+		}
+
+		/* -------------------- CUSTOMERS -------------------- */
+		function addCustomer() {
+			const name = $('c_name').value.trim();
+			if (!name) return alert('Name required');
+			DATA.customers.unshift({ id: 'C' + Date.now(), name, phone: $('c_phone').value.trim(), address: $('c_address').value.trim(), notes: $('c_notes').value.trim() });
+			['c_name', 'c_phone', 'c_address', 'c_notes'].forEach(id => $(id).value = '');
+			saveData();
+		}
+
+		function renderCustomers() {
+			const tb = document.querySelector('#customersTable tbody');
+			tb.innerHTML = '';
+			DATA.customers.forEach(c => {
+				const tr = document.createElement('tr');
+				tr.innerHTML = `<td>${escapeHtml(c.name)}</td><td>${escapeHtml(c.phone)}</td><td>${escapeHtml(c.address)}</td>`;
+				tb.appendChild(tr);
+			});
+			populateCustomerSelect();
+		}
+
+		/* -------------------- EXPENSES -------------------- */
+		function addExpense() {
+			const t = $('exp_type').value.trim();
+			const a = Number($('exp_amount').value) || 0;
+			const d = $('exp_date').value || new Date().toISOString().slice(0, 10);
+			const s = $('exp_status').value;
+			if (!t || a <= 0) return alert('Type and amount required');
+			DATA.expenses.unshift({ id: 'E' + Date.now(), type: t, amount: a, date: d, status: s });
+			['exp_type', 'exp_amount', 'exp_date'].forEach(id => $(id).value = '');
+			saveData();
+		}
+
+		function renderExpenses() {
+			const tb = document.querySelector('#expensesTable tbody');
+			tb.innerHTML = '';
+			DATA.expenses.forEach(e => {
+				const tr = document.createElement('tr');
+				tr.innerHTML = `<td>${escapeHtml(e.type)}</td><td>${fmt(e.amount)} ${$('currency').value}</td><td>${e.date}</td><td>${escapeHtml(e.status)}</td>`;
+				tb.appendChild(tr);
+			});
+		}
+
+		/* -------------------- CART & POS logic -------------------- */
+		let CART = [];
+
+		function posSearchChanged(q) {
+			q = (q || '').toLowerCase();
+			const cat = $('filterCategory').value || '';
+			const results = DATA.products.filter(p => (p.name.toLowerCase().includes(q) || (p.barcode || '').includes(q) || (p.category || '').toLowerCase().includes(q)) && (cat ? p.category === cat : true));
+			renderPosResults(results);
+		}
+
+		function fillPosResults() { posSearchChanged($('posSearch').value || ''); }
+
+		function renderPosResults(list) {
+			const area = $('posResults');
+			area.innerHTML = '';
+			(list || DATA.products).slice(0, 50).forEach(p => {
+				const el = document.createElement('div');
+				el.className = 'product-card';
+				el.innerHTML = `<h5>${escapeHtml(p.name)}</h5><div class="muted">Price: <b>${fmt(p.price)} ${$('currency').value}</b> • Stock: <b>${p.qty}</b></div><div style="margin-top:8px;display:flex;gap:6px"><button class="btn" onclick="openQuickAdd('${p.id}')">Add</button><button class="btn ghost" onclick="openEditFromPOS('${p.id}')">Edit</button></div>`;
+				area.appendChild(el);
+			});
+		}
+
+		function openQuickAdd(pid) {
+			const p = DATA.products.find(x => x.id === pid);
+			if (!p) return alert('Not found');
+			const qtyStr = prompt(`Add quantity for "${p.name}"`, '1');
+			if (qtyStr === null) return;
+			const q = parseInt(qtyStr, 10) || 1;
+			addToCart(pid, q);
+		}
+
+		function openEditFromPOS(pid) { editProduct(pid); }
+
+		/* quick add bar */
+		function quickAdd() {
+			const q = ($('quickCode').value || '').trim();
+			const qty = Number($('quickQty').value) || 1;
+			if (!q) return alert('Enter barcode or name');
+			let p = DATA.products.find(x => (x.barcode || '') === q || x.name.toLowerCase() === q.toLowerCase());
+			if (!p) p = DATA.products.find(x => x.name.toLowerCase().includes(q.toLowerCase()));
+			if (!p) return alert('Product not found');
+			addToCart(p.id, qty);
+			$('quickCode').value = '';
+			$('quickQty').value = '';
+		}
+
+		/* add to cart by id, qty */
+		function addToCart(pid, qty) {
+			const p = DATA.products.find(x => x.id === pid);
+			if (!p) return;
+			if ((p.qty || 0) < qty) return alert('Insufficient stock');
+			p.qty = (p.qty || 0) - qty;
+			const it = CART.find(i => i.id === pid);
+			if (it) it.qte += qty;
+			else CART.push({ id: pid, name: p.name, price: p.price, qte: qty });
+			saveData();
+			renderCart();
+			renderInventory();
+			posAlerts();
+		}
+
+		function renderCart() {
+			const list = $('cartList');
+			list.innerHTML = '';
+			let subtotal = 0;
+			CART.forEach((it, idx) => {
+				const row = document.createElement('div');
+				row.className = 'cart-row';
+				row.innerHTML = `<div><b>${escapeHtml(it.name)}</b><div class="small">${it.qte} x ${(it.price).toLocaleString()} ${$('currency').value}</div></div><div style="display:flex;flex-direction:column;gap:6px"><div style="text-align:right;font-weight:800">${(it.price*it.qte).toLocaleString()} ${$('currency').value}</div><div style="display:flex;gap:6px"><button class="btn ghost" onclick="changeQty(${idx}, -1)">-</button><button class="btn ghost" onclick="changeQty(${idx}, 1)">+</button><button class="btn ghost" onclick="removeCart(${idx})">Del</button></div></div>`;
+				list.appendChild(row);
+				subtotal += it.price * it.qte;
+			});
+			$('cartSubtotal').innerText = subtotal.toLocaleString() + ' ' + $('currency').value;
+		}
+
+		function changeQty(index, delta) {
+			const it = CART[index];
+			if (!it) return;
+			const prod = DATA.products.find(p => p.id === it.id);
+			if (delta > 0) {
+				if ((prod.qty || 0) <= 0) return alert('No more in stock');
+				prod.qty--;
+				it.qte++;
+			} else {
+				it.qte--;
+				prod.qty++;
+				if (it.qte <= 0) CART.splice(index, 1);
+			}
+			saveData();
+			renderCart();
+			renderInventory();
+		}
+
+		function removeCart(index) {
+			const it = CART[index];
+			if (!it) return;
+			const prod = DATA.products.find(p => p.id === it.id);
+			if (prod) prod.qty += it.qte;
+			CART.splice(index, 1);
+			saveData();
+			renderCart();
+			renderInventory();
+		}
+
+		/* calculator helpers (pos calc input) */
+		function pressCalc(v) {
+			if (v === 'C') { $('calcDisplay').value = ''; return; }
+			$('calcDisplay').value += v;
+		}
+
+		function clearCalc() { $('calcDisplay').value = ''; }
+
+		function applyCalcAsPrice() {
+			const val = parseFloat($('calcDisplay').value);
+			if (isNaN(val)) return alert('Invalid number');
+			const name = prompt('Product name for quick add (optional)');
+			const qty = parseInt(prompt('Quantity', '1'), 10) || 1;
+			// create a temp product entry in cart
+			CART.push({ id: 'TMP' + Date.now(), name: name || 'Custom amount', price: val, qte: qty });
+			renderCart();
+			$('calcDisplay').value = '';
+		}
+
+		/* complete order */
+		function completeOrder() {
+			if (CART.length === 0) return alert('Cart is empty');
+			const payment = $('cartPayment').value;
+			const customer = $('cartCustomer').value || null;
+			const total = CART.reduce((s, i) => s + i.price * i.qte, 0);
+			const order = { id: 'O' + Date.now(), date: new Date().toISOString(), items: JSON.parse(JSON.stringify(CART)), total, payment, customer };
+			DATA.orders.unshift(order);
+			saveData();
+			// clear cart
+			CART = [];
+			renderCart();
+			renderInventory();
+			buildReceipt(order);
+			alert('Order saved');
+		}
+
+		/* show receipt preview */
+		function showReceiptPreview() {
+			if (!DATA.orders.length) return alert('No orders yet');
+			const last = DATA.orders[0];
+			buildReceipt(last);
+		}
+
+		function buildReceipt(order) {
+			const phone = DATA.settings.phone || '';
+			const email = DATA.settings.email || '';
+			let rows = '';
+			order.items.forEach(it => {
+				rows += `<tr><td style="padding:4px">${escapeHtml(it.name)}</td><td style="padding:4px;text-align:center">${it.qte}</td><td style="padding:4px;text-align:right">${(it.price*it.qte).toLocaleString()} ${$('currency').value}</td></tr>`;
+			});
+			const html = `<div style="font-family:Arial;color:#222;width:340px;padding:10px">
+    <div style="text-align:center"><img src="${DATA.settings.logo}" style="width:90px" onerror="this.style.display='none'"></div>
+    <div style="text-align:center;font-weight:800;color:#b3315a">ÉCLAT DE COCO OFFICIAL</div>
+    <div style="text-align:center;font-size:12px">${phone} • ${email}</div>
+    <hr>
+    <div style="font-size:13px"><strong>Reçu N°:</strong> ${order.id}<br><strong>Date:</strong> ${new Date(order.date).toLocaleString()}</div>
+    <table style="width:100%;margin-top:8px;border-collapse:collapse">${rows}</table>
+    <div style="text-align:right;font-weight:800;margin-top:8px">TOTAL : ${order.total.toLocaleString()} ${$('currency').value}</div>
+    <div style="margin-top:6px"><strong>Mode de paiement :</strong> ${order.payment}</div>
+    <div style="text-align:center;margin-top:12px;color:#b3315a">Merci pour votre achat 💖</div>
+  </div>`;
+			$('receiptContent').innerHTML = html;
+			$('receiptModal').style.display = 'block';
+		}
+
+		function printReceipt() {
+			const content = $('receiptContent').innerHTML;
+			const w = window.open('', '_blank');
+			w.document.write(`<html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reçu</title></head><body>${content}</body></html>`);
+			w.document.close();
+			w.print();
+		}
+
+		function closeReceipt() { $('receiptModal').style.display = 'none'; }
+
+		/* -------------------- EXPENSES & SUMMARY -------------------- */
+		function updateSummary() {
+			// totals
+			const now = new Date();
+			const day = now.toISOString().slice(0, 10);
+			let daily = 0,
+				weekly = 0,
+				monthly = 0;
+			DATA.orders.forEach(o => {
+				const d = new Date(o.date);
+				const diffDays = Math.floor((new Date() - d) / (1000 * 60 * 60 * 24));
+				if (o.date.slice(0, 10) === day) daily += o.total;
+				if (diffDays <= 7) weekly += o.total;
+				if (d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) monthly += o.total;
+			});
+			const totalStock = DATA.products.reduce((s, p) => s + (p.qty || 0), 0);
+			$('dailyVal').innerText = fmt(daily) + ' ' + $('currency').value;
+			$('weeklyVal').innerText = fmt(weekly) + ' ' + $('currency').value;
+			$('monthlyVal').innerText = fmt(monthly) + ' ' + $('currency').value;
+			$('stockVal').innerText = totalStock;
+			$('custVal').innerText = DATA.customers.length;
+			const totalIncome = DATA.orders.reduce((s, o) => s + (o.total || 0), 0);
+			const totalExpenses = DATA.expenses.reduce((s, e) => s + ((e.status === 'paid') ? e.amount : 0), 0);
+			$('totalIncome').innerText = fmt(totalIncome) + ' ' + $('currency').value;
+			$('totalExpenses').innerText = fmt(totalExpenses) + ' ' + $('currency').value;
+			$('totalNet').innerText = fmt(totalIncome - totalExpenses) + ' ' + $('currency').value;
+			$('totalOrders').innerText = DATA.orders.length;
+		}
+
+		/* draw charts (simple) */
+		function drawMiniChart() {
+			const ctx = $('miniChart').getContext('2d');
+			ctx.clearRect(0, 0, 320, 180);
+			const labels = DATA.orders.slice(0, 7).reverse().map(o => new Date(o.date).toLocaleDateString());
+			const sales = DATA.orders.slice(0, 7).reverse().map(o => o.total || 0);
+			const max = Math.max(1, ...sales);
+			const barW = (280 / Math.max(1, sales.length)) - 6;
+			for (let i = 0; i < sales.length; i++) {
+				const h = Math.round((sales[i] / max) * 100);
+				const x = 10 + i * (barW + 6);
+				const y = 140 - h;
+				const g = ctx.createLinearGradient(0, y, 0, y + h);
+				g.addColorStop(0, '#ff9bb1');
+				g.addColorStop(1, '#ffb6c1');
+				roundRect(ctx, x, y, barW, h, 6, g);
+				ctx.fillStyle = '#6b444a';
+				ctx.font = '10px Arial';
+				ctx.fillText(labels[i] || '', x, 154);
+			}
+		}
+
+		function drawRightMiniChart() {
+			const ctx = $('rightMiniChart').getContext('2d');
+			ctx.clearRect(0, 0, 360, 120);
+			// sample: last 7 orders totals
+			const sales = DATA.orders.slice(0, 7).reverse().map(o => o.total || 0);
+			const max = Math.max(1, ...sales);
+			const w = 320;
+			const barW = w / Math.max(1, sales.length) - 6;
+			for (let i = 0; i < sales.length; i++) {
+				const h = Math.round((sales[i] / max) * 80);
+				const x = 10 + i * (barW + 6);
+				const y = 80 - h;
+				const g = ctx.createLinearGradient(0, y, 0, y + h);
+				g.addColorStop(0, '#ff9bb1');
+				g.addColorStop(1, '#ffb6c1');
+				roundRect(ctx, x, y, barW, h, 6, g);
+			}
+		}
+
+		/* rounded rect helper */
+		function roundRect(ctx, x, y, w, h, r, fillStyle) {
+			ctx.beginPath();
+			ctx.moveTo(x + r, y);
+			ctx.arcTo(x + w, y, x + w, y + h, r);
+			ctx.arcTo(x + w, y + h, x, y + h, r);
+			ctx.arcTo(x, y + h, x, y, r);
+			ctx.arcTo(x, y, x + w, y, r);
+			ctx.closePath();
+			if (fillStyle) {
+				ctx.fillStyle = fillStyle;
+				ctx.fill();
+			}
+		}
+
+		/* -------------------- Utilities for UI populate -------------------- */
+		function populateCategoryFilter() {
+			const sel = $('filterCategory');
+			sel.innerHTML = '<option value="">All categories</option>';
+			const cats = Array.from(new Set(DATA.products.map(p => p.category).filter(Boolean)));
+			cats.forEach(c => {
+				const o = document.createElement('option');
+				o.value = c;
+				o.text = c;
+				sel.add(o);
+			});
+		}
+
+		function populateCustomerSelect() {
+			const sel = $('cartCustomer');
+			sel.innerHTML = '<option value="">Walk-in</option>';
+			DATA.customers.forEach(c => {
+				const o = document.createElement('option');
+				o.value = c.id;
+				o.text = c.name + (c.phone ? ' • ' + c.phone : '');
+				sel.add(o);
+			});
+		}
+
+		/* pos alerts */
+		function posAlerts() {
+			const low = DATA.products.filter(p => p.qty > 0 && p.qty <= 5).map(x => `${x.name} (${x.qty})`);
+			const out = DATA.products.filter(p => (p.qty || 0) <= 0).map(x => x.name);
+			const arr = [];
+			if (low.length) arr.push('Low stock: ' + low.join(', '));
+			if (out.length) arr.push('Out of stock: ' + out.join(', '));
+			$('posAlerts').innerText = arr.join(' • ') || 'All good';
+		}
+
+		/* -------------------- Settings & export -------------------- */
+		function saveSettings() {
+			DATA.settings.phone = $('set_phone').value || DATA.settings.phone;
+			DATA.settings.email = $('set_email').value || DATA.settings.email;
+			DATA.settings.logo = $('set_logo').value || DATA.settings.logo;
+			const np = ($('set_pin').value || '').trim();
+			if (np) {
+				DATA.settings.pin = np;
+				$('set_pin').value = '';
+				alert('New PIN saved');
+			}
+			saveData();
+		}
+
+		function exportData() {
+			const blob = new Blob([JSON.stringify(DATA, null, 2)], { type: 'application/json' });
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = 'EclatPOS_data.json';
+			a.click();
+			a.remove();
+			URL.revokeObjectURL(url);
+		}
+
+		function resetData() {
+			if (!confirm('Reset all data to demo?')) return;
+			localStorage.removeItem(STORAGE_KEY);
+			location.reload();
+		}
+
+		/* -------------------- Flow helpers -------------------- */
+		function renderAll() {
+			renderProducts();
+			renderInventory();
+			renderCustomers();
+			renderSuppliers();
+			renderExpenses();
+			updateSummary();
+			populateCategoryFilter();
+			populateCustomerSelect();
+			renderCart();
+			posAlerts();
+			drawMiniChart();
+			drawRightMiniChart();
+		}
+
+		function updateUI() {
+			renderAll();
+			saveLocal();
+		}
+
+		function saveLocal() { localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA)); }
+
+		/* wrapper save to keep consistent */
+		function saveData() {
+			saveLocal();
+			renderAll();
+		}
+
+		/* -------------------- Small UI modals / helpers -------------------- */
+		function openAddProductModal() {
+			openTab('products');
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		}
+
+		function openEditFromInventory(id) {
+			editProduct(id);
+		}
+
+		/* -------------------- Start on load -------------------- */
+		document.addEventListener('DOMContentLoaded', () => {
+			// show lock, wait for PIN
+			// if settings have pin, replace placeholder text
+			if (DATA.settings && DATA.settings.pin) { /* nothing else */ }
+		});
+
+		/* utility quick UI triggers (some used above) */
+		function posSearchChanged(v) { posSearchChanged(v); }
+
+		function fillPosResults() { fillPosResults(); }
+
+		function renderAllFinally() { renderAll(); }
+
+		/* make sure UI functions are exposed for inline onclick's */
+		window.attemptUnlock = attemptUnlock;
+		window.openTab = openTab;
+		window.genProductBarcode = genProductBarcode;
+		window.addProduct = addProduct;
+		window.renderProducts = renderProducts;
+		window.renderInventory = renderInventory;
+		window.addSupplier = addSupplier;
+		window.renderSuppliers = renderSuppliers;
+		window.addCustomer = addCustomer;
+		window.renderCustomers = renderCustomers;
+		window.addExpense = addExpense;
+		window.renderExpenses = renderExpenses;
+		window.addToCart = addToCart;
+		window.renderCart = renderCart;
+		window.pressCalc = pressCalc;
+		window.clearCalc = clearCalc;
+		window.applyCalcAsPrice = applyCalcAsPrice;
+		window.quickAdd = quickAdd;
+		window.completeOrder = completeOrder;
+		window.showReceiptPreview = showReceiptPreview;
+		window.printReceipt = printReceipt;
+		window.closeReceipt = closeReceipt;
+		window.saveSettings = saveSettings;
+		window.exportData = exportData;
+		window.resetData = resetData;
+		window.openAddProductModal = openAddProductModal;
+		window.openAdjustStock = openAdjustStock;
+
+		/* Expose some helpers that might be used inline earlier */
+		window.openQuickAdd = openQuickAdd;
+		window.editProduct = editProduct;
+		window.deleteProduct = deleteProduct;
+		window.addByScan = quickAdd;
+		window.populateCustomerSelect = populateCustomerSelect;
+		window.drawMiniChart = drawMiniChart;
+		window.drawRightMiniChart = drawRightMiniChart;
+		window.renderAll = renderAll;
+		window.renderProducts = renderProducts;
+		window.renderInventory = renderInventory;
+		window.renderCustomers = renderCustomers;
+		window.renderSuppliers = renderSuppliers;
+		window.renderExpenses = renderExpenses;
+
+		/* ensure UI updates after any changes */
+		function renderAllTrigger() { renderAll(); }
+
+		/* Expose reset for convenience */
+		window.resetData = resetData;
+	</script>
+</body>
+
+</html>
