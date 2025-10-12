@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Éclat de Coco — Caisse</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Éclat de Coco</h2>
+    <ul>
+      <li><a href="index.html">🏠 Dashboard</a></li>
+      <li><a href="sales.html">💰 Sales</a></li>
+      <li><a href="products.html">🧴 Products</a></li>
+      <li><a href="customers.html">👩‍💼 Customers</a></li>
+      <li class="active"><a href="pos.html">🧾 Orders</a></li>
+      <li><a href="suppliers.html">🚚 Suppliers</a></li>
+      <li><a href="expenses.html">💸 Expenses</a></li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <h1>💖 Caisse - Point de Vente</h1>
+      <input type="text" placeholder="Rechercher un produit...">
+    </header>
+
+    <section class="pos-container">
+      <div class="products-grid">
+        <div class="product-card">🧼 Savon Vanille<br><small>1 500 CFA</small></div>
+        <div class="product-card">🧴 Lotion Rose<br><small>2 000 CFA</small></div>
+        <div class="product-card">💧 Sérum Nuit<br><small>3 500 CFA</small></div>
+      </div>
+
+      <div class="cart-summary">
+        <h2>🛍 Panier</h2>
+        <ul id="cartItems"></ul>
+        <p><strong>Total :</strong> <span id="totalAmount">0 CFA</span></p>
+        <button class="pay-btn">💳 Payer</button>
+      </div>
+    </section>
+
+    <script>
+      const products = document.querySelectorAll('.product-card');
+      const cartItems = document.getElementById('cartItems');
+      const totalAmount = document.getElementById('totalAmount');
+      let total = 0;
+
+      products.forEach(product => {
+        product.addEventListener('click', () => {
+          const price = parseInt(product.querySelector('small').textContent.replace(' CFA', '').replace(/\s/g, ''));
+          const name = product.textContent.trim();
+          const li = document.createElement('li');
+          li.textContent = name;
+          cartItems.appendChild(li);
+          total += price;
+          totalAmount.textContent = total.toLocaleString() + ' CFA';
+        });
+      });
+    </script>
+  </div>
+</body>
+</html>
