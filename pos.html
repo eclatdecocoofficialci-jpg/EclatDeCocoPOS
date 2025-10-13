@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* Temporary layout beautify */
     body {
       background-color: #fff5fb;
       font-family: 'Poppins', sans-serif;
@@ -24,9 +23,7 @@
       border-radius: 12px;
       box-shadow: 0 4px 10px rgba(233, 30, 99, 0.1);
     }
-    .product-section {
-      flex: 1.5;
-    }
+    .product-section { flex: 1.5; }
     .cashier-section {
       flex: 1;
       border: 2px solid #f8bbd0;
@@ -50,9 +47,7 @@
       padding: 8px 12px;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #d81b60;
-    }
+    button:hover { background-color: #d81b60; }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -75,6 +70,12 @@
       width: 320px;
       margin: 20px auto;
       display: none;
+    }
+    .delivery-line {
+      text-align: right;
+      font-style: italic;
+      color: #555;
+      font-size: 13px;
     }
   </style>
 </head>
@@ -147,6 +148,7 @@
       <div class="summary">
         <p><strong>Sous-total :</strong> <span id="subtotal">0</span> FCFA</p>
         <p><strong>Total :</strong> <span id="total">0</span> FCFA</p>
+        <p class="delivery-line">Le total est <span id="finalTotal">0</span> FCFA sans la livraison.</p>
       </div>
 
       <div class="payment-section">
@@ -167,8 +169,8 @@
 
       <!-- 🧾 REÇU -->
       <div class="receipt" id="receiptPreview">
-        <h2 style="text-align:center; color:#e91e63;">💗 Bienvenue chez Éclat de Coco</h2>
-        <p style="text-align:center; font-size:13px;">🌿 100% Produits Organiques 🌿</p>
+        <h2 style="text-align:center; color:#e91e63;">Bienvenue chez Éclat de Coco</h2>
+        <p style="text-align:center; font-size:13px;">100% Produits Organiques 🌿</p>
         <hr>
 
         <p><strong>Nom du Client :</strong> <span id="receiptClientName"></span></p>
@@ -190,6 +192,7 @@
 
         <hr>
         <p style="text-align:right;"><strong>Total:</strong> <span id="receiptTotal"></span> FCFA</p>
+        <p class="delivery-line">Le total est <span id="receiptTotalLine"></span> FCFA sans la livraison.</p>
 
         <p style="text-align:center; font-style:italic; margin-top:15px;">Merci pour votre achat 💖</p>
 
@@ -219,6 +222,7 @@
       subtotal += price;
       document.getElementById("subtotal").textContent = subtotal;
       document.getElementById("total").textContent = subtotal;
+      document.getElementById("finalTotal").textContent = subtotal;
     }
 
     function saveOrder() {
@@ -240,14 +244,14 @@
       document.getElementById("receiptOrderID").textContent = document.getElementById("orderId").textContent;
       document.getElementById("receiptDate").textContent = date;
       document.getElementById("receiptTotal").textContent = subtotal;
+      document.getElementById("receiptTotalLine").textContent = subtotal;
 
-      // Copy cart items to receipt
       const cartRows = document.querySelectorAll("#cartItems tr");
       const receiptBody = document.getElementById("receiptItems");
       receiptBody.innerHTML = "";
       cartRows.forEach(r => {
         const cloned = r.cloneNode(true);
-        cloned.deleteCell(2); // remove price column
+        cloned.deleteCell(2);
         receiptBody.appendChild(cloned);
       });
 
