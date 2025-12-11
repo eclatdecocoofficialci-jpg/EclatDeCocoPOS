@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Éclat de Coco - Products</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <style>
+    body { font-family: 'Poppins', sans-serif; margin:0; background:#fdf0f6; }
+    h2,h3{ margin:0 0 10px 0; color:#e91e63; }
+    .container { display:flex; gap:20px; padding:20px; flex-wrap:wrap; }
+    .left-panel { flex:1; background:#fff; padding:20px; border-radius:16px; max-width:400px; }
+    .left-panel input, .left-panel select, .left-panel button { width:100%; padding:10px; margin-bottom:10px; border-radius:10px; border:2px solid #f8bbd0; font-size:1em; }
+    .left-panel button { background:#e91e63; color:#fff; border:none; cursor:pointer; }
+    .right-panel { flex:2; background:#fff; padding:20px; border-radius:16px; overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; }
+    th,td { border:1px solid #f8bbd0; padding:8px; text-align:center; font-size:0.9em; word-wrap:break-word; vertical-align:middle; }
+    th { background:#ffe6ef; color:#e91e63; }
+    .low-stock { background-color:#ffcccc; }
+    button.remove-btn { background:#ff4081; color:#fff; padding:5px 10px; border:none; border-radius:6px; cursor:pointer; }
+    canvas { display:block; margin-top:10px; }
+    @media(max-width:1024px){ .container{ flex-direction:column; align-items:center; } .left-panel,.right-panel{ max-width:100%; } }
+  </style>
+</head>
+<body>
+
+<h2>Gestion Produits</h2>
+<div class="container">
+
+  <!-- Formulaire gauche -->
+  <div class="left-panel">
+    <h3>Ajouter un produit</h3>
+    <input type="text" id="product-name" placeholder="Nom produit">
+    <select id="product-category">
+      <option value="Savon">Savon</option>
+      <option value="Lotions">Lotions</option>
+      <option value="Body Butter">Body Butter</option>
+      <option value="Masque Cheveux">Masque Cheveux</option>
+      <option value="Sérum Cheveux">Sérum Cheveux</option>
+      <option value="Sérum Visage">Sérum Visage</option>
+    </select>
+    <input type="number" id="product-quantity" placeholder="Quantité / Stock">
+    <input type="number" id="product-price" placeholder="Prix">
+    <button id="add-product-btn">Ajouter Produit</button>
+    <button id="generate-barcode-btn">Générer Barcode</button>
+    <canvas id="barcode-canvas"></canvas>
+  </div>
+
+  <!-- Tableau droite -->
+  <div class="right-panel">
+    <h3>Liste des Produits</h3>
+    <table id="product-table">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Nom</th>
+          <th>Catégorie</th>
+          <th>Qté</th>
+          <th>Prix</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="6">Aucun produit</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+let products = [];
+let categoryCounters = {}; // Compteur pour chaque catégorie
+
+// Ajouter produit
+document.getElementById('add-product-btn').addEventListener('click', ()=>{
+  const name = document.getElementById('product-name').value.trim();
+  const category = document.getElementById('product-category').value;
+  const qty = parseInt(document.getElementById('product-quantity').value) || 0;
+  const price = parseFloat(document.getElementById('product-price').value) || 0;
+  if(!name){ alert("Nom obligatoire"); return; }
+
+  // Générer code produit
+  if(!categoryCounters[category]) categoryCounters[category]=1;
+  const code = category.charAt(0).toUpperCase() + String(categoryCounters[category]).padStart(3,'0');
+  categoryCounters[category]++;
+
+  products.push({code,name,category,qty,price});
+  updateTable();
+
+  // Reset champs
+  document.getElementById('product-name').value='';
+  document.getElementById('product-quantity').value='';
+  document.getElementById('product-price').value='';
+});
+
+// Mettre à jour tableau
+function updateTable(){
+  const tbody = document.querySelector('#product-table tbody');
+  tbody.innerHTML='';
+  if(products.length===0){
+    tbody.innerHTML='<tr><td colspan="6">Aucun produit</td></tr>';
+    return;
+  }
+  products.forEach((p,i)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML=`
+      <td>${p.code}</td>
+      <td contenteditable="true">${p.name}</td>
+      <td>${p.category}</td>
+      <td contenteditable="true" class="${p.qty<4?'low-stock':''}">${p.qty}</td>
+      <td contenteditable="true">${p.price}</td>
+      <td><button class="remove-btn" data-index="${i}">X</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Supprimer produit
+document.querySelector('#product-table tbody').addEventListener('click', e=>{
+  if(e.target.classList.contains('remove-btn')){
+    const index = parseInt(e.target.dataset.index);
+    products.splice(index,1);
+    updateTable();
+  }
+});
+
+// Générer barcode
+document.getElementById('generate-barcode-btn').addEventListener('click', ()=>{
+  if(products.length===0){ alert("Ajoutez un produit d'abord"); return; }
+  const lastProduct = products[products.length-1];
+  JsBarcode("#barcode-canvas", lastProduct.code, {format:"CODE128", displayValue:true, height:50});
+});
+</script>
+
+</body>
+</html>
