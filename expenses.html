@@ -1,1 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Éclat de Coco - Expenses</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Poppins', sans-serif; margin:0; background:#fdf0f6; }
+    h2,h3{ margin:0 0 10px 0; color:#e91e63; }
+    .container { display:flex; gap:20px; padding:20px; flex-wrap:wrap; }
+    .left-panel { flex:1; background:#fff; padding:20px; border-radius:16px; max-width:400px; }
+    .left-panel input, .left-panel select, .left-panel button { width:100%; padding:10px; margin-bottom:10px; border-radius:10px; border:2px solid #f8bbd0; font-size:1em; }
+    .left-panel button { background:#e91e63; color:#fff; border:none; cursor:pointer; }
+    .right-panel { flex:2; background:#fff; padding:20px; border-radius:16px; overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; }
+    th,td { border:1px solid #f8bbd0; padding:8px; text-align:center; font-size:0.9em; word-wrap:break-word; vertical-align:middle; }
+    th { background:#ffe6ef; color:#e91e63; }
+    button.remove-btn { background:#ff4081; color:#fff; padding:5px 10px; border:none; border-radius:6px; cursor:pointer; }
+    @media(max-width:1024px){ .container{ flex-direction:column; align-items:center; } .left-panel,.right-panel{ max-width:100%; } }
+  </style>
+</head>
+<body>
 
+<h2>Gestion Dépenses</h2>
+<div class="container">
+
+  <!-- Formulaire gauche -->
+  <div class="left-panel">
+    <h3>Ajouter une dépense</h3>
+    <input type="text" id="expense-name" placeholder="Nom dépense">
+    <select id="expense-category">
+      <option value="Marketing">Marketing</option>
+      <option value="Salaires">Salaires</option>
+      <option value="Transport">Transport</option>
+      <option value="Fournitures">Fournitures</option>
+      <option value="Autre">Autre</option>
+    </select>
+    <input type="number" id="expense-amount" placeholder="Montant">
+    <input type="date" id="expense-date" value="<?= date('Y-m-d') ?>">
+    <button id="add-expense-btn">Ajouter Dépense</button>
+  </div>
+
+  <!-- Tableau droite -->
+  <div class="right-panel">
+    <h3>Dépenses</h3>
+    <table id="expenses-table">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Catégorie</th>
+          <th>Montant</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="5">Aucune dépense</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+let expenses = [];
+
+// Ajouter dépense
+document.getElementById('add-expense-btn').addEventListener('click', ()=>{
+  const name = document.getElementById('expense-name').value.trim();
+  const category = document.getElementById('expense-category').value;
+  const amount = parseFloat(document.getElementById('expense-amount').value) || 0;
+  const date = document.getElementById('expense-date').value || new Date().toISOString().split('T')[0];
+
+  if(!name){ alert("Nom obligatoire"); return; }
+
+  expenses.push({name, category, amount, date});
+  updateTable();
+
+  document.getElementById('expense-name').value='';
+  document.getElementById('expense-amount').value='';
+});
+
+// Mettre à jour tableau
+function updateTable(){
+  const tbody = document.querySelector('#expenses-table tbody');
+  tbody.innerHTML='';
+  if(expenses.length===0){ tbody.innerHTML='<tr><td colspan="5">Aucune dépense</td></tr>'; return; }
+
+  expenses.forEach((item,i)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML=`
+      <td contenteditable="true">${item.name}</td>
+      <td>${item.category}</td>
+      <td contenteditable="true">${item.amount}</td>
+      <td contenteditable="true">${item.date}</td>
+      <td><button class="remove-btn" data-index="${i}">X</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Supprimer dépense
+document.querySelector('#expenses-table tbody').addEventListener('click', e=>{
+  if(e.target.classList.contains('remove-btn')){
+    const index = parseInt(e.target.dataset.index);
+    expenses.splice(index,1);
+    updateTable();
+  }
+});
+</script>
+
+</body>
+</html>
