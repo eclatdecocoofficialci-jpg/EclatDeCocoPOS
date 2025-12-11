@@ -1,82 +1,122 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Éclat de Coco - Dashboard</title>
-<link rel="stylesheet" href="style.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  body { margin:0; font-family:'Poppins',sans-serif; background:#fff5fb; color:#333; }
-  header {
-    display:flex; justify-content:space-between; align-items:center;
-    padding:15px 30px; background:#e91e63; color:#fff;
-  }
-  header h1 { font-size:1.8em; }
-  nav a {
-    color:#fff; text-decoration:none; margin-left:20px; font-weight:500; transition:0.3s;
-  }
-  nav a:hover, nav a.active { text-decoration:underline; }
-
-  main { padding:20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; }
-
-  .tile {
-    background:#fff; padding:20px; border-radius:12px;
-    box-shadow:0 4px 10px rgba(233,30,99,0.1);
-    display:flex; flex-direction:column; justify-content:center; align-items:center;
-    transition:0.3s; cursor:pointer;
-  }
-  .tile:hover { background:#e91e63; color:#fff; }
-  .tile h2 { margin-bottom:5px; }
-  .tile p { font-size:0.9em; }
-
-  footer { text-align:center; padding:15px; background:#e91e63; color:#fff; margin-top:auto; }
-</style>
+  <meta charset="UTF-8">
+  <title>Éclat de Coco POS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#e91e63">
 </head>
-
 <body>
 
-<header>
-  <h1>Éclat de Coco Dashboard</h1>
-  <nav>
-  <a href="index.html">POS</a>
-  <a href="dashboard.html">Dashboard</a>
-  <a href="sales.html">Sales</a>
-  <a href="products.html">Products</a>
-  <a href="inventory.html">Inventory</a>
-  <a href="expenses.html">Expenses</a>
-  <a href="reports.html">Reports</a>
+<!-- NAVBAR -->
+<nav>
+  <h2>Éclat de Coco</h2>
+  <div class="nav-buttons">
+    <a class="active" href="index.html">POS</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="sales.html">Sales</a>
+    <a href="products.html">Products</a>
+    <a href="inventory.html">Inventory</a>
+    <a href="expenses.html">Expenses</a>
+    <a href="reports.html">Reports</a>
+  </div>
 </nav>
-</header>
 
-<main>
-  <div class="tile" onclick="window.location.href='pos.html'">
-    <h2>POS</h2>
-    <p>Ouvrir le point de vente</p>
-  </div>
-  <div class="tile" onclick="window.location.href='sales.html'">
-    <h2>Ventes</h2>
-    <p>Voir toutes les ventes</p>
-  </div>
-  <div class="tile" onclick="window.location.href='products.html'">
-    <h2>Produits</h2>
-    <p>Gestion des produits</p>
-  </div>
-  <div class="tile" onclick="window.location.href='inventory.html'">
-    <h2>Inventaire</h2>
-    <p>Suivi du stock</p>
-  </div>
-  <div class="tile" onclick="window.location.href='expenses.html'">
-    <h2>Dépenses</h2>
-    <p>Suivi des dépenses</p>
-  </div>
-  <div class="tile" onclick="window.location.href='reports.html'">
-    <h2>Rapports</h2>
-    <p>Voir les rapports</p>
-  </div>
+<main class="pos-layout">
+
+  <!-- CATEGORIE GAUCHE -->
+  <aside class="left-panel">
+    <button onclick="filterCategory('Savon')">Savon</button>
+    <button onclick="filterCategory('Lotions')">Lotions</button>
+    <button onclick="filterCategory('Body Butter')">Body Butter</button>
+    <button onclick="filterCategory('Masque Cheveux')">Masque Cheveux</button>
+    <button onclick="filterCategory('Sérum Cheveux')">Sérum Cheveux</button>
+    <button onclick="filterCategory('Sérum Visage')">Sérum Visage</button>
+    <button onclick="filterCategory('Édition Noël')">Édition Noël</button>
+    <button onclick="filterCategory('Souvenir')">Souvenir</button>
+  </aside>
+
+  <!-- PRODUITS CENTRE -->
+  <section class="center-panel">
+    <h2 style="text-align:center;">Bienvenue à Éclat de Coco</h2>
+    <p style="text-align:center;">Abidjan, Côte d'Ivoire</p>
+    <input type="text" placeholder="Rechercher un produit..." id="search-product">
+
+    <div id="products-container">
+      <!-- Exemple produit -->
+      <div class="product-card">
+        <strong>Rose vanille</strong><br>
+        <small>Savon · Stock: 10</small>
+        <div>
+          <span><strong>3,000 FCFA</strong></span>
+          <input type="number" value="1" style="width:60px;">
+          <button>Ajouter</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <strong>Velours de café</strong><br>
+        <small>Savon · Stock: 8</small>
+        <div>
+          <span><strong>3,000 FCFA</strong></span>
+          <input type="number" value="1" style="width:60px;">
+          <button>Ajouter</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FACTURE + CALCULATRICE DROITE -->
+  <aside class="right-panel">
+    <h3>Facture</h3>
+    <input type="text" placeholder="Nom du client" id="client-name">
+    <input type="text" placeholder="Téléphone" id="client-phone">
+    <input type="text" placeholder="Adresse" id="client-address">
+    <input type="number" id="delivery" placeholder="Livraison">
+
+    <p>ID Facture: <span id="invoice-id">202501</span></p>
+    <p>Date: <input type="date" id="invoice-date"></p>
+
+    <table>
+      <thead>
+        <tr><th>Produit</th><th>Qté</th><th>Prix</th><th>Total</th><th>Action</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <p>Subtotal: <span id="subtotal">0 FCFA</span></p>
+    <p>Total Final: <span id="total-final">0 FCFA</span></p>
+
+    <div style="display:flex; justify-content:space-between; margin-top:10px;">
+      <button id="print-btn">Imprimer</button>
+      <button id="save-btn">Sauvegarder</button>
+    </div>
+
+    <section class="calculator">
+      <h3>Calculatrice</h3>
+      <input class="calc-display" value="0" readonly>
+      <div class="calc-grid">
+        <button>7</button><button>8</button><button>9</button><button>+</button>
+        <button>4</button><button>5</button><button>6</button><button>-</button>
+        <button>1</button><button>2</button><button>3</button><button>×</button>
+        <button>0</button><button>.</button><button>=</button><button>÷</button>
+        <button class="percent">20%</button>
+        <button class="percent">30%</button>
+        <button class="percent">35%</button>
+        <button>C</button>
+      </div>
+    </section>
+
+    <p style="text-align:center; margin-top:10px;">Eclat de Coco vous remercie</p>
+    <p style="text-align:center;">Email: eclatdecoco933@gmail.com | WhatsApp: +225 07 77 00 08 03</p>
+  </aside>
+
 </main>
 
-<footer>@Eclatdecoco.Official | All right reserved</footer>
+<footer class="footer">@Eclatdecoco.Official | All right reserved</footer>
+
+<script src="script.js"></script>
 
 </body>
 </html>
