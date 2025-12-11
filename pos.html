@@ -2,262 +2,118 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <title>Éclat de Coco POS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>POS - Éclat de Coco</title>
+
+  <!-- Lien CSS -->
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      background-color: #fff5fb;
-      font-family: 'Poppins', sans-serif;
-    }
-    .pos-container {
-      display: flex;
-      justify-content: space-between;
-      padding: 30px;
-      gap: 20px;
-    }
-    .product-section, .cashier-section {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(233, 30, 99, 0.1);
-    }
-    .product-section { flex: 1.5; }
-    .cashier-section {
-      flex: 1;
-      border: 2px solid #f8bbd0;
-    }
-    h1, h2 {
-      color: #e91e63;
-      text-align: center;
-    }
-    input, select {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      border: 1px solid #ddd;
-    }
-    button {
-      background-color: #e91e63;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 12px;
-      cursor: pointer;
-    }
-    button:hover { background-color: #d81b60; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-    th, td {
-      padding: 8px;
-      border-bottom: 1px solid #f1f1f1;
-      text-align: center;
-    }
-    .summary p {
-      font-size: 15px;
-      margin: 6px 0;
-    }
-    .receipt {
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
-      border: 1px solid #f8bbd0;
-      width: 320px;
-      margin: 20px auto;
-      display: none;
-    }
-    .delivery-line {
-      text-align: right;
-      font-style: italic;
-      color: #555;
-      font-size: 13px;
-    }
-  </style>
 </head>
-
 <body>
-  <div class="pos-container">
-    <!-- 🧴 PRODUITS -->
-    <div class="product-section">
-      <h1>Point de Vente</h1>
-      <input type="text" id="searchProduct" placeholder="🔍 Rechercher par nom, code ou catégorie...">
 
-      <div class="categories">
-        <button class="category-btn">Savons</button>
-        <button class="category-btn">Lotion</button>
-        <button class="category-btn">Body Butter</button>
-        <button class="category-btn">Masque Cheveux</button>
-        <button class="category-btn">Dessert Savons</button>
-        <button class="category-btn">+ Ajouter Nouveau</button>
-      </div>
-
-      <table class="product-table">
-        <thead>
-          <tr>
-            <th>Code</th>
-            <th>Produit</th>
-            <th>Prix (FCFA)</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="productList">
-          <tr>
-            <td>SA001</td>
-            <td>Rose Vanilla Soap</td>
-            <td>1500</td>
-            <td><button onclick="addToCart('SA001','Rose Vanilla Soap',1500)">+</button></td>
-          </tr>
-          <tr>
-            <td>SA002</td>
-            <td>Lavender Bliss Soap</td>
-            <td>2000</td>
-            <td><button onclick="addToCart('SA002','Lavender Bliss Soap',2000)">+</button></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 💵 CAISSE -->
-    <div class="cashier-section">
-      <h2>🧾 Caisse</h2>
-      <div class="client-form">
-        <input type="text" id="clientName" placeholder="Nom du client">
-        <input type="text" id="clientPhone" placeholder="Téléphone">
-        <input type="text" id="clientAddress" placeholder="Adresse">
-      </div>
-
-      <p><strong>ID Commande :</strong> <span id="orderId">1001</span></p>
-
-      <table class="cart-table">
-        <thead>
-          <tr>
-            <th>Produit</th>
-            <th>Qté</th>
-            <th>Prix</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody id="cartItems"></tbody>
-      </table>
-
-      <div class="summary">
-        <p><strong>Sous-total :</strong> <span id="subtotal">0</span> FCFA</p>
-        <p><strong>Total :</strong> <span id="total">0</span> FCFA</p>
-        <p class="delivery-line">Le total est <span id="finalTotal">0</span> FCFA sans la livraison.</p>
-      </div>
-
-      <div class="payment-section">
-        <label>Méthode de paiement :</label>
-        <select id="paymentMethod">
-          <option>Cash</option>
-          <option>Wave</option>
-          <option>Orange Money</option>
-          <option>Moov Money</option>
-          <option>Visa</option>
-        </select>
-      </div>
-
-      <div class="actions">
-        <button onclick="saveOrder()">💾 Enregistrer</button>
-        <button onclick="printReceipt()">🖨️ Imprimer Reçu</button>
-      </div>
-
-      <!-- 🧾 REÇU -->
-      <div class="receipt" id="receiptPreview">
-        <h2 style="text-align:center; color:#e91e63;">Bienvenue chez Éclat de Coco</h2>
-        <p style="text-align:center; font-size:13px;">100% Produits Organiques 🌿</p>
-        <hr>
-
-        <p><strong>Nom du Client :</strong> <span id="receiptClientName"></span></p>
-        <p><strong>Adresse :</strong> <span id="receiptClientAddress"></span></p>
-        <p><strong>Téléphone :</strong> <span id="receiptClientPhone"></span></p>
-        <p><strong>ID Commande :</strong> <span id="receiptOrderID"></span></p>
-        <p><strong>Date :</strong> <span id="receiptDate"></span></p>
-
-        <table style="width:100%; border-collapse:collapse; margin-top:10px;">
-          <thead>
-            <tr style="border-bottom:1px solid #ccc;">
-              <th style="text-align:left;">Produit</th>
-              <th>Qté</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody id="receiptItems"></tbody>
-        </table>
-
-        <hr>
-        <p style="text-align:right;"><strong>Total:</strong> <span id="receiptTotal"></span> FCFA</p>
-        <p class="delivery-line">Le total est <span id="receiptTotalLine"></span> FCFA sans la livraison.</p>
-
-        <p style="text-align:center; font-style:italic; margin-top:15px;">Merci pour votre achat 💖</p>
-
-        <div style="text-align:center; font-size:12px; margin-top:20px; color:#555;">
-          <p>📞 WhatsApp : <strong>0777000803</strong></p>
-          <p>📧 Gmail : <strong>eclatdecocoofficialci@gmail.com</strong></p>
-          <p>📸 Instagram : <strong>@eclatdecoco.official</strong></p>
-        </div>
-      </div>
-    </div>
+<!-- NAVBAR -->
+<nav>
+  <h2>Éclat de Coco POS</h2>
+  <div class="nav-buttons">
+    <a class="active" href="#">POS</a>
+    <a href="#">Dashboard</a>
+    <a href="#">Sales</a>
+    <a href="#">Products</a>
+    <a href="#">Inventory</a>
+    <a href="#">Expenses</a>
+    <a href="#">Reports</a>
   </div>
+</nav>
 
-  <script>
-    let subtotal = 0;
-    let orderNumber = 1001;
+<!-- CONTENU PRINCIPAL -->
+<main class="pos-container">
 
-    function addToCart(code, name, price) {
-      const cart = document.getElementById("cartItems");
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${name}</td>
-        <td>1</td>
-        <td>${price}</td>
-        <td>${price}</td>
-      `;
-      cart.appendChild(row);
-      subtotal += price;
-      document.getElementById("subtotal").textContent = subtotal;
-      document.getElementById("total").textContent = subtotal;
-      document.getElementById("finalTotal").textContent = subtotal;
-    }
+  <!-- COLONNE GAUCHE : Catégories -->
+  <aside class="left-panel">
+    <button class="category-btn">Savon</button>
+    <button class="category-btn">Lotions</button>
+    <button class="category-btn">Body Butter</button>
+    <button class="category-btn">Masque Cheveux</button>
+    <button class="category-btn">Sérum Cheveux</button>
+    <button class="category-btn">Sérum Visage</button>
+    <button class="category-btn">Édition Noël</button>
+    <button class="category-btn">Souvenir</button>
+  </aside>
 
-    function saveOrder() {
-      alert("✅ Commande enregistrée avec succès !");
-      orderNumber++;
-      document.getElementById("orderId").textContent = orderNumber;
-    }
+  <!-- COLONNE CENTRALE : Recherche + Produits + Calculatrice -->
+  <section class="center-panel">
+    <h2 style="text-align:center;">Rechercher un produit</h2>
+    <input type="text" id="search-product" placeholder="Nom du produit...">
 
-    function printReceipt() {
-      const name = document.getElementById("clientName").value;
-      const phone = document.getElementById("clientPhone").value;
-      const address = document.getElementById("clientAddress").value;
-      const receipt = document.getElementById("receiptPreview");
-      const date = new Date().toLocaleDateString();
+    <div class="products-grid" id="products-list">
+      <!-- Produits affichés dynamiquement ici -->
+    </div>
 
-      document.getElementById("receiptClientName").textContent = name;
-      document.getElementById("receiptClientPhone").textContent = phone;
-      document.getElementById("receiptClientAddress").textContent = address;
-      document.getElementById("receiptOrderID").textContent = document.getElementById("orderId").textContent;
-      document.getElementById("receiptDate").textContent = date;
-      document.getElementById("receiptTotal").textContent = subtotal;
-      document.getElementById("receiptTotalLine").textContent = subtotal;
+    <!-- Calculatrice -->
+    <section class="calculator">
+      <h3>Calculatrice</h3>
+      <input class="calc-display" id="calc-display" value="0" readonly>
+      <div class="calc-grid">
+        <button>7</button><button>8</button><button>9</button><button>+</button>
+        <button>4</button><button>5</button><button>6</button><button>-</button>
+        <button>1</button><button>2</button><button>3</button><button>×</button>
+        <button>0</button><button>.</button><button>=</button><button>÷</button>
+        <button class="percent">20%</button>
+        <button class="percent">30%</button>
+        <button class="percent">35%</button>
+        <button>C</button>
+      </div>
+    </section>
+  </section>
 
-      const cartRows = document.querySelectorAll("#cartItems tr");
-      const receiptBody = document.getElementById("receiptItems");
-      receiptBody.innerHTML = "";
-      cartRows.forEach(r => {
-        const cloned = r.cloneNode(true);
-        cloned.deleteCell(2);
-        receiptBody.appendChild(cloned);
-      });
+  <!-- COLONNE DROITE : Facture -->
+  <aside class="right-panel">
+    <h3>Bienvenue à Éclat de Coco</h3>
+    <p>Abidjan – Côte d’Ivoire</p>
 
-      receipt.style.display = "block";
-      window.print();
-    }
-  </script>
+    <input type="text" id="client-name" placeholder="Nom du client">
+    <input type="text" id="client-phone" placeholder="Téléphone">
+    <input type="text" id="client-address" placeholder="Adresse">
+    <input type="number" id="delivery" placeholder="Livraison (FCFA)">
+
+    <p>ID Facture: <span id="invoice-id">202501</span></p>
+    <p>Date: <input type="date" id="invoice-date"></p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Produit</th>
+          <th>Qté</th>
+          <th>Prix</th>
+          <th>Total</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <p>Subtotal: <span id="subtotal">0 FCFA</span></p>
+    <p>Total final: <span id="total-final">0 FCFA</span></p>
+
+    <div style="display:flex; gap:10px; margin-top:10px;">
+      <button id="print-btn">Imprimer</button>
+      <button id="save-btn">Sauvegarder</button>
+    </div>
+
+    <p style="text-align:center; margin-top:15px;">
+      Eclat de Coco vous remercie<br>
+      WhatsApp: +225 07 77 00 08 03<br>
+      Email: eclatdecoco933@gmail.com
+    </p>
+  </aside>
+
+</main>
+
+<footer class="footer">
+  @Eclatdecoco.Official | All right reserved
+</footer>
+
+<!-- Lien JS -->
+<script src="script.js"></script>
+
 </body>
 </html>
