@@ -1,1 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Éclat de Coco - Clients</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<h2>Gestion des Clients</h2>
+
+<div class="container">
+
+  <!-- Côté gauche : Formulaire ajout client -->
+  <div class="left-panel">
+    <h3>Ajouter un client</h3>
+    <input type="text" id="client-name" placeholder="Nom">
+    <input type="text" id="client-phone" placeholder="Téléphone">
+    <input type="text" id="client-address" placeholder="Adresse">
+    <button id="add-client-btn">Ajouter</button>
+  </div>
+
+  <!-- Côté droit : Tableau clients -->
+  <div class="right-panel">
+    <h3>Liste des Clients</h3>
+    <table id="customers-table">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Téléphone</th>
+          <th>Adresse</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="3">Aucun client</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+let customers = [];
+
+function updateCustomersTable(){
+  const tbody = document.querySelector('#customers-table tbody');
+  tbody.innerHTML = '';
+  if(customers.length===0){
+    tbody.innerHTML = '<tr><td colspan="3">Aucun client</td></tr>';
+    return;
+  }
+  customers.forEach(c => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${c.name}</td><td>${c.phone}</td><td>${c.address}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+document.getElementById('add-client-btn').addEventListener('click', ()=>{
+  const name = document.getElementById('client-name').value.trim();
+  const phone = document.getElementById('client-phone').value.trim();
+  const address = document.getElementById('client-address').value.trim();
+  if(!name) return alert("Nom obligatoire");
+  customers.push({name, phone, address});
+  updateCustomersTable();
+  document.getElementById('client-name').value='';
+  document.getElementById('client-phone').value='';
+  document.getElementById('client-address').value='';
+});
+</script>
+
+</body>
+</html>
