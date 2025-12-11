@@ -4,7 +4,12 @@
   <meta charset="UTF-8">
   <title>Éclat de Coco POS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Fonts et CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  
+  <!-- Manifest PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#e91e63">
 </head>
@@ -12,7 +17,7 @@
 
 <!-- NAVBAR -->
 <nav>
-  <h2>Éclat de Coco</h2>
+  <h2>Éclat de Coco POS</h2>
   <div class="nav-buttons">
     <a class="active" href="index.html">POS</a>
     <a href="dashboard.html">Dashboard</a>
@@ -24,63 +29,68 @@
   </div>
 </nav>
 
-<main class="pos-layout">
+<!-- POS layout en 3 colonnes -->
+<main class="pos-container">
 
-  <!-- CATEGORIE GAUCHE -->
+  <!-- Côté gauche : catégories -->
   <aside class="left-panel">
-    <button onclick="filterCategory('Savon')">Savon</button>
-    <button onclick="filterCategory('Lotions')">Lotions</button>
-    <button onclick="filterCategory('Body Butter')">Body Butter</button>
-    <button onclick="filterCategory('Masque Cheveux')">Masque Cheveux</button>
-    <button onclick="filterCategory('Sérum Cheveux')">Sérum Cheveux</button>
-    <button onclick="filterCategory('Sérum Visage')">Sérum Visage</button>
-    <button onclick="filterCategory('Édition Noël')">Édition Noël</button>
-    <button onclick="filterCategory('Souvenir')">Souvenir</button>
+    <button>Savon</button>
+    <button>Lotions</button>
+    <button>Body Butter</button>
+    <button>Masque Cheveux</button>
+    <button>Sérum Cheveux</button>
+    <button>Sérum Visage</button>
+    <button>Édition Noël</button>
+    <button>Souvenir</button>
   </aside>
 
-  <!-- PRODUITS CENTRE -->
+  <!-- Côté central : recherche produits + calculatrice -->
   <section class="center-panel">
-    <h2 style="text-align:center;">Bienvenue à Éclat de Coco</h2>
-    <p style="text-align:center;">Abidjan, Côte d'Ivoire</p>
-    <input type="text" placeholder="Rechercher un produit..." id="search-product">
+    <h2>Rechercher un produit</h2>
+    <input type="text" placeholder="Nom du produit..." id="search-product">
 
-    <div id="products-container">
-      <!-- Exemple produit -->
-      <div class="product-card">
-        <strong>Rose vanille</strong><br>
-        <small>Savon · Stock: 10</small>
-        <div>
-          <span><strong>3,000 FCFA</strong></span>
-          <input type="number" value="1" style="width:60px;">
-          <button>Ajouter</button>
-        </div>
-      </div>
-      <div class="product-card">
-        <strong>Velours de café</strong><br>
-        <small>Savon · Stock: 8</small>
-        <div>
-          <span><strong>3,000 FCFA</strong></span>
-          <input type="number" value="1" style="width:60px;">
-          <button>Ajouter</button>
-        </div>
-      </div>
+    <div class="products-grid" id="products-list">
+      <!-- Les produits seront ajoutés ici dynamiquement -->
     </div>
+
+    <!-- Calculatrice -->
+    <section class="calculator">
+      <h3>Calculatrice</h3>
+      <input class="calc-display" value="0" readonly id="calc-display">
+      <div class="calc-grid">
+        <button>7</button><button>8</button><button>9</button><button>+</button>
+        <button>4</button><button>5</button><button>6</button><button>-</button>
+        <button>1</button><button>2</button><button>3</button><button>×</button>
+        <button>0</button><button>.</button><button>=</button><button>÷</button>
+        <button class="percent">20%</button>
+        <button class="percent">30%</button>
+        <button class="percent">35%</button>
+        <button>C</button>
+      </div>
+    </section>
   </section>
 
-  <!-- FACTURE + CALCULATRICE DROITE -->
+  <!-- Côté droit : facture -->
   <aside class="right-panel">
-    <h3>Facture</h3>
-    <input type="text" placeholder="Nom du client" id="client-name">
-    <input type="text" placeholder="Téléphone" id="client-phone">
-    <input type="text" placeholder="Adresse" id="client-address">
-    <input type="number" id="delivery" placeholder="Livraison">
-
+    <h3>Bienvenue à Éclat de Coco</h3>
+    <p>Abidjan – Côte d’Ivoire</p>
     <p>ID Facture: <span id="invoice-id">202501</span></p>
     <p>Date: <input type="date" id="invoice-date"></p>
 
+    <input type="text" placeholder="Nom du client" id="client-name">
+    <input type="text" placeholder="Téléphone" id="client-phone">
+    <input type="text" placeholder="Adresse" id="client-address">
+    <input type="number" placeholder="Livraison" id="delivery" value="0">
+
     <table>
       <thead>
-        <tr><th>Produit</th><th>Qté</th><th>Prix</th><th>Total</th><th>Action</th></tr>
+        <tr>
+          <th>Produit</th>
+          <th>Qté</th>
+          <th>Prix</th>
+          <th>Total</th>
+          <th>Action</th>
+        </tr>
       </thead>
       <tbody></tbody>
     </table>
@@ -93,30 +103,28 @@
       <button id="save-btn">Sauvegarder</button>
     </div>
 
-    <section class="calculator">
-      <h3>Calculatrice</h3>
-      <input class="calc-display" value="0" readonly>
-      <div class="calc-grid">
-        <button>7</button><button>8</button><button>9</button><button>+</button>
-        <button>4</button><button>5</button><button>6</button><button>-</button>
-        <button>1</button><button>2</button><button>3</button><button>×</button>
-        <button>0</button><button>.</button><button>=</button><button>÷</button>
-        <button class="percent">20%</button>
-        <button class="percent">30%</button>
-        <button class="percent">35%</button>
-        <button>C</button>
-      </div>
-    </section>
-
+    <p style="text-align:center; margin-top:15px;">WhatsApp: +225 07 77 00 08 03<br>Email: eclatdecoco933@gmail.com</p>
     <p style="text-align:center; margin-top:10px;">Eclat de Coco vous remercie</p>
-    <p style="text-align:center;">Email: eclatdecoco933@gmail.com | WhatsApp: +225 07 77 00 08 03</p>
   </aside>
 
 </main>
 
-<footer class="footer">@Eclatdecoco.Official | All right reserved</footer>
+<footer class="footer">
+  @Eclatdecoco.Official | All rights reserved
+</footer>
 
 <script src="script.js"></script>
+
+<!-- Service Worker -->
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(reg => console.log("Service Worker registered", reg))
+        .catch(err => console.log("SW registration failed", err));
+    });
+  }
+</script>
 
 </body>
 </html>
