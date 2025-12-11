@@ -1,12 +1,24 @@
-/* ===== BASE ===== */
+/* ===== Global ===== */
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  background-color: #fdf0f6;
+  background: #ffe6f2;
+  color: #333;
 }
 
+h1, h2, h3 {
+  margin: 0 0 10px 0;
+  color: #e91e63;
+  text-align: center;
+}
+
+input, select, button {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ===== Nav ===== */
 nav {
-  background: #e91e63;
+  background: #ff7ab8;
   color: #fff;
   padding: 12px 20px;
   display: flex;
@@ -14,161 +26,196 @@ nav {
   align-items: center;
 }
 
-nav h2 { margin:0; font-size:1.5em; }
-.nav-buttons a {
-  color:#fff;
-  text-decoration:none;
-  margin-left:15px;
-  font-weight:500;
+nav a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 15px;
+  font-weight: 500;
 }
-.nav-buttons a.active { text-decoration:underline; }
 
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* ===== POS Container ===== */
 .pos-container {
-  display: flex;
-  gap: 20px;
-  padding: 20px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 25% 45% 30%;
+  gap: 10px;
+  padding: 10px;
+  height: calc(100vh - 60px);
 }
 
-/* ==== COLONNE GAUCHE : Catégories ==== */
+/* ===== Left Panel - Categories ===== */
 .left-panel {
-  flex:1 1 180px;
-  max-width:220px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  overflow-y: auto;
 }
 
 .left-panel button {
-  padding:12px;
-  border:none;
-  border-radius:12px;
-  background:#f8bbd0;
-  cursor:pointer;
-  font-weight:500;
-  transition:0.2s;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #ffb7da;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
 }
 
-.left-panel button:hover { background:#e91e63; color:white; }
+.left-panel button:hover {
+  background: #ff7ab8;
+  color: #fff;
+}
 
-/* ==== COLONNE CENTRALE : Produits + Calculatrice ==== */
+/* ===== Center Panel - Products + Calculator ===== */
 .center-panel {
-  flex:2 1 400px;
-  max-width:600px;
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  overflow-y: auto;
 }
 
-.center-panel input {
-  width:100%;
-  padding:12px;
-  border-radius:10px;
-  border:2px solid #f8bbd0;
-  margin-bottom:15px;
-}
-
-.products-grid {
-  display:flex;
-  flex-direction:column;
-  gap:12px;
+.search-bar {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 2px solid #ff7ab8;
+  border-radius: 8px;
 }
 
 .product-card {
-  background:#fff;
-  padding:15px;
-  border-radius:16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  background: #ffe6f2;
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-.product-card button {
-  padding:8px 12px;
-  border:none;
-  border-radius:10px;
-  background:#e91e63;
-  color:white;
-  cursor:pointer;
+.product-card:hover {
+  background: #ff7ab8;
+  color: #fff;
 }
 
-/* ==== CALCULATRICE ==== */
+/* ===== Calculator ===== */
 .calculator {
-  background:#fff;
-  padding:20px;
-  border-radius:16px;
-  margin-top:20px;
+  background: #fff;
+  padding: 10px;
+  margin-top: 20px;
+  border-radius: 12px;
 }
 
 .calc-display {
-  width:100%;
-  font-size:1.5em;
-  text-align:right;
-  padding:12px;
-  margin-bottom:15px;
-  border-radius:10px;
-  border:2px solid #f8bbd0;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 2px solid #ff7ab8;
+  border-radius: 8px;
+  text-align: right;
+  font-size: 1.2em;
 }
 
 .calc-grid {
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
 }
 
 .calc-grid button {
-  padding:15px;
-  font-size:1.2em;
-  border-radius:10px;
-  border:none;
-  background:#f8bbd0;
-  cursor:pointer;
+  padding: 10px;
+  font-size: 1em;
+  border: none;
+  border-radius: 8px;
+  background: #ffb7da;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-.calc-grid button:hover { background:#e91e63; color:white; }
+.calc-grid button:hover {
+  background: #ff7ab8;
+  color: #fff;
+}
 
-/* ==== COLONNE DROITE : Facture ==== */
+/* ===== Right Panel - Invoice ===== */
 .right-panel {
-  flex:1 1 300px;
-  max-width:400px;
-  background:#fff;
-  padding:20px;
-  border-radius:16px;
-  overflow-y:auto;
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .right-panel input {
-  width:100%;
-  margin-bottom:10px;
-  padding:10px;
-  border-radius:10px;
-  border:2px solid #f8bbd0;
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  border: 2px solid #ff7ab8;
 }
 
 .right-panel table {
-  width:100%;
-  border-collapse:collapse;
-  margin-top:10px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
 }
 
 .right-panel th, .right-panel td {
-  border:1px solid #f8bbd0;
-  padding:8px;
-  text-align:center;
-  font-size:0.9em;
+  border: 1px solid #ffb7da;
+  padding: 6px;
+  text-align: center;
 }
 
 .right-panel th {
-  background:#ffe6ef;
-  color:#e91e63;
+  background: #ff7ab8;
+  color: #fff;
 }
 
-.footer {
-  text-align:center;
-  font-weight:500;
-  padding:15px 0;
-  background:#f8bbd0;
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
 }
 
-/* ==== RESPONSIVE ==== */
+.action-buttons button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #ff7ab8;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.action-buttons button:hover {
+  background: #d94f8b;
+}
+
+/* ===== Footer ===== */
+footer {
+  background: #ff7ab8;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+}
+
+/* ===== Responsive ===== */
 @media(max-width:1024px){
-  .pos-container{flex-direction:column; align-items:center;}
-  .left-panel,.center-panel,.right-panel{max-width:100%;}
+  .pos-container{
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    height: auto;
+  }
+  .left-panel, .center-panel, .right-panel {
+    max-height: none;
+  }
 }
