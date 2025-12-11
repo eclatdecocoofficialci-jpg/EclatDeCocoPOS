@@ -1,81 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Éclat de Coco POS Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Éclat de Coco - Dashboard</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; font-family:'Poppins',sans-serif; background:#fff5fb; color:#333; }
+  header {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:15px 30px; background:#e91e63; color:#fff;
+  }
+  header h1 { font-size:1.8em; }
+  nav a {
+    color:#fff; text-decoration:none; margin-left:20px; font-weight:500; transition:0.3s;
+  }
+  nav a:hover, nav a.active { text-decoration:underline; }
+
+  main { padding:20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; }
+
+  .tile {
+    background:#fff; padding:20px; border-radius:12px;
+    box-shadow:0 4px 10px rgba(233,30,99,0.1);
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    transition:0.3s; cursor:pointer;
+  }
+  .tile:hover { background:#e91e63; color:#fff; }
+  .tile h2 { margin-bottom:5px; }
+  .tile p { font-size:0.9em; }
+
+  footer { text-align:center; padding:15px; background:#e91e63; color:#fff; margin-top:auto; }
+</style>
 </head>
+
 <body>
-  <div class="sidebar">
-    <h2>Éclat de Coco</h2>
-    <ul>
-  <li class="active">🏠 Dashboard</li>
-  <li><a href="sales.html">💰 Sales</a></li>
-  <li><a href="products.html">🧴 Products</a></li>
-  <li><a href="customers.html">👩‍💼 Customers</a></li>
-  <li><a href="index.html">🧾 Orders</a></li> <!-- ✅ Link added -->
-  <li><a href="suppliers.html">🚚 Suppliers</a></li>
-  <li><a href="expenses.html">💸 Expenses</a></li>
-</ul>
-    </ul>
+
+<header>
+  <h1>Éclat de Coco Dashboard</h1>
+  <nav>
+    <a class="active" href="pos.html">POS</a>
+    <a href="#">Sales</a>
+    <a href="#">Products</a>
+    <a href="#">Inventory</a>
+    <a href="#">Expenses</a>
+    <a href="#">Reports</a>
+  </nav>
+</header>
+
+<main>
+  <div class="tile" onclick="window.location.href='pos.html'">
+    <h2>POS</h2>
+    <p>Ouvrir le point de vente</p>
   </div>
-
-  <div class="main-content">
-    <header>
-      <h1>Dashboard</h1>
-      <input type="text" placeholder="Search...">
-    </header>
-
-    <section class="cards">
-      <div class="card">
-        <h3>Customers</h3>
-        <p>54</p>
-      </div>
-      <div class="card">
-        <h3>Products</h3>
-        <p>79</p>
-      </div>
-      <div class="card">
-        <h3>Sales</h3>
-        <p>124</p>
-      </div>
-      <div class="card highlight">
-        <h3>Revenue</h3>
-        <p>6 000 CFA</p>
-      </div>
-    </section>
-
-    <section class="charts">
-      <h2>Sales Overview</h2>
-      <canvas id="salesChart"></canvas>
-    </section>
+  <div class="tile" onclick="window.location.href='sales.html'">
+    <h2>Ventes</h2>
+    <p>Voir toutes les ventes</p>
   </div>
+  <div class="tile" onclick="window.location.href='products.html'">
+    <h2>Produits</h2>
+    <p>Gestion des produits</p>
+  </div>
+  <div class="tile" onclick="window.location.href='inventory.html'">
+    <h2>Inventaire</h2>
+    <p>Suivi du stock</p>
+  </div>
+  <div class="tile" onclick="window.location.href='expenses.html'">
+    <h2>Dépenses</h2>
+    <p>Suivi des dépenses</p>
+  </div>
+  <div class="tile" onclick="window.location.href='reports.html'">
+    <h2>Rapports</h2>
+    <p>Voir les rapports</p>
+  </div>
+</main>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    const ctx = document.getElementById('salesChart');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-        datasets: [{
-          label: 'Monthly Sales (CFA)',
-          data: [1200, 1900, 3000, 5000, 2300, 4000],
-          borderColor: '#ff4da6',
-          backgroundColor: 'rgba(255,77,166,0.1)',
-          fill: true,
-          tension: 0.4
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: { beginAtZero: true }
-        }
-      }
-    });
-  </script>
+<footer>@Eclatdecoco.Official | All right reserved</footer>
+
 </body>
 </html>
