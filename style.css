@@ -1,314 +1,174 @@
-/* 🌸 Éclat de Coco POS & Dashboard Style */
-
-/* === GLOBAL === */
+/* ===== BASE ===== */
 body {
-  display: flex;
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  background-color: #fff5fb;
-  color: #333;
+  background-color: #fdf0f6;
 }
 
-/* === SIDEBAR === */
-.sidebar {
-  width: 260px;
-  background-color: #e91e63;
-  color: white;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding: 30px 20px;
-  box-sizing: border-box;
-}
-
-.sidebar h1 {
-  font-size: 22px;
-  font-weight: 700;
-  margin-top: 15px;
-  margin-bottom: 60px;
-  letter-spacing: 0.5px;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar ul li {
-  margin: 20px 0;
-  font-size: 16px;
-  transition: 0.3s;
-}
-
-.sidebar ul li:hover {
-  transform: translateX(5px);
-}
-
-.sidebar ul li a {
-  text-decoration: none;
-  color: white;
+nav {
+  background: #e91e63;
+  color: #fff;
+  padding: 12px 20px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
 }
 
-/* === MAIN CONTENT === */
-.main-content {
-  margin-left: 260px;
-  padding: 40px;
-  width: calc(100% - 260px);
-  box-sizing: border-box;
+nav h2 { margin:0; font-size:1.5em; }
+.nav-buttons a {
+  color:#fff;
+  text-decoration:none;
+  margin-left:15px;
+  font-weight:500;
 }
+.nav-buttons a.active { text-decoration:underline; }
 
-/* === POS LAYOUT === */
 .pos-container {
   display: flex;
-  gap: 25px;
-  justify-content: space-between;
+  gap: 20px;
   padding: 20px;
-  background-color: #fff5fb;
-}
-
-/* === PRODUCT SECTION === */
-.product-section {
-  flex: 1.6;
-  background: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.1);
-  padding: 25px;
-  border: 2px solid #f8bbd0;
-}
-
-.pos-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.pos-header input {
-  width: 60%;
-  padding: 8px 12px;
-  border: 1px solid #f8bbd0;
-  border-radius: 8px;
-  outline: none;
-  transition: 0.3s;
-}
-
-.pos-header input:focus {
-  border-color: #e91e63;
-}
-
-/* Category Buttons */
-.categories {
-  display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 15px;
 }
 
-.category-btn {
-  background-color: #f8bbd0;
-  color: #e91e63;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 10px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
+/* ==== COLONNE GAUCHE : Catégories ==== */
+.left-panel {
+  flex:1 1 180px;
+  max-width:220px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
 }
 
-.category-btn:hover,
-.category-btn.active {
-  background-color: #e91e63;
-  color: white;
+.left-panel button {
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:#f8bbd0;
+  cursor:pointer;
+  font-weight:500;
+  transition:0.2s;
 }
 
-.category-btn.add-btn {
-  background-color: #fff0f6;
-  color: #e91e63;
-  border: 1px dashed #e91e63;
+.left-panel button:hover { background:#e91e63; color:white; }
+
+/* ==== COLONNE CENTRALE : Produits + Calculatrice ==== */
+.center-panel {
+  flex:2 1 400px;
+  max-width:600px;
 }
 
-/* Product Table */
-.product-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+.center-panel input {
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:2px solid #f8bbd0;
+  margin-bottom:15px;
 }
 
-.product-table th {
-  background-color: #ffe4ec;
-  color: #e91e63;
-  padding: 10px;
-  text-align: center;
+.products-grid {
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
 
-.product-table td {
-  padding: 8px;
-  text-align: center;
-  border-bottom: 1px solid #f8bbd0;
+.product-card {
+  background:#fff;
+  padding:15px;
+  border-radius:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-.product-table button {
-  background-color: #e91e63;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 6px 10px;
-  cursor: pointer;
-  font-size: 14px;
+.product-card button {
+  padding:8px 12px;
+  border:none;
+  border-radius:10px;
+  background:#e91e63;
+  color:white;
+  cursor:pointer;
 }
 
-.product-table button:hover {
-  background-color: #d81b60;
+/* ==== CALCULATRICE ==== */
+.calculator {
+  background:#fff;
+  padding:20px;
+  border-radius:16px;
+  margin-top:20px;
 }
 
-/* === CASHIER SECTION === */
-.cashier-section {
-  flex: 1;
-  background: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.1);
-  padding: 25px;
-  border: 2px solid #f8bbd0;
+.calc-display {
+  width:100%;
+  font-size:1.5em;
+  text-align:right;
+  padding:12px;
+  margin-bottom:15px;
+  border-radius:10px;
+  border:2px solid #f8bbd0;
 }
 
-.cashier-section h2 {
-  color: #e91e63;
-  text-align: center;
-  margin-bottom: 20px;
+.calc-grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
 }
 
-/* Client Info */
-.client-form input {
-  width: 100%;
-  padding: 8px 10px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  border: 1px solid #f8bbd0;
+.calc-grid button {
+  padding:15px;
+  font-size:1.2em;
+  border-radius:10px;
+  border:none;
+  background:#f8bbd0;
+  cursor:pointer;
 }
 
-.client-form input:focus {
-  border-color: #e91e63;
+.calc-grid button:hover { background:#e91e63; color:white; }
+
+/* ==== COLONNE DROITE : Facture ==== */
+.right-panel {
+  flex:1 1 300px;
+  max-width:400px;
+  background:#fff;
+  padding:20px;
+  border-radius:16px;
+  overflow-y:auto;
 }
 
-/* Cart Table */
-.cart-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+.right-panel input {
+  width:100%;
+  margin-bottom:10px;
+  padding:10px;
+  border-radius:10px;
+  border:2px solid #f8bbd0;
 }
 
-.cart-table th {
-  background-color: #ffe4ec;
-  color: #e91e63;
-  padding: 8px;
+.right-panel table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
 }
 
-.cart-table td {
-  padding: 6px;
-  text-align: center;
-  border-bottom: 1px solid #f8bbd0;
+.right-panel th, .right-panel td {
+  border:1px solid #f8bbd0;
+  padding:8px;
+  text-align:center;
+  font-size:0.9em;
 }
 
-/* Summary */
-.summary {
-  margin-top: 15px;
-  border-top: 1px solid #f8bbd0;
-  padding-top: 10px;
+.right-panel th {
+  background:#ffe6ef;
+  color:#e91e63;
 }
 
-.summary p {
-  display: flex;
-  justify-content: space-between;
-  margin: 5px 0;
-  font-weight: 500;
+.footer {
+  text-align:center;
+  font-weight:500;
+  padding:15px 0;
+  background:#f8bbd0;
 }
 
-/* Payment */
-.payment-section {
-  margin-top: 10px;
-}
-
-.payment-section select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #f8bbd0;
-  border-radius: 8px;
-}
-
-/* Buttons */
-.actions {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.actions button {
-  flex: 1;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  background-color: #e91e63;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.actions button:hover {
-  background-color: #d81b60;
-}
-
-/* === RECEIPT STYLE === */
-.receipt {
-  background-color: #fff;
-  border: 1px solid #f8bbd0;
-  border-radius: 10px;
-  padding: 15px;
-  width: 320px;
-  margin: 20px auto;
-  display: none;
-  box-shadow: 0 3px 10px rgba(233, 30, 99, 0.1);
-}
-
-.receipt h2 {
-  color: #e91e63;
-  margin-bottom: 5px;
-}
-
-.receipt p {
-  font-size: 13px;
-  margin: 3px 0;
-}
-
-.receipt table {
-  width: 100%;
-  margin-top: 10px;
-  border-collapse: collapse;
-}
-
-.receipt th {
-  text-align: left;
-  color: #e91e63;
-  padding-bottom: 5px;
-  border-bottom: 1px solid #f8bbd0;
-}
-
-.receipt td {
-  padding: 5px 0;
-  font-size: 13px;
-}
-
-.receipt hr {
-  border: none;
-  border-top: 1px dashed #f8bbd0;
-  margin: 10px 0;
-}
-
-.receipt strong {
-  color: #e91e63;
+/* ==== RESPONSIVE ==== */
+@media(max-width:1024px){
+  .pos-container{flex-direction:column; align-items:center;}
+  .left-panel,.center-panel,.right-panel{max-width:100%;}
 }
