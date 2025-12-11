@@ -1,221 +1,232 @@
-/* ===== Global ===== */
+/* ======== FONT & BODY ======== */
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  background: #ffe6f2;
+  background: #fff5fb;
   color: #333;
 }
 
-h1, h2, h3 {
-  margin: 0 0 10px 0;
-  color: #e91e63;
-  text-align: center;
-}
-
-input, select, button {
-  font-family: 'Poppins', sans-serif;
-}
-
-/* ===== Nav ===== */
-nav {
-  background: #ff7ab8;
-  color: #fff;
-  padding: 12px 20px;
+/* ======== HEADER ======== */
+header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 15px 30px;
+  background: #e91e63;
+  color: #fff;
 }
-
+header h1 {
+  font-size: 1.8em;
+}
 nav a {
   color: #fff;
   text-decoration: none;
-  margin-left: 15px;
+  margin-left: 20px;
   font-weight: 500;
+  transition: 0.3s;
 }
-
-nav a:hover {
+nav a:hover, nav a.active {
   text-decoration: underline;
 }
 
-/* ===== POS Container ===== */
-.pos-container {
-  display: grid;
-  grid-template-columns: 25% 45% 30%;
-  gap: 10px;
-  padding: 10px;
-  height: calc(100vh - 60px);
-}
-
-/* ===== Left Panel - Categories ===== */
-.left-panel {
+/* ======== DASHBOARD TILES ======== */
+.tile {
   background: #fff;
-  padding: 15px;
+  padding: 20px;
   border-radius: 12px;
-  overflow-y: auto;
+  box-shadow: 0 4px 10px rgba(233,30,99,0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: 0.3s;
+  cursor: pointer;
+}
+.tile:hover {
+  background: #e91e63;
+  color: #fff;
+}
+.tile h2 {
+  margin-bottom: 5px;
+}
+.tile p {
+  font-size: 0.9em;
 }
 
+/* ======== POS LAYOUT ======== */
+.pos-layout {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* LEFT PANEL CATEGORIES */
+.left-panel {
+  flex: 1 1 200px;
+  max-width: 250px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
 .left-panel button {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 10px;
+  padding: 15px;
   border: none;
-  border-radius: 10px;
-  background: #ffb7da;
+  border-radius: 12px;
+  background: #f8bbd0;
   cursor: pointer;
   font-weight: 500;
-  transition: 0.2s;
 }
-
 .left-panel button:hover {
-  background: #ff7ab8;
+  background: #e91e63;
   color: #fff;
 }
 
-/* ===== Center Panel - Products + Calculator ===== */
+/* CENTER PANEL PRODUCTS + CALCULATOR */
 .center-panel {
+  flex: 2 1 400px;
+  max-width: 600px;
+}
+.center-panel h2 {
+  text-align: center;
+  margin-bottom: 5px;
+}
+.center-panel input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid #f8bbd0;
+  margin-bottom: 15px;
+}
+.product-card {
   background: #fff;
   padding: 15px;
-  border-radius: 12px;
-  overflow-y: auto;
-}
-
-.search-bar {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 2px solid #ff7ab8;
-  border-radius: 8px;
-}
-
-.product-card {
-  background: #ffe6f2;
-  border-radius: 12px;
-  padding: 10px;
-  margin-bottom: 10px;
+  border-radius: 16px;
+  margin-bottom: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer;
-  transition: 0.2s;
 }
-
-.product-card:hover {
-  background: #ff7ab8;
+.product-card button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 10px;
+  background: #e91e63;
   color: #fff;
+  cursor: pointer;
+}
+.product-card button:hover {
+  background: #d81b60;
 }
 
-/* ===== Calculator ===== */
+/* CALCULATOR */
+.calculator-invoice {
+  flex: 1 1 300px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 .calculator {
   background: #fff;
-  padding: 10px;
-  margin-top: 20px;
-  border-radius: 12px;
+  padding: 20px;
+  border-radius: 16px;
 }
-
 .calc-display {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 2px solid #ff7ab8;
-  border-radius: 8px;
+  font-size: 1.5em;
   text-align: right;
-  font-size: 1.2em;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border: 2px solid #f8bbd0;
 }
-
 .calc-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 5px;
+  gap: 10px;
 }
-
 .calc-grid button {
-  padding: 10px;
-  font-size: 1em;
+  padding: 15px;
+  font-size: 1.2em;
+  border-radius: 10px;
   border: none;
-  border-radius: 8px;
-  background: #ffb7da;
+  background: #f8bbd0;
   cursor: pointer;
-  transition: 0.2s;
 }
-
 .calc-grid button:hover {
-  background: #ff7ab8;
+  background: #e91e63;
   color: #fff;
 }
 
-/* ===== Right Panel - Invoice ===== */
+/* RIGHT PANEL INVOICE */
 .right-panel {
   background: #fff;
-  padding: 15px;
-  border-radius: 12px;
+  padding: 20px;
+  border-radius: 16px;
+  max-height: 600px;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
 }
-
 .right-panel input {
   width: 100%;
-  padding: 8px;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  border: 2px solid #ff7ab8;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 2px solid #f8bbd0;
 }
-
 .right-panel table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 10px;
+  margin-top: 10px;
 }
-
 .right-panel th, .right-panel td {
-  border: 1px solid #ffb7da;
-  padding: 6px;
+  border: 1px solid #f8bbd0;
+  padding: 8px;
   text-align: center;
+  font-size: 0.9em;
+  word-wrap: break-word;
+  vertical-align: middle;
 }
-
 .right-panel th {
-  background: #ff7ab8;
-  color: #fff;
+  background: #ffe6ef;
+  color: #e91e63;
 }
-
-.action-buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: auto;
-}
-
-.action-buttons button {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background: #ff7ab8;
-  color: #fff;
+.final-total {
   font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
+  margin-top: 10px;
+  text-align: right;
 }
 
-.action-buttons button:hover {
-  background: #d94f8b;
-}
-
-/* ===== Footer ===== */
-footer {
-  background: #ff7ab8;
+/* BUTTONS PRINT & SAVE */
+.right-panel button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #e91e63;
   color: #fff;
-  text-align: center;
-  padding: 10px;
+  cursor: pointer;
+}
+.right-panel button:hover {
+  background: #d81b60;
 }
 
-/* ===== Responsive ===== */
-@media(max-width:1024px){
-  .pos-container{
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
-    height: auto;
+/* FOOTER */
+.footer, .site-footer {
+  text-align: center;
+  font-weight: 500;
+  padding: 15px 0;
+  background: #f8bbd0;
+}
+
+/* RESPONSIVE */
+@media(max-width: 1024px) {
+  .pos-layout {
+    flex-direction: column;
+    align-items: center;
   }
-  .left-panel, .center-panel, .right-panel {
-    max-height: none;
+  .left-panel, .center-panel, .calculator-invoice {
+    max-width: 100%;
   }
 }
