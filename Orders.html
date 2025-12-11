@@ -1,155 +1,123 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Éclat de Coco POS - Orders</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      background-color: #fff5fb;
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-    }
-
-    .pos-container {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      padding: 40px;
-      margin-left: 260px; /* same as sidebar width */
-      box-sizing: border-box;
-    }
-
-    /* === Product grid === */
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 15px;
-      flex: 2;
-    }
-
-    .product {
-      background-color: white;
-      border: 1px solid #ffd1e8;
-      border-radius: 10px;
-      padding: 15px;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .product:hover {
-      background-color: #ffe6f2;
-      transform: scale(1.05);
-    }
-
-    .product img {
-      width: 60px;
-      height: 60px;
-      object-fit: contain;
-      margin-bottom: 10px;
-    }
-
-    /* === Order summary === */
-    .order-summary {
-      flex: 1;
-      background-color: white;
-      border-radius: 12px;
-      padding: 25px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      margin-left: 20px;
-    }
-
-    .order-summary h2 {
-      margin-top: 0;
-      color: #e91e63;
-    }
-
-    .order-items {
-      margin-top: 15px;
-      max-height: 250px;
-      overflow-y: auto;
-    }
-
-    .order-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      font-size: 15px;
-    }
-
-    .order-total {
-      margin-top: 20px;
-      font-weight: 600;
-      font-size: 18px;
-      color: #e91e63;
-      border-top: 1px solid #ffd1e8;
-      padding-top: 10px;
-    }
-
-    .pay-btn {
-      background-color: #e91e63;
-      color: white;
-      border: none;
-      width: 100%;
-      padding: 14px;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-      margin-top: 15px;
-    }
-
-    .pay-btn:hover {
-      background-color: #c2185b;
-    }
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Éclat de Coco - Commandes</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="sidebar">
-    <h2>Éclat de Coco</h2>
-    <ul>
-      <li><a href="index.html">🏠 Dashboard</a></li>
-      <li><a href="#">🛒 Sales</a></li>
-      <li><a href="#">🧴 Products</a></li>
-      <li><a href="#">👩‍💼 Customers</a></li>
-      <li class="active"><a href="orders.html">📦 Orders</a></li>
-      <li><a href="#">🚚 Suppliers</a></li>
-      <li><a href="#">💸 Expenses</a></li>
-    </ul>
+
+<h2>Journal des Commandes</h2>
+
+<div class="container">
+
+  <!-- Côté gauche : filtres ou résumé -->
+  <div class="left-panel">
+    <h3>Filtres</h3>
+    <input type="date" id="filter-date">
+    <button id="filter-btn">Filtrer</button>
   </div>
 
-  <div class="pos-container">
-    <div class="product-grid">
-      <div class="product">
-        <img src="https://via.placeholder.com/60" alt="Savon">
-        <p>Savon Rose Vanilla</p>
-        <strong>1500 CFA</strong>
-      </div>
-      <div class="product">
-        <img src="https://via.placeholder.com/60" alt="Lotion">
-        <p>Lotion Coco</p>
-        <strong>2500 CFA</strong>
-      </div>
-      <div class="product">
-        <img src="https://via.placeholder.com/60" alt="Sérum">
-        <p>Sérum Brillance</p>
-        <strong>3500 CFA</strong>
-      </div>
-    </div>
-
-    <div class="order-summary">
-      <h2>🧾 Order Summary</h2>
-      <div class="order-items">
-        <div class="order-item"><span>Savon Rose Vanilla</span><span>1500 CFA</span></div>
-        <div class="order-item"><span>Lotion Coco</span><span>2500 CFA</span></div>
-      </div>
-      <div class="order-total">Total: 4000 CFA</div>
-      <button class="pay-btn">💖 Payer Maintenant</button>
-    </div>
+  <!-- Côté droit : tableau commandes -->
+  <div class="right-panel">
+    <h3>Liste des Commandes</h3>
+    <table id="orders-table">
+      <thead>
+        <tr>
+          <th>ID Facture</th>
+          <th>Client</th>
+          <th>Date</th>
+          <th>Total</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="5">Aucune commande</td></tr>
+      </tbody>
+    </table>
   </div>
+
+</div>
+
+<!-- Détails facture modal -->
+<div id="details-modal" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:#fff; border:2px solid #f8bbd0; padding:20px; z-index:1000;">
+  <h3>Détails de la facture</h3>
+  <table id="details-table">
+    <thead>
+      <tr><th>Produit</th><th>Qté</th><th>Prix</th><th>Total</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <button onclick="closeModal()">Fermer</button>
+</div>
+
+<script>
+function loadOrders(){
+  const orders = JSON.parse(localStorage.getItem("sales")) || [];
+  const tbody = document.querySelector('#orders-table tbody');
+  tbody.innerHTML = '';
+  if(orders.length===0){
+    tbody.innerHTML = '<tr><td colspan="5">Aucune commande</td></tr>';
+    return;
+  }
+  orders.forEach((o,i)=>{
+    const tr = document.createElement('tr');
+    const total = o.total || o.cart.reduce((acc,p)=>acc+p.price*p.qty,0) + (o.delivery||0);
+    tr.innerHTML = `
+      <td>${o.id}</td>
+      <td>${o.client}</td>
+      <td>${o.date}</td>
+      <td>${total.toLocaleString()} FCFA</td>
+      <td><button onclick="showDetails(${i})">Détails</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function showDetails(index){
+  const orders = JSON.parse(localStorage.getItem("sales")) || [];
+  const order = orders[index];
+  const tbody = document.querySelector('#details-table tbody');
+  tbody.innerHTML = '';
+  order.cart.forEach(p=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${p.name}</td><td>${p.qty}</td><td>${p.price.toLocaleString()}</td><td>${(p.price*p.qty).toLocaleString()}</td>`;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('details-modal').style.display='block';
+}
+
+function closeModal(){
+  document.getElementById('details-modal').style.display='none';
+}
+
+document.getElementById('filter-btn').addEventListener('click',()=>{
+  const date = document.getElementById('filter-date').value;
+  const orders = JSON.parse(localStorage.getItem("sales")) || [];
+  const tbody = document.querySelector('#orders-table tbody');
+  tbody.innerHTML='';
+  const filtered = orders.filter(o=>o.date===date);
+  if(filtered.length===0){
+    tbody.innerHTML = '<tr><td colspan="5">Aucune commande</td></tr>';
+    return;
+  }
+  filtered.forEach((o,i)=>{
+    const total = o.total || o.cart.reduce((acc,p)=>acc+p.price*p.qty,0) + (o.delivery||0);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${o.id}</td><td>${o.client}</td><td>${o.date}</td><td>${total.toLocaleString()} FCFA</td><td><button onclick="showDetails(${i})">Détails</button></td>`;
+    tbody.appendChild(tr);
+  });
+});
+
+loadOrders();
+</script>
+<footer style="background:#f8bbd0; padding:20px 0; text-align:center; font-family:'Poppins', sans-serif; font-weight:500; position:fixed; bottom:0; width:100%; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);">
+  <p style="margin:5px 0; font-size:14px;">2025 | <strong>Éclat de Coco Official</strong> | All Right Reserved</p>
+  <p style="margin:5px 0; font-size:14px;">
+    📧 <a href="mailto:eclatdecocoofficialci@gmail.com" style="color:#e91e63; text-decoration:none;">eclatdecocoofficialci@gmail.com</a> | 
+    📱 <a href="tel:+2250777000803" style="color:#e91e63; text-decoration:none;">0777000803</a>
+  </p>
+</footer>
 </body>
 </html>
