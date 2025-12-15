@@ -1,1 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Sales | Éclat de Coco</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
 
+<body>
+
+<nav>
+  <h2>Éclat de Coco POS</h2>
+  <div class="nav-buttons">
+    <a href="index.html">POS</a>
+    <a class="active" href="sales.html">Sales</a>
+    <a href="products.html">Products</a>
+    <a href="inventory.html">Inventory</a>
+    <a href="expenses.html">Expenses</a>
+    <a href="orders.html">Orders</a>
+    <a href="costumers.html">Costumers</a>
+  </div>
+</nav>
+
+<main style="padding:20px;">
+  <h1>Sales Invoices</h1>
+
+  <table border="1" width="100%" cellpadding="8">
+    <thead>
+      <tr>
+        <th>ID Facture</th>
+        <th>Date</th>
+        <th>Total</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="sales-table">
+      <tr>
+        <td colspan="4">Aucune vente enregistrée</td>
+      </tr>
+    </tbody>
+  </table>
+</main>
+
+<footer>
+  2025 | Éclat de Coco Official | All Rights Reserved
+</footer>
+
+<script>
+  const sales = JSON.parse(localStorage.getItem("sales")) || [];
+  const tbody = document.getElementById("sales-table");
+
+  tbody.innerHTML = "";
+
+  if (sales.length === 0) {
+    tbody.innerHTML = "<tr><td colspan='4'>Aucune vente enregistrée</td></tr>";
+  } else {
+    sales.forEach(sale => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${sale.id}</td>
+        <td>${sale.date}</td>
+        <td>${sale.total.toLocaleString()} FCFA</td>
+        <td><button>Voir</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+</script>
+
+</body>
+</html>
