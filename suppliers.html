@@ -1,1 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Suppliers | Éclat de Coco</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{margin:0;background:#fff5fb;color:#333}
+
+/* NAV */
+nav{
+  background:#e91e63;
+  padding:15px 30px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:#fff;
+}
+nav a{color:#fff;text-decoration:none;margin-left:15px;font-weight:500}
+nav a.active{text-decoration:underline}
+
+/* LAYOUT */
+main{
+  display:grid;
+  grid-template-columns:35% 65%;
+  gap:20px;
+  padding:20px;
+}
+
+/* LEFT FORM */
+.form-panel{
+  background:#fff;
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 4px 10px rgba(233,30,99,.1);
+}
+.form-panel h2{color:#e91e63;margin-bottom:15px}
+
+.form-panel input, .form-panel textarea{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border-radius:8px;
+  border:2px solid #f8bbd0;
+}
+
+.form-panel button{
+  width:100%;
+  padding:12px;
+  background:#e91e63;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+}
+.form-panel button:hover{background:#d81b60}
+
+/* RIGHT TABLE */
+.table-panel{
+  background:#fff;
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 4px 10px rgba(233,30,99,.1);
+}
+.table-panel h2{color:#e91e63;margin-bottom:10px}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+th,td{
+  border:1px solid #f8bbd0;
+  padding:8px;
+  text-align:center;
+  font-size:.9em;
+}
+th{background:#ffe6ef;color:#e91e63}
+td[contenteditable="true"]{background:#fffdfd}
+
+/* FOOTER */
+footer{
+  margin-top:20px;
+  padding:15px;
+  text-align:center;
+  background:#f8bbd0;
+  font-weight:500;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  main{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <h2>Éclat de Coco POS</h2>
+  <div>
+    <a href="index.html">POS</a>
+    <a href="products.html">Products</a>
+    <a href="inventory.html">Inventory</a>
+    <a class="active" href="suppliers.html">Suppliers</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- FORMULAIRE GAUCHE -->
+  <section class="form-panel">
+    <h2>Ajouter un fournisseur</h2>
+
+    <input id="name" placeholder="Nom du fournisseur">
+    <input id="company" placeholder="Entreprise">
+    <input id="phone" placeholder="Téléphone">
+    <input id="email" placeholder="Email">
+    <textarea id="address" placeholder="Adresse"></textarea>
+
+    <button onclick="addSupplier()">Enregistrer</button>
+  </section>
+
+  <!-- TABLEAU DROITE -->
+  <section class="table-panel">
+    <h2>Liste des fournisseurs</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Entreprise</th>
+          <th>Téléphone</th>
+          <th>Email</th>
+          <th>Adresse</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="supplierTable"></tbody>
+    </table>
+  </section>
+
+</main>
+
+<footer>
+  2025 | Éclat de Coco Official | All Rights Reserved
+</footer>
+
+<script>
+let suppliers = JSON.parse(localStorage.getItem("suppliers")) || [];
+
+function render(){
+  const tbody = document.getElementById("supplierTable");
+  tbody.innerHTML = "";
+
+  if(suppliers.length===0){
+    tbody.innerHTML='<tr><td colspan="6">Aucun fournisseur</td></tr>';
+    return;
+  }
+
+  suppliers.forEach((s,i)=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td contenteditable="true">${s.name}</td>
+      <td contenteditable="true">${s.company}</td>
+      <td contenteditable="true">${s.phone}</td>
+      <td contenteditable="true">${s.email}</td>
+      <td contenteditable="true">${s.address}</td>
+      <td><button onclick="removeSupplier(${i})">X</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function addSupplier(){
+  const s={
+    name:name.value,
+    company:company.value,
+    phone:phone.value,
+    email:email.value,
+    address:address.value
+  };
+  if(!s.name)return alert("Nom requis");
+  suppliers.push(s);
+  localStorage.setItem("suppliers",JSON.stringify(suppliers));
+  name.value=company.value=phone.value=email.value=address.value="";
+  render();
+}
+
+function removeSupplier(i){
+  suppliers.splice(i,1);
+  localStorage.setItem("suppliers",JSON.stringify(suppliers));
+  render();
+}
+
+render();
+</script>
+
+</body>
+</html>
