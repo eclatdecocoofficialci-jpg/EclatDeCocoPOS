@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Éclat de Coco</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body { font-family: 'Poppins', sans-serif; background: #fff0f6; margin:0; }
+  header { display:flex; justify-content:space-between; align-items:center; background:#e91e63; padding:12px 20px; color:#fff; }
+  header h1 { margin:0; }
+  nav a { margin-left:15px; color:#fff; text-decoration:none; font-weight:500; }
+  nav a.active { text-decoration:underline; }
+  main { padding:20px; display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px; }
+  .card { background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 10px rgba(233,30,99,0.1); display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; }
+  .card h3 { color:#e91e63; margin-bottom:10px; font-size:1.2em; }
+  .card p { font-size:1.5em; font-weight:600; color:#e91e63; }
+  canvas { background:#fff; border-radius:12px; padding:15px; box-shadow:0 4px 10px rgba(233,30,99,0.1); }
+  footer { text-align:center; font-weight:500; padding:15px; background:#f8bbd0; position:fixed; bottom:0; width:100%; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Dashboard - Éclat de Coco</h1>
+  <nav>
+    <a href="index.html">POS</a>
+    <a class="active" href="dashboard.html">Dashboard</a>
+    <a href="sales.html">Sales</a>
+    <a href="products.html">Products</a>
+    <a href="inventory.html">Inventory</a>
+    <a href="expenses.html">Expenses</a>
+    <a href="reports.html">Reports</a>
+    <a href="orders.html">Orders</a>
+    <a href="customers.html">Customers</a>
+  </nav>
+</header>
+
+<main>
+  <div class="card">
+    <h3>Profit Semaine</h3>
+    <p id="profit-week">0 FCFA</p>
+  </div>
+  <div class="card">
+    <h3>Profit Mois</h3>
+    <p id="profit-month">0 FCFA</p>
+  </div>
+  <div class="card">
+    <h3>Profit Année</h3>
+    <p id="profit-year">0 FCFA</p>
+  </div>
+  <div class="card">
+    <h3>Total Ventes</h3>
+    <p id="total-sales">0</p>
+  </div>
+  <div class="card">
+    <h3>Total Dépenses</h3>
+    <p id="total-expenses">0 FCFA</p>
+  </div>
+  <div class="card">
+    <h3>Produit le plus vendu</h3>
+    <p id="top-product">-</p>
+  </div>
+
+  <canvas id="salesChart" width="400" height="200"></canvas>
+</main>
+
+<footer>
+  2025 | Éclat de Coco Official
+</footer>
+
+<script>
+  // Récupération des ventes et dépenses depuis localStorage
+  const salesData = JSON.parse(localStorage.getItem("sales")) || [];
+  const expensesData = JSON.parse(localStorage.getItem("expenses")) || [];
+
+  // Calcul des totaux
+  const totalSalesCount = salesData.length;
+  const totalExpenses = expensesData.reduce((acc,e) => acc + (e.amount || 0), 0);
+
+  const totalProfitWeek = salesData
+    .filter(s => {
+      const d = new Date(s.date);
+      const now = new Date();
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(now.getDate() - 7);
+      return d >= oneWeekAgo && d <= now;
+    })
+    .reduce((acc,s) => acc + (s.total || 0), 0);
+
+  const totalProfitMonth = salesData
+    .filter(s => new Date(s.date).getMonth() === new Date().getMonth())
+    .reduce((acc,s) => acc + (s.total || 0), 0);
+
+  const totalProfitYear = salesData
+    .filter(s => new Date(s.date).getFullYear() === new Date().getFullYear())
+    .reduce((acc,s) => acc + (s.total || 0), 0);
+
+  // Produit le plus vendu
+  const productCount = {};
+  salesData.forEach(sale => {
+    sale.cart.forEach(item => {
+      productCount[item.name] = (productCount[item.name] || 0) + item.qty;
+    });
+  });
+  const topProduct = Object.keys(productCount).reduce((a,b) => productCount[a] > productCount[b] ? a : b, "-");
+
+  // Injection des valeurs
+  document.getElementById("profit-week").innerText = totalProfitWeek.toLocaleString() + " FCFA";
+  document.getElementById("profit-month").innerText = totalProfitMonth.toLocaleString() + " FCFA";
+  document.getElementById("profit-year").innerText = totalProfitYear.toLocaleString() + " FCFA";
+  document.getElementById("total-sales").innerText = totalSalesCount;
+  document.getElementById("total-expenses").innerText = totalExpenses.toLocaleString() + " FCFA";
+  document.getElementById("top-product").innerText = topProduct;
+
+  // Graphe ventes par mois
+  const salesPerMonth = Array(12).fill(0);
+  salesData.forEach(sale => {
+    const month = new Date(sale.date).getMonth();
+    salesPerMonth[month] += sale.total || 0;
+  });
+
+  const ctx = document.getElementById('salesChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'],
+      datasets: [{
+        label: 'Ventes FCFA',
+        data: salesPerMonth,
+        backgroundColor: 'rgba(233,30,99,0.7)'
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: { display: true, text: 'Ventes par mois' }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
