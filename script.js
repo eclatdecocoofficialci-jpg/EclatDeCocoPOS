@@ -21,7 +21,7 @@ productButtons.forEach(btn => {
     const card = btn.closest(".product-card");
     const name = card.querySelector("strong").innerText;
     const price = parseInt(card.querySelector("span strong").innerText.replace(/\D/g, ""));
-    const qty = parseInt(card.querySelector("input").value);
+    const qty = parseInt(card.querySelector("input").value) || 1;
     addToCart(name, qty, price);
   });
 });
@@ -64,6 +64,7 @@ function updateInvoice() {
   totalFinalEl.innerText = `${(subtotal + delivery).toLocaleString()} FCFA`;
 }
 
+// ======== SUPPRIMER ARTICLE ========
 function removeItem(index) {
   cart.splice(index, 1);
   updateInvoice();
@@ -78,61 +79,7 @@ document.getElementById("print-btn").addEventListener("click", () => {
   window.print();
 });
 
-// ======== EXPORT PDF ========
-document.getElementById("pdf-btn").addEventListener("click", generatePDF);
-
-function generatePDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  const invoiceId = invoiceIdEl.innerText;
-  const invoiceDate = invoiceDateInput.value || currentDate;
-  const delivery = parseInt(deliveryInput.value) || 0;
-  const subtotal = cart.reduce((acc,i)=>acc+i.qty*i.price,0);
-
-  let y = 10;
-
-  // HEADER
-  doc.setFontSize(18);
-  doc.text("Éclat de Coco POS", 105, y, { align: "center" });
-  y += 10;
-  doc.setFontSize(12);
-  doc.text(`Facture: ${invoiceId}`, 10, y);
-  doc.text(`Date: ${invoiceDate}`, 150, y);
-  y += 10;
-
-  // TABLE HEADER
-  doc.text("Produit", 10, y);
-  doc.text("Qté", 80, y);
-  doc.text("Prix", 110, y);
-  doc.text("Total", 150, y);
-  y += 7;
-  doc.setLineWidth(0.5);
-  doc.line(10, y, 200, y);
-  y += 5;
-
-  // PRODUITS
-  cart.forEach(item => {
-    const total = item.qty * item.price;
-    doc.text(item.name, 10, y);
-    doc.text(String(item.qty), 80, y);
-    doc.text(item.price.toLocaleString()+" FCFA", 110, y);
-    doc.text(total.toLocaleString()+" FCFA", 150, y);
-    y += 7;
-  });
-
-  // TOTAUX
-  y += 5;
-  doc.text(`Sous-total: ${subtotal.toLocaleString()} FCFA`, 150, y);
-  y += 7;
-  doc.text(`Livraison: ${delivery.toLocaleString()} FCFA`, 150, y);
-  y += 7;
-  doc.setFontSize(14);
-  doc.text(`Total: ${(subtotal + delivery).toLocaleString()} FCFA`, 150, y);
-
-  doc.save(`Facture_${invoiceId}.pdf`);
-}
-
-// ======== SAUVEGARDER ========
+// ======== SAUVEGARDER FACTURE ========
 document.getElementById("save-btn").addEventListener("click", () => {
   const invoiceDate = invoiceDateInput.value || currentDate;
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
@@ -159,5 +106,5 @@ function generateOrderNumber() {
   const lastNumber = parseInt(localStorage.getItem("lastInvoice")) || 0;
   const nextNumber = lastNumber + 1;
   localStorage.setItem("lastInvoice", nextNumber);
-  return `${year}${String(nextNumber).padStart(3,"0")}`; // exemple: 2025001
+  return `${year}${String(nextNumber).padStart(3,"0")}`; // ex: 2025001
 }
