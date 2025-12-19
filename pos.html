@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Éclat de Coco POS</title>
+<link rel="stylesheet" href="style.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   /* ======= RESET & FONT ======= */
@@ -16,10 +17,23 @@
     padding:15px 30px; background:#e91e63; color:#fff;
   }
   header h1 { font-size:1.8em; }
-  nav a {
-    color:#fff; text-decoration:none; margin-left:20px; font-weight:500; transition:0.3s;
+
+  /* ======= NAVBAR ======= */
+  nav {
+    display:flex;
+    gap:15px;
   }
-  nav a:hover, nav a.active { text-decoration:underline; }
+  nav a {
+    color:#fff;
+    text-decoration:none;
+    font-weight:500;
+    transition:0.3s;
+  }
+  nav a:hover { text-decoration:underline; }
+  nav a .highlight {
+    color:#c2185b; /* quasi-rouge */
+    font-weight:600;
+  }
 
   /* ======= MAIN LAYOUT 3 COL ======= */
   main {
@@ -84,7 +98,7 @@
   .action-buttons button:hover { background:#d81b60; }
 
   /* Footer */
-  footer { text-align:center; padding:15px; background:#f8bbd0; color:#fff; }
+  footer { text-align:center; padding:15px; background:#e91e63; color:#fff; }
 
   /* RESPONSIVE */
   @media(max-width:1024px){
@@ -99,15 +113,14 @@
 <header>
   <h1>Éclat de Coco – POS</h1>
   <nav>
-    <a class="active" href="index.html">POS</a>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="sales.html">Sales</a>
-    <a href="products.html">Products</a>
-    <a href="inventory.html">Inventory</a>
-    <a href="expenses.html">Expenses</a>
-    <a href="reports.html">Reports</a>
-    <a href="orders.html">Orders</a>
-    <a href="customers.html">Customers</a>
+    <a href="#"><span class="highlight">POS</span></a>
+    <a href="#"><span class="highlight">Dashboard</span></a>
+    <a href="#"><span class="highlight">Sales</span></a>
+    <a href="#"><span class="highlight">Products</span></a>
+    <a href="#"><span class="highlight">Inventory</span></a>
+    <a href="#"><span class="highlight">Expenses</span></a>
+    <a href="#"><span class="highlight">Orders</span></a>
+    <a href="#"><span class="highlight">Customers</span></a>
   </nav>
 </header>
 
@@ -127,7 +140,7 @@
   <section class="center-panel">
     <h2>Rechercher un produit</h2>
     <input type="text" id="search-product" placeholder="Nom du produit...">
-
+    
     <div class="product-card" data-category="Savon">
       <strong>Rose vanille</strong><br>
       <small>Savon · Stock: 10</small>
@@ -148,6 +161,7 @@
       </div>
     </div>
 
+    <!-- CALCULATRICE -->
     <section class="calculator">
       <h3>Calculatrice</h3>
       <input class="calc-display" value="0" readonly>
