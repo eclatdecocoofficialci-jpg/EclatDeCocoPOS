@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reports - Éclat de Coco</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body { font-family:'Poppins',sans-serif; background:#fff0f6; margin:0; }
+  header { display:flex; justify-content:space-between; align-items:center; background:#e91e63; padding:12px 20px; color:#fff; }
+  header h1 { margin:0; }
+  nav a { margin-left:15px; color:#fff; text-decoration:none; font-weight:500; }
+  nav a.active { text-decoration:underline; }
+  main { padding:20px; display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .card { background:#fff; padding:15px; border-radius:12px; box-shadow:0 4px 10px rgba(233,30,99,0.1); }
+  h2 { margin-bottom:10px; color:#e91e63; text-align:center; }
+  canvas { width:100%!important; height:300px!important; }
+  table { width:100%; border-collapse:collapse; margin-top:10px; }
+  th, td { border:1px solid #f8bbd0; padding:8px; text-align:center; }
+  th { background:#ffe6ef; color:#e91e63; }
+  .summary { display:flex; justify-content:space-around; margin-bottom:20px; }
+  .summary div { background:#ffe6ef; color:#e91e63; padding:15px; border-radius:10px; font-weight:600; text-align:center; flex:1; margin:5px; }
+  footer { text-align:center; font-weight:500; padding:15px; background:#f8bbd0; position:fixed; bottom:0; width:100%; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Reports - Éclat de Coco</h1>
+  <nav>
+    <a href="index.html">POS</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="sales.html">Sales</a>
+    <a href="orders.html">Orders</a>
+    <a href="customers.html">Customers</a>
+    <a class="active" href="reports.html">Reports</a>
+  </nav>
+</header>
+
+<main>
+  <div class="card summary">
+    <div>Total Ventes<br><span id="total-sales">0 FCFA</span></div>
+    <div>Total Dépenses<br><span id="total-expenses">0 FCFA</span></div>
+    <div>Bénéfice<br><span id="profit">0 FCFA</span></div>
+  </div>
+
+  <div class="card">
+    <h2>Produits les plus vendus</h2>
+    <table>
+      <thead>
+        <tr><th>Produit</th><th>Qté vendue</th></tr>
+      </thead>
+      <tbody id="top-products"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Ventes par semaine</h2>
+    <canvas id="weeklyChart"></canvas>
+  </div>
+
+  <div class="card">
+    <h2>Ventes par mois</h2>
+    <canvas id="monthlyChart"></canvas>
+  </div>
+
+  <div class="card">
+    <h2>Ventes par année</h2>
+    <canvas id="yearlyChart"></canvas>
+  </div>
+</main>
+
+<footer>
+  2025 | Éclat de Coco Official
+</footer>
+
+<script>
+  const sales = JSON.parse(localStorage.getItem("sales")) || [];
+  
+  // === Calculer total ventes et bénéfice ===
+  const totalSales = sales.reduce((acc, order) => acc + (order.total || 0), 0);
+  const totalExpenses = 0; // à compléter si vous gérez les dépenses
+  const profit = totalSales - totalExpenses;
+  document.getElementById('total-sales').innerText = totalSales.toLocaleString() + ' FCFA';
+  document.getElementById('total-expenses').innerText = totalExpenses.toLocaleString() + ' FCFA';
+  document.getElementById('profit').innerText = profit.toLocaleString() + ' FCFA';
+
+  // === Produits les plus vendus ===
+  const productMap = {};
+  sales.forEach(order => {
+    order.cart.forEach(item => {
+      if(!productMap[item.name]) productMap[item.name] = 0;
+      productMap[item.name] += item.qty;
+    });
+  });
+  const sortedProducts = Object.entries(productMap).sort((a,b)=>b[1]-a[1]);
+  const topProductsEl = document.getElementById('top-products');
+  sortedProducts.forEach(([name, qty]) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${name}</td><td>${qty}</td>`;
+    topProductsEl.appendChild(tr);
+  });
+
+  // === Graphiques ===
+  function aggregateSales(period) {
+    const result = {};
+    sales.forEach(order => {
+      const date = new Date(order.date);
+      let key;
+      if(period==='week') key = `Semaine ${getWeekNumber(date)}`;
+      else if(period==='month') key = date.toLocaleString('default', {month:'short', year:'numeric'});
+      else if(period==='year') key = date.getFullYear();
+      if(!result[key]) result[key]=0;
+      result[key]+=order.total || 0;
+    });
+    return result;
+  }
+
+  function getWeekNumber(d) {
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+  }
+
+  function createChart(id, dataObj, label) {
+    const ctx = document.getElementById(id).getContext('2d');
+    new Chart(ctx, {
+      type:'bar',
+      data:{
+        labels:Object.keys(dataObj),
+        datasets:[{
+          label:label,
+          data:Object.values(dataObj),
+          backgroundColor:'rgba(233,30,99,0.6)',
+          borderColor:'#e91e63',
+          borderWidth:1
+        }]
+      },
+      options:{ responsive:true, scales:{ y:{ beginAtZero:true } } }
+    });
+  }
+
+  createChart('weeklyChart', aggregateSales('week'), 'Ventes FCFA');
+  createChart('monthlyChart', aggregateSales('month'), 'Ventes FCFA');
+  createChart('yearlyChart', aggregateSales('year'), 'Ventes FCFA');
+</script>
+
+</body>
+</html>
