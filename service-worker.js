@@ -1,43 +1,49 @@
-const CACHE_NAME = "eclat-pos-v1";
+const CACHE_NAME = 'eclatpos-cache-v1';
 const urlsToCache = [
-  "./dashboard.html",
-  "./pos.html",
-  "./sales.html",
-  "./products.html",
-  "./inventory.html",
-  "./expenses.html",
-  "./orders.html",
-  "./customers.html",
-  "./reports.html",
-  "./style.css",
-  "./script.js",
-  "./icon-192.png",
-  "./icon-512.png"
+  'dashboard.html',
+  'pos.html',
+  'sales.html',
+  'products.html',
+  'inventory.html',
+  'expenses.html',
+  'orders.html',
+  'customers.html',
+  'reports.html',
+  'style.css',
+  'script.js',
+  'dashboard.js',
+  'icon-192.png',
+  'icon-512.png',
+  'chart.min.js'
 ];
 
-self.addEventListener("install", event => {
+// INSTALL
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then(cache => {
+      console.log('Caching all files');
+      return cache.addAll(urlsToCache);
+    })
   );
+  self.skipWaiting();
 });
 
-self.addEventListener("activate", event => {
+// ACTIVATE
+self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => {
       return Promise.all(
-        keys.filter(key => key !== CACHE_NAME)
-            .map(key => caches.delete(key))
+        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
       );
     })
   );
 });
 
-self.addEventListener("fetch", event => {
+// FETCH
+self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
+    caches.match(event.request).then(cached => {
+      return cached || fetch(event.request);
     })
   );
 });
