@@ -97,3 +97,97 @@ footer {
     margin: 5px 5px 0 0;
   }
 }
+/* ===============================
+   TABLES ROSE (Customers, Sales)
+================================ */
+.pink-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.pink-table th {
+  background: #f8bbd0;
+  color: #880e4f;
+  padding: 12px;
+  font-weight: 600;
+}
+
+.pink-table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #fce4ec;
+}
+
+.pink-table tr:hover {
+  background: #fff0f6;
+}
+
+/* ===============================
+   CUSTOMERS PAGE
+================================ */
+.customers-container {
+  padding: 20px;
+}
+
+.customers-container h2 {
+  color: #e91e63;
+  margin-bottom: 15px;
+}
+
+/* ===============================
+   PRODUCTS PAGE (2 COLONNES)
+================================ */
+.products-container {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 20px;
+  padding: 20px;
+}
+
+.product-form {
+  background: #ffe6ef;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(233,30,99,0.1);
+}
+
+.product-form h2 {
+  color: #e91e63;
+  margin-bottom: 15px;
+}
+
+.product-list {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(233,30,99,0.1);
+}
+
+/* ===============================
+   PRODUCTS CARDS
+================================ */
+.product-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  background: #fce4ec;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.product-item:hover {
+  background: #f8bbd0;
+}
+
+/* ===============================
+   RESPONSIVE (Products & Tables)
+================================ */
+@media (max-width: 1024px) {
+  .products-container {
+    grid-template-columns: 1fr;
+  }
+}
