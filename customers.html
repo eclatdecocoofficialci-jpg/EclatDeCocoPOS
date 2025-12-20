@@ -2,10 +2,13 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Customers | Éclat de Coco</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customers | Éclat de Coco</title>
 <link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#e91e63">
 </head>
+
 <body>
 
 <header>
@@ -13,54 +16,53 @@
   <nav class="main-nav">
     <a href="dashboard.html">Dashboard</a>
     <a href="pos.html">POS</a>
-    <a href="sales.html">Sales</a>
+    <a class="active" href="customers.html">Customers</a>
     <a href="products.html">Products</a>
     <a href="inventory.html">Inventory</a>
     <a href="expenses.html">Expenses</a>
-    <a class="active" href="customers.html">Customers</a>
     <a href="reports.html">Reports</a>
   </nav>
 </header>
 
-<main class="page-container">
-  <h2>Liste des clients</h2>
+<main class="customers-layout">
 
-  <table class="pink-table">
-    <thead>
-      <tr>
-        <th>Nom</th>
-        <th>Téléphone</th>
-        <th>Adresse</th>
-        <th>Total achats</th>
-      </tr>
-    </thead>
-    <tbody id="customers-table"></tbody>
-  </table>
+  <!-- COLONNE GAUCHE -->
+  <section class="customer-form">
+    <h2>Ajouter un client</h2>
+
+    <input type="text" id="cust-name" placeholder="Nom du client">
+    <input type="text" id="cust-phone" placeholder="Téléphone">
+    <input type="email" id="cust-email" placeholder="Email">
+    <textarea id="cust-note" placeholder="Note"></textarea>
+
+    <button id="add-customer-btn">Ajouter</button>
+  </section>
+
+  <!-- COLONNE DROITE -->
+  <section class="customer-table">
+    <h2>Liste des clients</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Téléphone</th>
+          <th>Email</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody id="customers-list">
+        <tr><td colspan="4">Aucun client</td></tr>
+      </tbody>
+    </table>
+  </section>
+
 </main>
 
 <footer>
-  <p>2025 | Éclat de Coco Official</p>
+<p>2025 | Éclat de Coco</p>
 </footer>
 
-<script>
-const customers = JSON.parse(localStorage.getItem("customers")) || [];
-const tbody = document.getElementById("customers-table");
-
-if (customers.length === 0) {
-  tbody.innerHTML = "<tr><td colspan='4'>Aucun client enregistré</td></tr>";
-} else {
-  customers.forEach(c => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${c.name}</td>
-      <td>${c.phone}</td>
-      <td>${c.address}</td>
-      <td>${(c.total || 0).toLocaleString()} FCFA</td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
-</script>
-
+<script src="customers.js"></script>
 </body>
 </html>
