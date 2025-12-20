@@ -3,66 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Customers | Éclat de Coco</title>
-<link rel="stylesheet" href="style.css">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#e91e63">
+<title>Éclat de Coco - Clients</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Poppins', sans-serif; margin:0; background:#fdf0f6; }
+  h2,h3{ margin:0 0 10px 0; color:#e91e63; }
+  .container { display:flex; gap:20px; padding:20px; flex-wrap:wrap; }
+  .left-panel { flex:1; background:#fff; padding:20px; border-radius:16px; max-width:400px; }
+  .left-panel input, .left-panel textarea, .left-panel button { width:100%; padding:10px; margin-bottom:10px; border-radius:10px; border:2px solid #f8bbd0; font-size:1em; }
+  .left-panel button { background:#e91e63; color:#fff; border:none; cursor:pointer; }
+  .right-panel { flex:2; background:#fff; padding:20px; border-radius:16px; overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; }
+  th,td { border:1px solid #f8bbd0; padding:8px; text-align:center; font-size:0.9em; word-wrap:break-word; vertical-align:middle; }
+  th { background:#ffe6ef; color:#e91e63; }
+  button.remove-btn { background:#ff4081; color:#fff; padding:5px 10px; border:none; border-radius:6px; cursor:pointer; }
+  @media(max-width:1024px){ .container{ flex-direction:column; align-items:center; } .left-panel,.right-panel{ max-width:100%; } }
+</style>
 </head>
-
 <body>
 
-<header>
-  <h1>Éclat de Coco</h1>
-  <nav class="main-nav">
-    <a href="dashboard.html">Dashboard</a>
-    <a href="pos.html">POS</a>
-    <a class="active" href="customers.html">Customers</a>
-    <a href="products.html">Products</a>
-    <a href="inventory.html">Inventory</a>
-    <a href="expenses.html">Expenses</a>
-    <a href="reports.html">Reports</a>
-  </nav>
-</header>
+<h2>Gestion Clients</h2>
+<div class="container">
 
-<main class="customers-layout">
+  <!-- Formulaire gauche -->
+  <div class="left-panel">
+    <h3>Ajouter un client</h3>
+    <input type="text" id="client-name" placeholder="Nom du client">
+    <input type="text" id="client-phone" placeholder="Téléphone">
+    <input type="text" id="client-address" placeholder="Adresse">
+    <button id="add-client-btn">Ajouter</button>
+  </div>
 
-  <!-- COLONNE GAUCHE -->
-  <section class="customer-form">
-    <h2>Ajouter un client</h2>
-
-    <input type="text" id="cust-name" placeholder="Nom du client">
-    <input type="text" id="cust-phone" placeholder="Téléphone">
-    <input type="email" id="cust-email" placeholder="Email">
-    <textarea id="cust-note" placeholder="Note"></textarea>
-
-    <button id="add-customer-btn">Ajouter</button>
-  </section>
-
-  <!-- COLONNE DROITE -->
-  <section class="customer-table">
-    <h2>Liste des clients</h2>
-
-    <table>
+  <!-- Tableau droite -->
+  <div class="right-panel">
+    <h3>Liste des clients</h3>
+    <table id="clients-table">
       <thead>
         <tr>
           <th>Nom</th>
           <th>Téléphone</th>
-          <th>Email</th>
-          <th>Note</th>
+          <th>Adresse</th>
+          <th>Action</th>
         </tr>
       </thead>
-      <tbody id="customers-list">
+      <tbody>
         <tr><td colspan="4">Aucun client</td></tr>
       </tbody>
     </table>
-  </section>
+  </div>
 
-</main>
+</div>
 
-<footer>
-<p>2025 | Éclat de Coco</p>
-</footer>
+<script>
+let clients = [];
 
-<script src="customers.js"></script>
+// Ajouter client
+document.getElementById('add-client-btn').addEventListener('click', ()=>{
+  const name = document.getElementById('client-name').value.trim();
+  const phone = document.getElementById('client-phone').value.trim();
+  const address = document.getElementById('client-address').value.trim();
+
+  if(!name){ alert("Nom obligatoire"); return; }
+
+  clients.push({name, phone, address});
+  updateTable();
+
+  document.getElementById('client-name').value='';
+  document.getElementById('client-phone').value='';
+  document.getElementById('client-address').value='';
+});
+
+// Mettre à jour tableau
+function updateTable(){
+  const tbody = document.querySelector('#clients-table tbody');
+  tbody.innerHTML='';
+  if(clients.length===0){ 
+    tbody.innerHTML='<tr><td colspan="4">Aucun client</td></tr>'; 
+    return; 
+  }
+
+  clients.forEach((item,i)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML=`
+      <td contenteditable="true">${item.name}</td>
+      <td contenteditable="true">${item.phone}</td>
+      <td contenteditable="true">${item.address}</td>
+      <td><button class="remove-btn" data-index="${i}">X</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Supprimer client
+document.querySelector('#clients-table tbody').addEventListener('click', e=>{
+  if(e.target.classList.contains('remove-btn')){
+    const index = parseInt(e.target.dataset.index);
+    clients.splice(index,1);
+    updateTable();
+  }
+});
+</script>
+
 </body>
 </html>
