@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eclatpos-cache-v1';
+const CACHE_NAME = 'eclatpos-cache-v2'; // Version du cache
 const urlsToCache = [
   'dashboard.html',
   'pos.html',
@@ -12,24 +12,27 @@ const urlsToCache = [
   'style.css',
   'script.js',
   'dashboard.js',
+  'customers.js',
   'icon-192.png',
   'icon-512.png',
   'chart.min.js'
 ];
 
-// INSTALL
+// INSTALL : mise en cache initiale
 self.addEventListener('install', event => {
+  console.log('[ServiceWorker] Install');
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      console.log('Caching all files');
+      console.log('[ServiceWorker] Caching all files');
       return cache.addAll(urlsToCache);
     })
   );
   self.skipWaiting();
 });
 
-// ACTIVATE
+// ACTIVATE : suppression anciens caches
 self.addEventListener('activate', event => {
+  console.log('[ServiceWorker] Activate');
   event.waitUntil(
     caches.keys().then(keys => {
       return Promise.all(
@@ -37,13 +40,30 @@ self.addEventListener('activate', event => {
       );
     })
   );
+  self.clients.claim();
 });
 
-// FETCH
+// FETCH : réponse à partir du cache, sinon réseau
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      return cached || fetch(event.request);
+    caches.match(event.request).then(cachedResponse => {
+      if (cachedResponse) {
+        return cachedResponse; // fichier trouvé dans le cache
+      }
+      return fetch(event.request)
+        .then(networkResponse => {
+          // mettre en cache les nouveaux fichiers dynamiques
+          return caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, networkResponse.clone());
+            return networkResponse;
+          });
+        })
+        .catch(() => {
+          // Optionnel : renvoyer une page offline générique si indisponible
+          if (event.request.mode === 'navigate') {
+            return caches.match('dashboard.html'); // par défaut
+          }
+        });
     })
   );
 });
