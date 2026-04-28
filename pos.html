@@ -2,215 +2,271 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<title>Éclat de Coco - POS</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Éclat de Coco POS</title>
-<link rel="stylesheet" href="style.css">
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
-  /* ======= RESET & FONT ======= */
-  * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
-  body { background:#fff5fb; color:#333; min-height:100vh; display:flex; flex-direction:column; }
+body{
+  font-family:Poppins;
+  margin:0;
+  background:#fdf0f6;
+}
 
-  /* ======= HEADER ======= */
-  header {
-    display:flex; justify-content:space-between; align-items:center;
-    padding:15px 30px; background:#e91e63; color:#fff;
-  }
-  header h1 { font-size:1.8em; }
+.container{
+  display:flex;
+  gap:20px;
+  padding:20px;
+  flex-wrap:wrap;
+}
 
-  /* ======= NAVBAR ======= */
-  nav {
-    display:flex;
-    gap:15px;
-  }
-  nav a {
-    color:#fff;
-    text-decoration:none;
-    font-weight:500;
-    transition:0.3s;
-  }
-  nav a:hover { text-decoration:underline; }
-  nav a .highlight {
-    color:#c2185b; /* quasi-rouge */
-    font-weight:600;
-  }
+/* LEFT */
+.left{
+  flex:1;
+  background:white;
+  padding:15px;
+  border-radius:16px;
+  min-width:280px;
+}
 
-  /* ======= MAIN LAYOUT 3 COL ======= */
-  main {
-    flex:1;
-    display:grid;
-    grid-template-columns:25% 45% 30%;
-    gap:20px;
-    padding:20px;
-  }
+input{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border:2px solid #f8bbd0;
+  border-radius:10px;
+}
 
-  /* ======= LEFT PANEL (CATEGORIES) ======= */
-  .left-panel {
-    background:#fff; padding:15px; border-radius:12px; box-shadow:0 4px 10px rgba(233,30,99,0.1);
-    display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:12px; overflow-y:auto;
-  }
-  .left-panel button {
-    background:#f8bbd0; border:none; padding:12px; border-radius:10px; cursor:pointer; font-weight:500;
-    transition:0.3s;
-  }
-  .left-panel button:hover { background:#e91e63; color:#fff; }
+/* SEARCH RESULTS */
+.result{
+  background:#ffe6ef;
+  padding:10px;
+  margin-bottom:5px;
+  border-radius:10px;
+  cursor:pointer;
+}
 
-  /* ======= CENTER PANEL (RECHERCHE + PRODUITS + CALCULATRICE) ======= */
-  .center-panel {
-    background:#fff; padding:15px; border-radius:12px; box-shadow:0 4px 10px rgba(233,30,99,0.05);
-    display:flex; flex-direction:column;
-  }
-  .center-panel h2 { text-align:center; margin-bottom:10px; color:#e91e63; }
-  .center-panel input[type=text] {
-    padding:10px; border:2px solid #f8bbd0; border-radius:8px; margin-bottom:15px;
-  }
-  .product-card {
-    display:flex; justify-content:space-between; align-items:center; padding:10px;
-    border:1px solid #f8bbd0; border-radius:8px; margin-bottom:10px; cursor:pointer;
-    transition:0.2s;
-  }
-  .product-card:hover { background:#e91e63; color:#fff; }
+/* RIGHT */
+.right{
+  flex:2;
+  background:white;
+  padding:15px;
+  border-radius:16px;
+}
 
-  /* Calculatrice */
-  .calculator {
-    margin-top:20px; padding:10px; border-radius:10px; background:#ffe6f2;
-  }
-  .calc-display { width:100%; padding:10px; font-size:1.2em; margin-bottom:10px; text-align:right; border-radius:8px; border:2px solid #f8bbd0; }
-  .calc-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
-  .calc-grid button { padding:12px; font-size:1em; border:none; border-radius:8px; background:#f8bbd0; cursor:pointer; }
-  .calc-grid button:hover { background:#e91e63; color:#fff; }
+/* TABLE */
+table{
+  width:100%;
+  border-collapse:collapse;
+}
 
-  /* ======= RIGHT PANEL (FACTURE) ======= */
-  .right-panel {
-    background:#fff; padding:15px; border-radius:12px; box-shadow:0 4px 10px rgba(233,30,99,0.05);
-    display:flex; flex-direction:column;
-  }
-  .right-panel h3 { text-align:center; color:#e91e63; margin-bottom:5px; }
-  .right-panel input { width:100%; padding:8px; margin-bottom:8px; border-radius:6px; border:1px solid #f8bbd0; }
-  .right-panel table { width:100%; border-collapse:collapse; margin-top:10px; }
-  .right-panel th, .right-panel td { border:1px solid #f8bbd0; padding:6px; text-align:center; font-size:0.9em; }
-  .right-panel th { background:#ffe6ef; color:#e91e63; }
-  .final-total { font-weight:600; margin-top:10px; text-align:right; }
+th,td{
+  border:1px solid #f8bbd0;
+  padding:8px;
+  text-align:center;
+}
 
-  /* Buttons */
-  .action-buttons { margin-top:auto; display:flex; gap:10px; }
-  .action-buttons button { flex:1; padding:10px; background:#e91e63; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:600; transition:0.2s; }
-  .action-buttons button:hover { background:#d81b60; }
+th{
+  background:#ffe6ef;
+  color:#e91e63;
+}
 
-  /* Footer */
-  footer { text-align:center; padding:15px; background:#e91e63; color:#fff; }
+/* BUTTONS */
+.btn{
+  background:#e91e63;
+  color:white;
+  padding:8px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
 
-  /* RESPONSIVE */
-  @media(max-width:1024px){
-    main { grid-template-columns:1fr; }
-    .left-panel,.center-panel,.right-panel{ max-width:100%; }
-  }
+/* CALCULATOR */
+.calc{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:5px;
+  margin-top:10px;
+}
+
+.calc button{
+  padding:15px;
+  border:none;
+  border-radius:8px;
+  background:#f8bbd0;
+  font-size:16px;
+}
+
+/* DISCOUNT */
+.discount{
+  display:flex;
+  gap:5px;
+  margin-top:10px;
+}
+
+.discount button{
+  flex:1;
+  padding:8px;
+  border:none;
+  border-radius:8px;
+  background:#ff80ab;
+  color:white;
+}
+
+.total{
+  font-size:18px;
+  margin-top:10px;
+  font-weight:bold;
+  color:#e91e63;
+}
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>Éclat de Coco – POS</h1>
-  <nav>
-    <a href="#"><span class="highlight">POS</span></a>
-    <a href="#"><span class="highlight">Dashboard</span></a>
-    <a href="#"><span class="highlight">Sales</span></a>
-    <a href="#"><span class="highlight">Products</span></a>
-    <a href="#"><span class="highlight">Inventory</span></a>
-    <a href="#"><span class="highlight">Expenses</span></a>
-    <a href="#"><span class="highlight">Orders</span></a>
-    <a href="#"><span class="highlight">Customers</span></a>
-  </nav>
-</header>
+<div class="container">
 
-<main>
-  <!-- CATEGORIES GAUCHE -->
-  <aside class="left-panel">
-    <button data-category="Savon">Savon</button>
-    <button data-category="Lotion">Lotion</button>
-    <button data-category="Body Butter">Body Butter</button>
-    <button data-category="Masque Cheveux">Masque Cheveux</button>
-    <button data-category="Sérum Cheveux">Sérum Cheveux</button>
-    <button data-category="Sérum Visage">Sérum Visage</button>
-    <button>+ Ajouter catégorie</button>
-  </aside>
+<!-- LEFT -->
+<div class="left">
 
-  <!-- PRODUITS + CALCULATRICE MILIEU -->
-  <section class="center-panel">
-    <h2>Rechercher un produit</h2>
-    <input type="text" id="search-product" placeholder="Nom du produit...">
-    
-    <div class="product-card" data-category="Savon">
-      <strong>Rose vanille</strong><br>
-      <small>Savon · Stock: 10</small>
-      <div>
-        <span><strong>3,000 FCFA</strong></span>
-        <input type="number" value="1" style="width:60px;">
-        <button>Ajouter</button>
-      </div>
-    </div>
+<h3>🔎 Recherche Produit</h3>
+<input type="text" id="search" placeholder="Nom ou code produit">
 
-    <div class="product-card" data-category="Savon">
-      <strong>Velours de café</strong><br>
-      <small>Savon · Stock: 8</small>
-      <div>
-        <span><strong>3,000 FCFA</strong></span>
-        <input type="number" value="1" style="width:60px;">
-        <button>Ajouter</button>
-      </div>
-    </div>
+<div id="results"></div>
 
-    <!-- CALCULATRICE -->
-    <section class="calculator">
-      <h3>Calculatrice</h3>
-      <input class="calc-display" value="0" readonly>
-      <div class="calc-grid">
-        <button>7</button><button>8</button><button>9</button><button>+</button>
-        <button>4</button><button>5</button><button>6</button><button>-</button>
-        <button>1</button><button>2</button><button>3</button><button>×</button>
-        <button>0</button><button>.</button><button>=</button><button>÷</button>
-        <button class="percent">20%</button><button class="percent">30%</button><button class="percent">35%</button><button>C</button>
-      </div>
-    </section>
-  </section>
+<h3>🧮 Calculatrice</h3>
+<input type="text" id="display" readonly>
 
-  <!-- FACTURE DROITE -->
-  <aside class="right-panel">
-    <h3>Bienvenue à Éclat de Coco</h3>
-    <p>Abidjan, Côte d'Ivoire</p>
-    <p>ID Facture: <span id="invoice-id">202501</span></p>
-    <p>Date: <input type="date" id="invoice-date"></p>
-    <input type="text" placeholder="Nom du client">
-    <input type="text" placeholder="Téléphone">
-    <input type="text" placeholder="Adresse">
-    <input type="number" id="delivery" placeholder="Livraison">
-    <table>
-      <thead>
-        <tr>
-          <th>Produit</th><th>Qté</th><th>Prix</th><th>Total</th><th>Action</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <p class="final-total" id="subtotal">Subtotal: 0 FCFA</p>
-    <p class="final-total" id="total-final">Total Final: 0 FCFA</p>
-    <div class="action-buttons">
-      <button id="print-btn">Imprimer</button>
-      <button id="save-btn">Sauvegarder</button>
-    </div>
-    <p style="text-align:center; margin-top:10px;">Eclat de Coco vous remercie.<br>Email: eclatdecoco933@gmail.com | WhatsApp: +225 07 77 00 08 03</p>
-  </aside>
-</main>
+<div class="calc">
+  <button>1</button><button>2</button><button>3</button>
+  <button>4</button><button>5</button><button>6</button>
+  <button>7</button><button>8</button><button>9</button>
+  <button>0</button><button>.</button><button>C</button>
+</div>
 
-<footer style="background:#f8bbd0; padding:20px 0; text-align:center; font-family:'Poppins', sans-serif; font-weight:500; position:fixed; bottom:0; width:100%; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);">
-  <p style="margin:5px 0; font-size:14px;">2025 | <strong>Éclat de Coco Official</strong> | All Right Reserved</p>
-  <p style="margin:5px 0; font-size:14px;">
-    📧 <a href="mailto:eclatdecocoofficialci@gmail.com" style="color:#e91e63; text-decoration:none;">eclatdecocoofficialci@gmail.com</a> | 
-    📱 <a href="tel:+2250777000803" style="color:#e91e63; text-decoration:none;">0777000803</a>
-  </p>
-</footer>
+</div>
 
-<script src="script.js"></script>
+<!-- RIGHT -->
+<div class="right">
+
+<h3>🧾 Facture</h3>
+
+<table>
+<thead>
+<tr>
+<th>Produit</th>
+<th>Prix</th>
+<th>Qty</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody id="invoice"></tbody>
+</table>
+
+<div class="discount">
+<button onclick="setDiscount(0)">0%</button>
+<button onclick="setDiscount(10)">10%</button>
+<button onclick="setDiscount(20)">20%</button>
+<button onclick="setDiscount(50)">50%</button>
+</div>
+
+<div class="total" id="total">Total: 0</div>
+
+</div>
+
+</div>
+
+<script>
+
+let products = JSON.parse(localStorage.getItem("products")) || [];
+let invoice = [];
+let discount = 0;
+
+/* SEARCH */
+document.getElementById("search").addEventListener("input", function(){
+  let val = this.value.toLowerCase();
+  let res = document.getElementById("results");
+  res.innerHTML = "";
+
+  let found = products.filter(p =>
+    p.name.toLowerCase().includes(val) ||
+    p.code.toLowerCase().includes(val)
+  );
+
+  found.forEach(p=>{
+    let div = document.createElement("div");
+    div.className = "result";
+    div.innerHTML = `${p.code} - ${p.name} (${p.price})`;
+
+    div.onclick = ()=>{
+      addToInvoice(p);
+    };
+
+    res.appendChild(div);
+  });
+});
+
+/* ADD TO INVOICE */
+function addToInvoice(p){
+  invoice.push({
+    name:p.name,
+    price:p.price,
+    qty:1
+  });
+
+  renderInvoice();
+}
+
+/* RENDER */
+function renderInvoice(){
+  let tbody = document.getElementById("invoice");
+  tbody.innerHTML = "";
+
+  let total = 0;
+
+  invoice.forEach(item=>{
+    let t = item.price * item.qty;
+    total += t;
+
+    let tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${item.name}</td>
+      <td>${item.price}</td>
+      <td>${item.qty}</td>
+      <td>${t}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  let final = total - (total * discount / 100);
+
+  document.getElementById("total").innerText =
+    "Total: " + final.toFixed(2);
+}
+
+/* DISCOUNT */
+function setDiscount(p){
+  discount = p;
+  renderInvoice();
+}
+
+/* CALCULATOR FIX */
+let display = document.getElementById("display");
+
+document.querySelectorAll(".calc button").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    let val = btn.innerText;
+
+    if(val === "C"){
+      display.value = "";
+    } else {
+      display.value += val;
+    }
+  });
+});
+
+</script>
+
 </body>
 </html>
