@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-/* ===================== DATA ===================== */
 let products = JSON.parse(localStorage.getItem("products")) || [];
 let invoice = [];
 let discount = 0;
@@ -8,144 +7,108 @@ let discount = 0;
 let currentProduct = null;
 let qty = 1;
 
-/* ===================== ELEMENTS ===================== */
 const search = document.getElementById("search");
 const results = document.getElementById("results");
 
-const selectedName = document.getElementById("selected-name");
-const selectedPrice = document.getElementById("selected-price");
-const qtyDisplay = document.getElementById("qty");
+const nameEl = document.getElementById("selected-name");
+const priceEl = document.getElementById("selected-price");
+const qtyEl = document.getElementById("qty");
 
-const invoiceTable = document.getElementById("invoice");
+const invoiceEl = document.getElementById("invoice");
 const totalEl = document.getElementById("total");
 
-const display = document.getElementById("display");
-
-/* ===================== SEARCH ===================== */
-if(search){
+/* SEARCH */
 search.addEventListener("input", () => {
-  let val = search.value.toLowerCase();
   results.innerHTML = "";
 
   let found = products.filter(p =>
-    p.name.toLowerCase().includes(val) ||
-    p.code.toLowerCase().includes(val)
+    p.name.toLowerCase().includes(search.value.toLowerCase()) ||
+    p.code.toLowerCase().includes(search.value.toLowerCase())
   );
 
   found.forEach(p => {
     let div = document.createElement("div");
     div.className = "result";
-    div.innerText = `${p.code} - ${p.name} (${p.price} FCFA)`;
+    div.innerText = `${p.code} - ${p.name}`;
 
     div.onclick = () => selectProduct(p);
 
     results.appendChild(div);
   });
 });
-}
 
-/* ===================== SELECT PRODUCT ===================== */
+/* SELECT */
 function selectProduct(p){
   currentProduct = p;
   qty = 1;
 
-  if(selectedName) selectedName.innerText = p.name;
-  if(selectedPrice) selectedPrice.innerText = p.price;
-  if(qtyDisplay) qtyDisplay.innerText = qty;
+  nameEl.innerText = p.name;
+  priceEl.innerText = p.price;
+  qtyEl.innerText = qty;
 }
 
-/* ===================== QTY ===================== */
-window.plusQty = function(){
+window.plusQty = () => {
   qty++;
-  if(qtyDisplay) qtyDisplay.innerText = qty;
-}
+  qtyEl.innerText = qty;
+};
 
-window.minusQty = function(){
+window.minusQty = () => {
   if(qty > 1){
     qty--;
-    if(qtyDisplay) qtyDisplay.innerText = qty;
+    qtyEl.innerText = qty;
   }
-}
+};
 
-/* ===================== ADD TO CART ===================== */
-window.addToCart = function(){
+window.addToCart = () => {
   if(!currentProduct) return;
 
-  let existing = invoice.find(i => i.name === currentProduct.name);
+  let exist = invoice.find(i => i.name === currentProduct.name);
 
-  if(existing){
-    existing.qty += qty;
+  if(exist){
+    exist.qty += qty;
   } else {
     invoice.push({
       name: currentProduct.name,
       price: currentProduct.price,
-      qty: qty
+      qty
     });
   }
 
   currentProduct = null;
   qty = 1;
 
-  if(selectedName) selectedName.innerText = "-";
-  if(selectedPrice) selectedPrice.innerText = "0";
-  if(qtyDisplay) qtyDisplay.innerText = "1";
+  nameEl.innerText = "-";
+  priceEl.innerText = "0";
+  qtyEl.innerText = "1";
 
-  renderInvoice();
-}
+  render();
+};
 
-/* ===================== RENDER INVOICE ===================== */
-function renderInvoice(){
-  if(!invoiceTable) return;
-
-  invoiceTable.innerHTML = "";
+function render(){
+  invoiceEl.innerHTML = "";
 
   let total = 0;
 
-  invoice.forEach(item => {
-    let t = item.qty * item.price;
+  invoice.forEach(i => {
+    let t = i.qty * i.price;
     total += t;
 
     let tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${item.name}</td>
-      <td>${item.price}</td>
-      <td>${item.qty}</td>
+      <td>${i.name}</td>
+      <td>${i.qty}</td>
       <td>${t}</td>
     `;
-    invoiceTable.appendChild(tr);
+    invoiceEl.appendChild(tr);
   });
 
   let final = total - (total * discount / 100);
-
-  if(totalEl){
-    totalEl.innerText = "Total: " + final.toFixed(0) + " FCFA";
-  }
+  totalEl.innerText = final + " FCFA";
 }
 
-/* ===================== DISCOUNT ===================== */
-window.setDiscount = function(p){
+window.setDiscount = (p) => {
   discount = p;
-  renderInvoice();
-}
-
-/* ===================== CALCULATOR ===================== */
-if(document.querySelectorAll(".calc button")){
-document.querySelectorAll(".calc button").forEach(btn=>{
-  btn.addEventListener("click", () => {
-    let v = btn.innerText;
-
-    if(!display) return;
-
-    if(v === "C"){
-      display.value = "";
-    } else {
-      display.value += v;
-    }
-  });
-});
-}
-
-/* ===================== INIT ===================== */
-console.log("POS SCRIPT LOADED SUCCESSFULLY");
+  render();
+};
 
 });
