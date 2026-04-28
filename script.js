@@ -1,26 +1,23 @@
 let cart = [];
-let orderNumber = generateOrderNumber();
-let currentDate = new Date().toISOString().split("T")[0];
-
 let products = JSON.parse(localStorage.getItem("products")) || [];
+
 let discount = 0;
+
+/* ===== ELEMENTS ===== */
+const resultsBox = document.getElementById("results");
+const searchInput = document.getElementById("search");
+
+const selectedName = document.getElementById("selected-name");
+const selectedPrice = document.getElementById("selected-price");
+const qtyDisplay = document.getElementById("qty");
 
 const subtotalEl = document.getElementById("subtotal");
 const totalFinalEl = document.getElementById("total-final");
-const deliveryInput = document.getElementById("delivery");
-const invoiceDateInput = document.getElementById("invoice-date");
-const invoiceIdEl = document.getElementById("invoice-id");
 
-const searchInput = document.getElementById("search");
-const resultsBox = document.getElementById("results");
+let currentProduct = null;
+let qty = 1;
 
-// ===== INIT =====
-invoiceIdEl.innerText = orderNumber;
-invoiceDateInput.value = currentDate;
-updateInvoice();
-
-// ===== SEARCH PRODUITS =====
-if(searchInput){
+/* ===== SEARCH PRODUIT ===== */
 searchInput.addEventListener("input", () => {
   let val = searchInput.value.toLowerCase();
   resultsBox.innerHTML = "";
@@ -30,39 +27,75 @@ searchInput.addEventListener("input", () => {
     p.code.toLowerCase().includes(val)
   );
 
-  found.forEach(p=>{
+  found.forEach(p => {
     let div = document.createElement("div");
     div.className = "result";
     div.innerText = `${p.code} - ${p.name} (${p.price} FCFA)`;
 
-    div.onclick = () => addToCart(p.name, 1, p.price);
+    div.onclick = () => selectProduct(p);
 
     resultsBox.appendChild(div);
   });
 });
+
+/* ===== SELECT PRODUCT (CENTRE BOX) ===== */
+function selectProduct(p){
+  currentProduct = p;
+  qty = 1;
+
+  selectedName.innerText = p.name;
+  selectedPrice.innerText = p.price;
+
+  qtyDisplay.innerText = qty;
 }
 
-// ===== AJOUT AU PANIER =====
-function addToCart(name, qty, price){
-  let existing = cart.find(p => p.name === name);
+/* ===== QUANTITY CONTROL ===== */
+function plusQty(){
+  qty++;
+  qtyDisplay.innerText = qty;
+}
+
+function minusQty(){
+  if(qty > 1){
+    qty--;
+    qtyDisplay.innerText = qty;
+  }
+}
+
+/* ===== ADD TO CART ===== */
+function addToCart(){
+  if(!currentProduct) return;
+
+  let existing = cart.find(i => i.name === currentProduct.name);
 
   if(existing){
     existing.qty += qty;
   } else {
-    cart.push({name, qty, price});
+    cart.push({
+      name: currentProduct.name,
+      price: currentProduct.price,
+      qty: qty
+    });
   }
+
+  currentProduct = null;
+  qty = 1;
+
+  selectedName.innerText = "-";
+  selectedPrice.innerText = "0";
+  qtyDisplay.innerText = "1";
 
   updateInvoice();
 }
 
-// ===== UPDATE FACTURE =====
+/* ===== INVOICE ===== */
 function updateInvoice(){
   const tbody = document.querySelector(".right-panel tbody");
   tbody.innerHTML = "";
 
   let subtotal = 0;
 
-  cart.forEach((item, i)=>{
+  cart.forEach((item, i) => {
     let total = item.qty * item.price;
     subtotal += total;
 
@@ -70,82 +103,48 @@ function updateInvoice(){
     tr.innerHTML = `
       <td>${item.name}</td>
       <td>${item.qty}</td>
-      <td>${item.price.toLocaleString()} FCFA</td>
-      <td>${total.toLocaleString()} FCFA</td>
+      <td>${item.price} FCFA</td>
+      <td>${total} FCFA</td>
       <td><button onclick="removeItem(${i})">X</button></td>
     `;
     tbody.appendChild(tr);
   });
 
-  if(cart.length === 0){
-    tbody.innerHTML = `<tr><td colspan="5">Aucun article</td></tr>`;
-  }
+  let final = subtotal - (subtotal * discount / 100);
 
-  let delivery = parseInt(deliveryInput.value) || 0;
-
-  let total = subtotal + delivery;
-  let final = total - (total * discount / 100);
-
-  subtotalEl.innerText = subtotal.toLocaleString() + " FCFA";
-  totalFinalEl.innerText = final.toLocaleString() + " FCFA";
+  subtotalEl.innerText = subtotal + " FCFA";
+  totalFinalEl.innerText = final + " FCFA";
 }
 
-// ===== SUPPRIMER =====
-function removeItem(index){
-  cart.splice(index,1);
+/* ===== REMOVE ===== */
+function removeItem(i){
+  cart.splice(i,1);
   updateInvoice();
 }
 
-// ===== LIVRAISON =====
-deliveryInput.addEventListener("input", updateInvoice);
-
-// ===== REMISE =====
+/* ===== DISCOUNT ===== */
 function setDiscount(p){
   discount = p;
   updateInvoice();
 }
 
-// ===== PRINT =====
-document.getElementById("print-btn").addEventListener("click", ()=>{
-  window.print();
-});
-
-// ===== SAVE =====
+/* ===== SAVE ===== */
 document.getElementById("save-btn").addEventListener("click", ()=>{
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
-  let delivery = parseInt(deliveryInput.value) || 0;
   let subtotal = cart.reduce((a,b)=>a + b.qty*b.price,0);
-  let total = subtotal + delivery;
-  let final = total - (total * discount / 100);
+  let final = subtotal - (subtotal * discount / 100);
 
   sales.push({
-    id: orderNumber,
-    date: invoiceDateInput.value,
+    date: new Date().toISOString(),
     cart,
-    delivery,
     discount,
     total: final
   });
 
   localStorage.setItem("sales", JSON.stringify(sales));
 
-  alert("Facture sauvegardée !");
-
   cart = [];
   discount = 0;
-  orderNumber = generateOrderNumber();
-
-  invoiceIdEl.innerText = orderNumber;
-  deliveryInput.value = "";
   updateInvoice();
 });
-
-// ===== NUMBER =====
-function generateOrderNumber(){
-  let year = new Date().getFullYear();
-  let last = parseInt(localStorage.getItem("lastInvoice")) || 0;
-  last++;
-  localStorage.setItem("lastInvoice", last);
-  return `${year}${String(last).padStart(3,"0")}`;
-}
