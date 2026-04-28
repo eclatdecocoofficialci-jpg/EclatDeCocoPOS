@@ -188,56 +188,101 @@ th{
 
 </div>
 
-<script>
-
 let products = JSON.parse(localStorage.getItem("products")) || [];
+
 let invoice = [];
 let discount = 0;
 
+let currentProduct = null;
+let qty = 1;
+
+/* ELEMENTS */
+const search = document.getElementById("search");
+const results = document.getElementById("results");
+
+const selectedName = document.getElementById("selected-name");
+const selectedPrice = document.getElementById("selected-price");
+const qtyDisplay = document.getElementById("qty");
+
 /* SEARCH */
-document.getElementById("search").addEventListener("input", function(){
-  let val = this.value.toLowerCase();
-  let res = document.getElementById("results");
-  res.innerHTML = "";
+search.addEventListener("input", () => {
+  let val = search.value.toLowerCase();
+  results.innerHTML = "";
 
   let found = products.filter(p =>
     p.name.toLowerCase().includes(val) ||
     p.code.toLowerCase().includes(val)
   );
 
-  found.forEach(p=>{
+  found.forEach(p => {
     let div = document.createElement("div");
     div.className = "result";
-    div.innerHTML = `${p.code} - ${p.name} (${p.price})`;
+    div.innerText = `${p.code} - ${p.name} (${p.price} FCFA)`;
 
-    div.onclick = ()=>{
-      addToInvoice(p);
-    };
+    div.onclick = () => selectProduct(p);
 
-    res.appendChild(div);
+    results.appendChild(div);
   });
 });
 
-/* ADD TO INVOICE */
-function addToInvoice(p){
-  invoice.push({
-    name:p.name,
-    price:p.price,
-    qty:1
-  });
+/* SELECT PRODUCT (CENTRE BOX) */
+function selectProduct(p){
+  currentProduct = p;
+  qty = 1;
+
+  selectedName.innerText = p.name;
+  selectedPrice.innerText = p.price;
+  qtyDisplay.innerText = qty;
+}
+
+/* QUANTITY */
+function plusQty(){
+  qty++;
+  qtyDisplay.innerText = qty;
+}
+
+function minusQty(){
+  if(qty > 1){
+    qty--;
+    qtyDisplay.innerText = qty;
+  }
+}
+
+/* ADD TO CART */
+function addToCart(){
+  if(!currentProduct) return;
+
+  let existing = invoice.find(i => i.name === currentProduct.name);
+
+  if(existing){
+    existing.qty += qty;
+  } else {
+    invoice.push({
+      name: currentProduct.name,
+      price: currentProduct.price,
+      qty: qty
+    });
+  }
+
+  currentProduct = null;
+  qty = 1;
+
+  selectedName.innerText = "-";
+  selectedPrice.innerText = "0";
+  qtyDisplay.innerText = "1";
 
   renderInvoice();
 }
 
-/* RENDER */
+/* RENDER INVOICE */
 function renderInvoice(){
   let tbody = document.getElementById("invoice");
   tbody.innerHTML = "";
 
   let total = 0;
 
-  invoice.forEach(item=>{
-    let t = item.price * item.qty;
+  invoice.forEach((item, i) => {
+    let t = item.qty * item.price;
     total += t;
 
     let tr = document.createElement("tr");
@@ -253,7 +298,7 @@ function renderInvoice(){
   let final = total - (total * discount / 100);
 
   document.getElementById("total").innerText =
-    "Total: " + final.toFixed(2);
+    "Total: " + final.toFixed(0) + " FCFA";
 }
 
 /* DISCOUNT */
@@ -266,13 +311,13 @@ function setDiscount(p){
 let display = document.getElementById("display");
 
 document.querySelectorAll(".calc button").forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    let val = btn.innerText;
+  btn.addEventListener("click", () => {
+    let v = btn.innerText;
 
-    if(val === "C"){
+    if(v === "C"){
       display.value = "";
     } else {
-      display.value += val;
+      display.value += v;
     }
   });
 });
