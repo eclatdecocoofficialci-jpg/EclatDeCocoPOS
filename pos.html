@@ -72,17 +72,7 @@ th{
   color:#e91e63;
 }
 
-/* BUTTONS */
-.btn{
-  background:#e91e63;
-  color:white;
-  padding:8px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-/* CALCULATOR */
+/* CALC */
 .calc{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -120,6 +110,14 @@ th{
   font-weight:bold;
   color:#e91e63;
 }
+
+/* SELECTED PRODUCT */
+.selected-box{
+  background:#ffe6ef;
+  padding:10px;
+  border-radius:10px;
+  margin-top:10px;
+}
 </style>
 </head>
 
@@ -143,8 +141,10 @@ th{
   <button>4</button><button>5</button><button>6</button>
   <button>7</button><button>8</button><button>9</button>
   <button>0</button><button>.</button><button>C</button>
-  <!-- PRODUIT SELECTIONNE -->
-<div style="background:#ffe6ef;padding:10px;border-radius:10px">
+</div>
+
+<!-- PRODUIT SELECTIONNE -->
+<div class="selected-box">
   <h3 id="selected-name">-</h3>
   <p>Prix: <span id="selected-price">0</span> FCFA</p>
 
@@ -152,8 +152,7 @@ th{
   <span id="qty">1</span>
   <button onclick="plusQty()">+</button>
 
-  <button onclick="addToCart()">Ajouter</button>
-</div>
+  <button onclick="addToCart()" class="btn">Ajouter</button>
 </div>
 
 </div>
@@ -182,14 +181,16 @@ th{
 <button onclick="setDiscount(50)">50%</button>
 </div>
 
-<div class="total" id="total">Total: 0</div>
+<div class="total" id="total">Total: 0 FCFA</div>
 
 </div>
 
 </div>
 
+<script>
+
+/* DATA */
 let products = JSON.parse(localStorage.getItem("products")) || [];
-
 let invoice = [];
 let discount = 0;
 
@@ -225,7 +226,7 @@ search.addEventListener("input", () => {
   });
 });
 
-/* SELECT PRODUCT (CENTRE BOX) */
+/* SELECT PRODUCT */
 function selectProduct(p){
   currentProduct = p;
   qty = 1;
@@ -235,7 +236,7 @@ function selectProduct(p){
   qtyDisplay.innerText = qty;
 }
 
-/* QUANTITY */
+/* QTY */
 function plusQty(){
   qty++;
   qtyDisplay.innerText = qty;
@@ -248,14 +249,14 @@ function minusQty(){
   }
 }
 
-/* ADD TO CART */
+/* ADD */
 function addToCart(){
   if(!currentProduct) return;
 
-  let existing = invoice.find(i => i.name === currentProduct.name);
+  let exist = invoice.find(i => i.name === currentProduct.name);
 
-  if(existing){
-    existing.qty += qty;
+  if(exist){
+    exist.qty += qty;
   } else {
     invoice.push({
       name: currentProduct.name,
@@ -274,14 +275,14 @@ function addToCart(){
   renderInvoice();
 }
 
-/* RENDER INVOICE */
+/* INVOICE */
 function renderInvoice(){
   let tbody = document.getElementById("invoice");
   tbody.innerHTML = "";
 
   let total = 0;
 
-  invoice.forEach((item, i) => {
+  invoice.forEach(item => {
     let t = item.qty * item.price;
     total += t;
 
@@ -307,11 +308,11 @@ function setDiscount(p){
   renderInvoice();
 }
 
-/* CALCULATOR FIX */
+/* CALCULATOR */
 let display = document.getElementById("display");
 
 document.querySelectorAll(".calc button").forEach(btn=>{
-  btn.addEventListener("click", () => {
+  btn.addEventListener("click", ()=>{
     let v = btn.innerText;
 
     if(v === "C"){
