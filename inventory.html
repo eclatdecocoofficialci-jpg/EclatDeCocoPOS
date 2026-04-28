@@ -2,67 +2,96 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Éclat de Coco - Products</title>
+  <title>Éclat de Coco - Inventory</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
   <style>
     body { font-family: 'Poppins', sans-serif; margin:0; background:#fdf0f6; }
     h2,h3{ margin:0 0 10px 0; color:#e91e63; }
+
     .container { display:flex; gap:20px; padding:20px; flex-wrap:wrap; }
-    .left-panel { flex:1; background:#fff; padding:20px; border-radius:16px; max-width:400px; }
-    .left-panel input, .left-panel select, .left-panel button { width:100%; padding:10px; margin-bottom:10px; border-radius:10px; border:2px solid #f8bbd0; font-size:1em; }
-    .left-panel button { background:#e91e63; color:#fff; border:none; cursor:pointer; }
-    .right-panel { flex:2; background:#fff; padding:20px; border-radius:16px; overflow-x:auto; }
+
+    .left-panel {
+      flex:1; background:#fff; padding:20px; border-radius:16px; max-width:400px;
+    }
+
+    .left-panel input, .left-panel select, .left-panel button {
+      width:100%; padding:10px; margin-bottom:10px;
+      border-radius:10px; border:2px solid #f8bbd0;
+    }
+
+    .left-panel button {
+      background:#e91e63; color:#fff; border:none; cursor:pointer;
+    }
+
+    .right-panel {
+      flex:2; background:#fff; padding:20px; border-radius:16px;
+    }
+
     table { width:100%; border-collapse:collapse; }
-    th,td { border:1px solid #f8bbd0; padding:8px; text-align:center; font-size:0.9em; word-wrap:break-word; vertical-align:middle; }
+
+    th,td {
+      border:1px solid #f8bbd0;
+      padding:8px;
+      text-align:center;
+    }
+
     th { background:#ffe6ef; color:#e91e63; }
-    .low-stock { background-color:#ffcccc; }
-    button.remove-btn { background:#ff4081; color:#fff; padding:5px 10px; border:none; border-radius:6px; cursor:pointer; }
-    canvas { display:block; margin-top:10px; }
-    @media(max-width:1024px){ .container{ flex-direction:column; align-items:center; } .left-panel,.right-panel{ max-width:100%; } }
+
+    .low-stock { background:#ffcccc; }
+
+    button {
+      background:#ff4081; color:#fff; border:none; padding:5px 10px; border-radius:6px;
+    }
   </style>
 </head>
+
 <body>
 
-<h2>Gestion Produits</h2>
+<h2 style="padding:20px;">Gestion Matières Premières</h2>
+
 <div class="container">
 
-  <!-- Formulaire gauche -->
+  <!-- LEFT -->
   <div class="left-panel">
-    <h3>Ajouter un produit</h3>
-    <input type="text" id="product-name" placeholder="Nom produit">
-    <select id="product-category">
-      <option value="Savon">Savon</option>
-      <option value="Lotions">Lotions</option>
-      <option value="Body Butter">Body Butter</option>
-      <option value="Masque Cheveux">Masque Cheveux</option>
-      <option value="Sérum Cheveux">Sérum Cheveux</option>
-      <option value="Sérum Visage">Sérum Visage</option>
+    <h3>Ajouter une matière</h3>
+
+    <input type="text" id="name" placeholder="Nom (ex: Beurre de karité)">
+
+    <input type="number" id="quantity" placeholder="Quantité">
+
+    <select id="unit">
+      <option value="kg">kg</option>
+      <option value="g">g</option>
+      <option value="ml">ml</option>
+      <option value="L">L</option>
+      <option value="pcs">pcs</option>
     </select>
-    <input type="number" id="product-quantity" placeholder="Quantité / Stock">
-    <input type="number" id="product-price" placeholder="Prix">
-    <button id="add-product-btn">Ajouter Produit</button>
-    <button id="generate-barcode-btn">Générer Barcode</button>
-    <canvas id="barcode-canvas"></canvas>
+
+    <input type="number" id="cost" placeholder="Coût par unité">
+
+    <button id="add-btn">Ajouter</button>
   </div>
 
-  <!-- Tableau droite -->
+  <!-- RIGHT -->
   <div class="right-panel">
-    <h3>Liste des Produits</h3>
-    <table id="product-table">
+    <h3>Stock des matières</h3>
+
+    <table id="inventory-table">
       <thead>
         <tr>
-          <th>Code</th>
           <th>Nom</th>
-          <th>Catégorie</th>
-          <th>Qté</th>
-          <th>Prix</th>
+          <th>Quantité</th>
+          <th>Unité</th>
+          <th>Coût</th>
           <th>Action</th>
         </tr>
       </thead>
+
       <tbody>
-        <tr><td colspan="6">Aucun produit</td></tr>
+        <tr><td colspan="5">Aucune donnée</td></tr>
       </tbody>
     </table>
   </div>
@@ -70,80 +99,92 @@
 </div>
 
 <script>
-let products = [];
-let categoryCounters = {}; // Compteur pour chaque catégorie
 
-// Ajouter produit
-document.getElementById('add-product-btn').addEventListener('click', ()=>{
-  const name = document.getElementById('product-name').value.trim();
-  const category = document.getElementById('product-category').value;
-  const qty = parseInt(document.getElementById('product-quantity').value) || 0;
-  const price = parseFloat(document.getElementById('product-price').value) || 0;
-  if(!name){ alert("Nom obligatoire"); return; }
+// LOAD
+let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
 
-  // Générer code produit
-  if(!categoryCounters[category]) categoryCounters[category]=1;
-  const code = category.charAt(0).toUpperCase() + String(categoryCounters[category]).padStart(3,'0');
-  categoryCounters[category]++;
+// SAVE
+function saveInventory(){
+  localStorage.setItem("inventory", JSON.stringify(inventory));
+}
 
-  products.push({code,name,category,qty,price});
-  updateTable();
-
-  // Reset champs
-  document.getElementById('product-name').value='';
-  document.getElementById('product-quantity').value='';
-  document.getElementById('product-price').value='';
-});
-
-// Mettre à jour tableau
+// DISPLAY
 function updateTable(){
-  const tbody = document.querySelector('#product-table tbody');
-  tbody.innerHTML='';
-  if(products.length===0){
-    tbody.innerHTML='<tr><td colspan="6">Aucun produit</td></tr>';
+  const tbody = document.querySelector("#inventory-table tbody");
+  tbody.innerHTML = "";
+
+  if(inventory.length === 0){
+    tbody.innerHTML = "<tr><td colspan='5'>Aucune donnée</td></tr>";
     return;
   }
-  products.forEach((p,i)=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML=`
-      <td>${p.code}</td>
-      <td contenteditable="true">${p.name}</td>
-      <td>${p.category}</td>
-      <td contenteditable="true" class="${p.qty<4?'low-stock':''}">${p.qty}</td>
-      <td contenteditable="true">${p.price}</td>
-      <td><button class="remove-btn" data-index="${i}">X</button></td>
+
+  inventory.forEach((item,i)=>{
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td contenteditable="true" data-field="name" data-index="${i}">${item.name}</td>
+      <td contenteditable="true" class="${item.quantity<5?'low-stock':''}" data-field="quantity" data-index="${i}">${item.quantity}</td>
+      <td>${item.unit}</td>
+      <td contenteditable="true" data-field="cost" data-index="${i}">${item.cost}</td>
+      <td><button data-index="${i}">X</button></td>
     `;
+
     tbody.appendChild(tr);
   });
 }
 
-// Supprimer produit
-document.querySelector('#product-table tbody').addEventListener('click', e=>{
-  if(e.target.classList.contains('remove-btn')){
-    const index = parseInt(e.target.dataset.index);
-    products.splice(index,1);
+// ADD
+document.getElementById("add-btn").addEventListener("click", ()=>{
+  const name = document.getElementById("name").value.trim();
+  const quantity = parseFloat(document.getElementById("quantity").value) || 0;
+  const unit = document.getElementById("unit").value;
+  const cost = parseFloat(document.getElementById("cost").value) || 0;
+
+  if(!name){
+    alert("Nom obligatoire");
+    return;
+  }
+
+  inventory.push({name, quantity, unit, cost});
+
+  saveInventory();
+  updateTable();
+
+  document.getElementById("name").value="";
+  document.getElementById("quantity").value="";
+  document.getElementById("cost").value="";
+});
+
+// DELETE
+document.querySelector("#inventory-table tbody").addEventListener("click", e=>{
+  if(e.target.tagName === "BUTTON"){
+    const index = e.target.dataset.index;
+
+    inventory.splice(index,1);
+
+    saveInventory();
     updateTable();
   }
 });
 
-// Générer barcode
-document.getElementById('generate-barcode-btn').addEventListener('click', ()=>{
-  if(products.length===0){ alert("Ajoutez un produit d'abord"); return; }
-  const lastProduct = products[products.length-1];
-  JsBarcode("#barcode-canvas", lastProduct.code, {format:"CODE128", displayValue:true, height:50});
-});
-  let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+// EDIT
+document.querySelector("#inventory-table tbody").addEventListener("input", e=>{
+  const field = e.target.dataset.field;
+  const index = e.target.dataset.index;
 
-function saveInventory() {
-  localStorage.setItem("inventory", JSON.stringify(inventory));
-}
+  if(field){
+    inventory[index][field] = field === "quantity" || field === "cost"
+      ? Number(e.target.innerText) || 0
+      : e.target.innerText;
+
+    saveInventory();
+  }
+});
+
+// INIT
+window.addEventListener("DOMContentLoaded", updateTable);
+
 </script>
-<footer style="background:#f8bbd0; padding:20px 0; text-align:center; font-family:'Poppins', sans-serif; font-weight:500; position:fixed; bottom:0; width:100%; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);">
-  <p style="margin:5px 0; font-size:14px;">2025 | <strong>Éclat de Coco Official</strong> | All Right Reserved</p>
-  <p style="margin:5px 0; font-size:14px;">
-    📧 <a href="mailto:eclatdecocoofficialci@gmail.com" style="color:#e91e63; text-decoration:none;">eclatdecocoofficialci@gmail.com</a> | 
-    📱 <a href="tel:+2250777000803" style="color:#e91e63; text-decoration:none;">0777000803</a>
-  </p>
-</footer>
+
 </body>
 </html>
