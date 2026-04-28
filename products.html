@@ -1,212 +1,270 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Éclat de Coco - Products</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Éclat de Coco - POS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body { font-family: 'Poppins', sans-serif; margin:0; background:#fdf0f6; }
-    h2,h3{ margin:0 0 10px 0; color:#e91e63; }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
-    .container { display:flex; gap:20px; padding:20px; flex-wrap:wrap; }
+<style>
+body{
+  font-family:Poppins;
+  margin:0;
+  background:#fdf0f6;
+}
 
-    .left-panel {
-      flex:1; background:#fff; padding:20px; border-radius:16px; max-width:400px;
-    }
+.container{
+  display:flex;
+  gap:20px;
+  padding:20px;
+  flex-wrap:wrap;
+}
 
-    .left-panel input, .left-panel select, .left-panel button {
-      width:100%; padding:10px; margin-bottom:10px;
-      border-radius:10px; border:2px solid #f8bbd0;
-    }
+/* LEFT */
+.left{
+  flex:1;
+  background:white;
+  padding:15px;
+  border-radius:16px;
+  min-width:280px;
+}
 
-    .left-panel button {
-      background:#e91e63; color:#fff; border:none; cursor:pointer;
-    }
+input{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border:2px solid #f8bbd0;
+  border-radius:10px;
+}
 
-    .right-panel {
-      flex:2; background:#fff; padding:20px; border-radius:16px;
-      overflow-x:auto;
-    }
+/* SEARCH RESULTS */
+.result{
+  background:#ffe6ef;
+  padding:10px;
+  margin-bottom:5px;
+  border-radius:10px;
+  cursor:pointer;
+}
 
-    table { width:100%; border-collapse:collapse; }
+/* RIGHT */
+.right{
+  flex:2;
+  background:white;
+  padding:15px;
+  border-radius:16px;
+}
 
-    th,td {
-      border:1px solid #f8bbd0;
-      padding:8px;
-      text-align:center;
-    }
+/* TABLE */
+table{
+  width:100%;
+  border-collapse:collapse;
+}
 
-    th { background:#ffe6ef; color:#e91e63; }
+th,td{
+  border:1px solid #f8bbd0;
+  padding:8px;
+  text-align:center;
+}
 
-    button.remove-btn {
-      background:#ff4081;
-      color:#fff;
-      padding:5px 10px;
-      border:none;
-      border-radius:6px;
-      cursor:pointer;
-    }
-  </style>
+th{
+  background:#ffe6ef;
+  color:#e91e63;
+}
+
+/* BUTTONS */
+.btn{
+  background:#e91e63;
+  color:white;
+  padding:8px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* CALCULATOR */
+.calc{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:5px;
+  margin-top:10px;
+}
+
+.calc button{
+  padding:15px;
+  border:none;
+  border-radius:8px;
+  background:#f8bbd0;
+  font-size:16px;
+}
+
+/* DISCOUNT */
+.discount{
+  display:flex;
+  gap:5px;
+  margin-top:10px;
+}
+
+.discount button{
+  flex:1;
+  padding:8px;
+  border:none;
+  border-radius:8px;
+  background:#ff80ab;
+  color:white;
+}
+
+.total{
+  font-size:18px;
+  margin-top:10px;
+  font-weight:bold;
+  color:#e91e63;
+}
+</style>
 </head>
 
 <body>
 
-<h2 style="padding:20px;">Gestion Produits</h2>
-
 <div class="container">
 
-  <!-- LEFT -->
-  <div class="left-panel">
-    <h3>Ajouter un produit</h3>
+<!-- LEFT -->
+<div class="left">
 
-    <input type="text" id="product-name" placeholder="Nom du produit">
+<h3>🔎 Recherche Produit</h3>
+<input type="text" id="search" placeholder="Nom ou code produit">
 
-    <select id="product-category">
-      <option value="Savon">Savon</option>
-      <option value="Lotions">Lotions</option>
-      <option value="Body Butter">Body Butter</option>
-      <option value="Masque Cheveux">Masque Cheveux</option>
-      <option value="Sérum Cheveux">Sérum Cheveux</option>
-      <option value="Sérum Visage">Sérum Visage</option>
-      <option value="Édition Noël">Édition Noël</option>
-      <option value="Scrub">scrub</option>
-      <option value="crème hydratant">crème hydratant</option>
-      <option value="Souvenir">Souvenir</option>
-    </select>
+<div id="results"></div>
 
-    <input type="number" id="product-price" placeholder="Prix unitaire">
-    <input type="number" id="product-stock" placeholder="Stock">
+<h3>🧮 Calculatrice</h3>
+<input type="text" id="display" readonly>
 
-    <button id="add-product-btn">Ajouter Produit</button>
-  </div>
-
-  <!-- RIGHT -->
-  <div class="right-panel">
-    <h3>Liste des Produits</h3>
-
-    <table id="products-table">
-      <thead>
-        <tr>
-          <th>Code</th>
-          <th>Nom</th>
-          <th>Catégorie</th>
-          <th>Prix</th>
-          <th>Stock</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr><td colspan="6">Aucun produit</td></tr>
-      </tbody>
-    </table>
-  </div>
+<div class="calc">
+  <button>1</button><button>2</button><button>3</button>
+  <button>4</button><button>5</button><button>6</button>
+  <button>7</button><button>8</button><button>9</button>
+  <button>0</button><button>.</button><button>C</button>
+</div>
 
 </div>
 
-<!-- ✅ SCRIPT (THIS WAS YOUR PROBLEM BEFORE) -->
+<!-- RIGHT -->
+<div class="right">
+
+<h3>🧾 Facture</h3>
+
+<table>
+<thead>
+<tr>
+<th>Produit</th>
+<th>Prix</th>
+<th>Qty</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody id="invoice"></tbody>
+</table>
+
+<div class="discount">
+<button onclick="setDiscount(0)">0%</button>
+<button onclick="setDiscount(10)">10%</button>
+<button onclick="setDiscount(20)">20%</button>
+<button onclick="setDiscount(50)">50%</button>
+</div>
+
+<div class="total" id="total">Total: 0</div>
+
+</div>
+
+</div>
+
 <script>
 
-// LOAD DATA
 let products = JSON.parse(localStorage.getItem("products")) || [];
-let categoryCount = JSON.parse(localStorage.getItem("categoryCount")) || {};
+let invoice = [];
+let discount = 0;
 
-// SAVE
-function saveProducts() {
-  localStorage.setItem("products", JSON.stringify(products));
-  localStorage.setItem("categoryCount", JSON.stringify(categoryCount));
+/* SEARCH */
+document.getElementById("search").addEventListener("input", function(){
+  let val = this.value.toLowerCase();
+  let res = document.getElementById("results");
+  res.innerHTML = "";
+
+  let found = products.filter(p =>
+    p.name.toLowerCase().includes(val) ||
+    p.code.toLowerCase().includes(val)
+  );
+
+  found.forEach(p=>{
+    let div = document.createElement("div");
+    div.className = "result";
+    div.innerHTML = `${p.code} - ${p.name} (${p.price})`;
+
+    div.onclick = ()=>{
+      addToInvoice(p);
+    };
+
+    res.appendChild(div);
+  });
+});
+
+/* ADD TO INVOICE */
+function addToInvoice(p){
+  invoice.push({
+    name:p.name,
+    price:p.price,
+    qty:1
+  });
+
+  renderInvoice();
 }
 
-// DISPLAY
-function updateTable() {
-  const tbody = document.querySelector('#products-table tbody');
-  tbody.innerHTML = '';
+/* RENDER */
+function renderInvoice(){
+  let tbody = document.getElementById("invoice");
+  tbody.innerHTML = "";
 
-  if(products.length === 0){
-    tbody.innerHTML = '<tr><td colspan="6">Aucun produit</td></tr>';
-    return;
-  }
+  let total = 0;
 
-  products.forEach((p,i)=>{
-    const tr = document.createElement('tr');
+  invoice.forEach(item=>{
+    let t = item.price * item.qty;
+    total += t;
 
+    let tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${p.code}</td>
-      <td contenteditable="true" data-field="name" data-index="${i}">${p.name}</td>
-      <td>${p.category}</td>
-      <td contenteditable="true" data-field="price" data-index="${i}">${p.price}</td>
-      <td contenteditable="true" data-field="stock" data-index="${i}">${p.stock}</td>
-      <td><button class="remove-btn" data-index="${i}">X</button></td>
+      <td>${item.name}</td>
+      <td>${item.price}</td>
+      <td>${item.qty}</td>
+      <td>${t}</td>
     `;
-
     tbody.appendChild(tr);
   });
+
+  let final = total - (total * discount / 100);
+
+  document.getElementById("total").innerText =
+    "Total: " + final.toFixed(2);
 }
 
-// GENERATE CODE
-function generateProductCode(category){
-  const prefix = category.substring(0,2).toUpperCase();
-
-  if(!categoryCount[prefix]) categoryCount[prefix] = 1;
-  else categoryCount[prefix]++;
-
-  return `${prefix}${String(categoryCount[prefix]).padStart(3,'0')}`;
+/* DISCOUNT */
+function setDiscount(p){
+  discount = p;
+  renderInvoice();
 }
 
-// ADD
-document.getElementById('add-product-btn').addEventListener('click',()=>{
-  const name = document.getElementById('product-name').value.trim();
-  const category = document.getElementById('product-category').value;
-  const price = parseFloat(document.getElementById('product-price').value) || 0;
-  const stock = parseInt(document.getElementById('product-stock').value) || 0;
+/* CALCULATOR FIX */
+let display = document.getElementById("display");
 
-  if(!name){
-    alert("Nom obligatoire");
-    return;
-  }
+document.querySelectorAll(".calc button").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    let val = btn.innerText;
 
-  const code = generateProductCode(category);
-
-  products.push({code, name, category, price, stock});
-
-  saveProducts();
-  updateTable();
-
-  document.getElementById('product-name').value='';
-  document.getElementById('product-price').value='';
-  document.getElementById('product-stock').value='';
+    if(val === "C"){
+      display.value = "";
+    } else {
+      display.value += val;
+    }
+  });
 });
-
-// DELETE
-document.querySelector('#products-table tbody').addEventListener('click',e=>{
-  if(e.target.classList.contains('remove-btn')){
-    const index = parseInt(e.target.dataset.index);
-
-    products.splice(index,1);
-
-    saveProducts();
-    updateTable();
-  }
-});
-
-// EDIT
-document.querySelector('#products-table tbody').addEventListener('input', e=>{
-  const field = e.target.dataset.field;
-  const index = e.target.dataset.index;
-
-  if(field){
-    products[index][field] = (field === "price" || field === "stock")
-      ? Number(e.target.innerText) || 0
-      : e.target.innerText;
-
-    saveProducts();
-  }
-});
-
-// LOAD ON START
-window.addEventListener("DOMContentLoaded", updateTable);
 
 </script>
 
