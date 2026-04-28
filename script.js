@@ -1,26 +1,31 @@
-let cart = [];
-let products = JSON.parse(localStorage.getItem("products")) || [];
+document.addEventListener("DOMContentLoaded", () => {
 
+/* ===================== DATA ===================== */
+let products = JSON.parse(localStorage.getItem("products")) || [];
+let invoice = [];
 let discount = 0;
 
-/* ===== ELEMENTS ===== */
-const resultsBox = document.getElementById("results");
-const searchInput = document.getElementById("search");
+let currentProduct = null;
+let qty = 1;
+
+/* ===================== ELEMENTS ===================== */
+const search = document.getElementById("search");
+const results = document.getElementById("results");
 
 const selectedName = document.getElementById("selected-name");
 const selectedPrice = document.getElementById("selected-price");
 const qtyDisplay = document.getElementById("qty");
 
-const subtotalEl = document.getElementById("subtotal");
-const totalFinalEl = document.getElementById("total-final");
+const invoiceTable = document.getElementById("invoice");
+const totalEl = document.getElementById("total");
 
-let currentProduct = null;
-let qty = 1;
+const display = document.getElementById("display");
 
-/* ===== SEARCH PRODUIT ===== */
-searchInput.addEventListener("input", () => {
-  let val = searchInput.value.toLowerCase();
-  resultsBox.innerHTML = "";
+/* ===================== SEARCH ===================== */
+if(search){
+search.addEventListener("input", () => {
+  let val = search.value.toLowerCase();
+  results.innerHTML = "";
 
   let found = products.filter(p =>
     p.name.toLowerCase().includes(val) ||
@@ -34,44 +39,44 @@ searchInput.addEventListener("input", () => {
 
     div.onclick = () => selectProduct(p);
 
-    resultsBox.appendChild(div);
+    results.appendChild(div);
   });
 });
+}
 
-/* ===== SELECT PRODUCT (CENTRE BOX) ===== */
+/* ===================== SELECT PRODUCT ===================== */
 function selectProduct(p){
   currentProduct = p;
   qty = 1;
 
-  selectedName.innerText = p.name;
-  selectedPrice.innerText = p.price;
-
-  qtyDisplay.innerText = qty;
+  if(selectedName) selectedName.innerText = p.name;
+  if(selectedPrice) selectedPrice.innerText = p.price;
+  if(qtyDisplay) qtyDisplay.innerText = qty;
 }
 
-/* ===== QUANTITY CONTROL ===== */
-function plusQty(){
+/* ===================== QTY ===================== */
+window.plusQty = function(){
   qty++;
-  qtyDisplay.innerText = qty;
+  if(qtyDisplay) qtyDisplay.innerText = qty;
 }
 
-function minusQty(){
+window.minusQty = function(){
   if(qty > 1){
     qty--;
-    qtyDisplay.innerText = qty;
+    if(qtyDisplay) qtyDisplay.innerText = qty;
   }
 }
 
-/* ===== ADD TO CART ===== */
-function addToCart(){
+/* ===================== ADD TO CART ===================== */
+window.addToCart = function(){
   if(!currentProduct) return;
 
-  let existing = cart.find(i => i.name === currentProduct.name);
+  let existing = invoice.find(i => i.name === currentProduct.name);
 
   if(existing){
     existing.qty += qty;
   } else {
-    cart.push({
+    invoice.push({
       name: currentProduct.name,
       price: currentProduct.price,
       qty: qty
@@ -81,70 +86,66 @@ function addToCart(){
   currentProduct = null;
   qty = 1;
 
-  selectedName.innerText = "-";
-  selectedPrice.innerText = "0";
-  qtyDisplay.innerText = "1";
+  if(selectedName) selectedName.innerText = "-";
+  if(selectedPrice) selectedPrice.innerText = "0";
+  if(qtyDisplay) qtyDisplay.innerText = "1";
 
-  updateInvoice();
+  renderInvoice();
 }
 
-/* ===== INVOICE ===== */
-function updateInvoice(){
-  const tbody = document.querySelector(".right-panel tbody");
-  tbody.innerHTML = "";
+/* ===================== RENDER INVOICE ===================== */
+function renderInvoice(){
+  if(!invoiceTable) return;
 
-  let subtotal = 0;
+  invoiceTable.innerHTML = "";
 
-  cart.forEach((item, i) => {
-    let total = item.qty * item.price;
-    subtotal += total;
+  let total = 0;
+
+  invoice.forEach(item => {
+    let t = item.qty * item.price;
+    total += t;
 
     let tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${item.name}</td>
+      <td>${item.price}</td>
       <td>${item.qty}</td>
-      <td>${item.price} FCFA</td>
-      <td>${total} FCFA</td>
-      <td><button onclick="removeItem(${i})">X</button></td>
+      <td>${t}</td>
     `;
-    tbody.appendChild(tr);
+    invoiceTable.appendChild(tr);
   });
 
-  let final = subtotal - (subtotal * discount / 100);
+  let final = total - (total * discount / 100);
 
-  subtotalEl.innerText = subtotal + " FCFA";
-  totalFinalEl.innerText = final + " FCFA";
+  if(totalEl){
+    totalEl.innerText = "Total: " + final.toFixed(0) + " FCFA";
+  }
 }
 
-/* ===== REMOVE ===== */
-function removeItem(i){
-  cart.splice(i,1);
-  updateInvoice();
-}
-
-/* ===== DISCOUNT ===== */
-function setDiscount(p){
+/* ===================== DISCOUNT ===================== */
+window.setDiscount = function(p){
   discount = p;
-  updateInvoice();
+  renderInvoice();
 }
 
-/* ===== SAVE ===== */
-document.getElementById("save-btn").addEventListener("click", ()=>{
-  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+/* ===================== CALCULATOR ===================== */
+if(document.querySelectorAll(".calc button")){
+document.querySelectorAll(".calc button").forEach(btn=>{
+  btn.addEventListener("click", () => {
+    let v = btn.innerText;
 
-  let subtotal = cart.reduce((a,b)=>a + b.qty*b.price,0);
-  let final = subtotal - (subtotal * discount / 100);
+    if(!display) return;
 
-  sales.push({
-    date: new Date().toISOString(),
-    cart,
-    discount,
-    total: final
+    if(v === "C"){
+      display.value = "";
+    } else {
+      display.value += v;
+    }
   });
+});
+}
 
-  localStorage.setItem("sales", JSON.stringify(sales));
+/* ===================== INIT ===================== */
+console.log("POS SCRIPT LOADED SUCCESSFULLY");
 
-  cart = [];
-  discount = 0;
-  updateInvoice();
 });
