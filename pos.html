@@ -143,6 +143,17 @@ th{
   <button>4</button><button>5</button><button>6</button>
   <button>7</button><button>8</button><button>9</button>
   <button>0</button><button>.</button><button>C</button>
+  <!-- PRODUIT SELECTIONNE -->
+<div style="background:#ffe6ef;padding:10px;border-radius:10px">
+  <h3 id="selected-name">-</h3>
+  <p>Prix: <span id="selected-price">0</span> FCFA</p>
+
+  <button onclick="minusQty()">-</button>
+  <span id="qty">1</span>
+  <button onclick="plusQty()">+</button>
+
+  <button onclick="addToCart()">Ajouter</button>
+</div>
 </div>
 
 </div>
