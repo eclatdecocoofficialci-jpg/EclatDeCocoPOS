@@ -67,52 +67,71 @@
   </div>
 
 </div>
+// ===== LOAD PRODUCTS FROM STORAGE =====
+let products = JSON.parse(localStorage.getItem("products")) || [];
+let categoryCount = JSON.parse(localStorage.getItem("categoryCount")) || {};
 
-<script>
-let products = [];
-let categoryCount = {}; // Compter le nombre par catégorie pour générer le code
+// ===== SAVE FUNCTION =====
+function saveProducts() {
+  localStorage.setItem("products", JSON.stringify(products));
+  localStorage.setItem("categoryCount", JSON.stringify(categoryCount));
+}
 
+// ===== UPDATE TABLE =====
 function updateTable() {
   const tbody = document.querySelector('#products-table tbody');
   tbody.innerHTML = '';
-  if(products.length===0){ tbody.innerHTML='<tr><td colspan="7">Aucun produit</td></tr>'; return; }
+
+  if(products.length === 0){
+    tbody.innerHTML = '<tr><td colspan="7">Aucun produit</td></tr>';
+    return;
+  }
 
   products.forEach((p,i)=>{
     const tr = document.createElement('tr');
-    const code = p.code;
+
     tr.innerHTML = `
-      <td>${code}</td>
-      <td contenteditable="true">${p.name}</td>
+      <td>${p.code}</td>
+      <td contenteditable="true" data-field="name" data-index="${i}">${p.name}</td>
       <td>${p.category}</td>
-      <td contenteditable="true">${p.price}</td>
-      <td contenteditable="true">${p.stock}</td>
+      <td contenteditable="true" data-field="price" data-index="${i}">${p.price}</td>
+      <td contenteditable="true" data-field="stock" data-index="${i}">${p.stock}</td>
       <td><canvas class="barcode" id="barcode-${i}"></canvas></td>
       <td><button class="remove-btn" data-index="${i}">X</button></td>
     `;
+
     tbody.appendChild(tr);
-    generateBarcode(`barcode-${i}`, code);
+    generateBarcode(`barcode-${i}`, p.code);
   });
 }
 
-// Générer code produit
+// ===== GENERATE PRODUCT CODE =====
 function generateProductCode(category){
   const prefix = category.substring(0,2).toUpperCase();
-  if(!categoryCount[prefix]) categoryCount[prefix]=1;
+
+  if(!categoryCount[prefix]) categoryCount[prefix] = 1;
   else categoryCount[prefix]++;
+
   return `${prefix}${String(categoryCount[prefix]).padStart(3,'0')}`;
 }
 
-// Ajouter produit
+// ===== ADD PRODUCT =====
 document.getElementById('add-product-btn').addEventListener('click',()=>{
-  const name=document.getElementById('product-name').value.trim();
-  const category=document.getElementById('product-category').value;
-  const price=parseFloat(document.getElementById('product-price').value)||0;
-  const stock=parseInt(document.getElementById('product-stock').value)||0;
+  const name = document.getElementById('product-name').value.trim();
+  const category = document.getElementById('product-category').value;
+  const price = parseFloat(document.getElementById('product-price').value) || 0;
+  const stock = parseInt(document.getElementById('product-stock').value) || 0;
 
-  if(!name){ alert("Nom obligatoire"); return; }
+  if(!name){
+    alert("Nom obligatoire");
+    return;
+  }
 
   const code = generateProductCode(category);
-  products.push({code,name,category,price,stock});
+
+  products.push({code, name, category, price, stock});
+
+  saveProducts();      // 🔥 SAVE HERE
   updateTable();
 
   document.getElementById('product-name').value='';
@@ -120,30 +139,55 @@ document.getElementById('add-product-btn').addEventListener('click',()=>{
   document.getElementById('product-stock').value='';
 });
 
-// Supprimer produit
+// ===== DELETE PRODUCT =====
 document.querySelector('#products-table tbody').addEventListener('click',e=>{
   if(e.target.classList.contains('remove-btn')){
-    const index=parseInt(e.target.dataset.index);
+    const index = parseInt(e.target.dataset.index);
+
     products.splice(index,1);
+
+    saveProducts();   // 🔥 SAVE HERE
     updateTable();
   }
 });
 
-// Barcode simple avec JsBarcode (ou générer un dessin simple)
+// ===== EDIT INLINE (AUTO SAVE) =====
+document.querySelector('#products-table tbody').addEventListener('input', e=>{
+  const field = e.target.dataset.field;
+  const index = e.target.dataset.index;
+
+  if(field){
+    if(field === "price" || field === "stock"){
+      products[index][field] = Number(e.target.innerText) || 0;
+    } else {
+      products[index][field] = e.target.innerText;
+    }
+
+    saveProducts();   // 🔥 SAVE AFTER EDIT
+  }
+});
+
+// ===== BARCODE =====
 function generateBarcode(canvasId, text){
-  const canvas=document.getElementById(canvasId);
-  const ctx=canvas.getContext('2d');
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = 120;
+  canvas.height = 60;
+
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.font='20px Arial';
-  ctx.fillText(text,0,20);
-  // Optionnel: générer lignes pour simuler barcode
+  ctx.font = '12px Arial';
+  ctx.fillText(text, 10, 10);
+
   for(let i=0;i<text.length;i++){
-    const x=i*5;
-    const h=Math.random()*20+10;
-    ctx.fillRect(x,30,2,h);
+    const x = i * 6;
+    const h = Math.random()*20+20;
+    ctx.fillRect(x,20,2,h);
   }
 }
-</script>
+
+// ===== LOAD ON PAGE START =====
+window.addEventListener("DOMContentLoaded", updateTable);
 <footer style="background:#f8bbd0; padding:20px 0; text-align:center; font-family:'Poppins', sans-serif; font-weight:500; position:fixed; bottom:0; width:100%; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);">
   <p style="margin:5px 0; font-size:14px;">2025 | <strong>Éclat de Coco Official</strong> | All Right Reserved</p>
   <p style="margin:5px 0; font-size:14px;">
