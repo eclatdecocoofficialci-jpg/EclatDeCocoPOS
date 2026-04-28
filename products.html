@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Éclat de Coco - POS</title>
+<title>Éclat de Coco - Products</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
@@ -14,6 +14,11 @@ body{
   background:#fdf0f6;
 }
 
+h2,h3{
+  margin:0 0 10px 0;
+  color:#e91e63;
+}
+
 .container{
   display:flex;
   gap:20px;
@@ -22,40 +27,41 @@ body{
 }
 
 /* LEFT */
-.left{
+.left-panel{
   flex:1;
-  background:white;
-  padding:15px;
+  background:#fff;
+  padding:20px;
   border-radius:16px;
   min-width:280px;
 }
 
-input{
+input,select{
   width:100%;
   padding:10px;
   margin-bottom:10px;
-  border:2px solid #f8bbd0;
   border-radius:10px;
+  border:2px solid #f8bbd0;
 }
 
-/* SEARCH RESULTS */
-.result{
-  background:#ffe6ef;
+button{
+  width:100%;
   padding:10px;
-  margin-bottom:5px;
+  border:none;
   border-radius:10px;
+  background:#e91e63;
+  color:#fff;
   cursor:pointer;
 }
 
 /* RIGHT */
-.right{
+.right-panel{
   flex:2;
-  background:white;
-  padding:15px;
+  background:#fff;
+  padding:20px;
   border-radius:16px;
+  overflow-x:auto;
 }
 
-/* TABLE */
 table{
   width:100%;
   border-collapse:collapse;
@@ -72,106 +78,69 @@ th{
   color:#e91e63;
 }
 
-/* BUTTONS */
-.btn{
-  background:#e91e63;
+.remove-btn{
+  background:#ff4081;
   color:white;
-  padding:8px;
   border:none;
-  border-radius:8px;
+  padding:5px 10px;
+  border-radius:6px;
   cursor:pointer;
-}
-
-/* CALCULATOR */
-.calc{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:5px;
-  margin-top:10px;
-}
-
-.calc button{
-  padding:15px;
-  border:none;
-  border-radius:8px;
-  background:#f8bbd0;
-  font-size:16px;
-}
-
-/* DISCOUNT */
-.discount{
-  display:flex;
-  gap:5px;
-  margin-top:10px;
-}
-
-.discount button{
-  flex:1;
-  padding:8px;
-  border:none;
-  border-radius:8px;
-  background:#ff80ab;
-  color:white;
-}
-
-.total{
-  font-size:18px;
-  margin-top:10px;
-  font-weight:bold;
-  color:#e91e63;
 }
 </style>
 </head>
 
 <body>
 
+<h2 style="padding:20px;">Gestion Produits</h2>
+
 <div class="container">
 
 <!-- LEFT -->
-<div class="left">
+<div class="left-panel">
 
-<h3>🔎 Recherche Produit</h3>
-<input type="text" id="search" placeholder="Nom ou code produit">
+<h3>Ajouter un produit</h3>
 
-<div id="results"></div>
+<input type="text" id="name" placeholder="Nom du produit">
 
-<h3>🧮 Calculatrice</h3>
-<input type="text" id="display" readonly>
+<select id="category">
+  <option value="Savon">Savon</option>
+  <option value="Lotions">Lotions</option>
+  <option value="Body Butter">Body Butter</option>
+  <option value="Masque Cheveux">Masque Cheveux</option>
+  <option value="Sérum Cheveux">Sérum Cheveux</option>
+  <option value="Sérum Visage">Sérum Visage</option>
+  <option value="Scrub">Scrub</option>
+  <option value="Crème Hydratante">Crème Hydratante</option>
+  <option value="Souvenir">Souvenir</option>
+</select>
 
-<div class="calc">
-  <button>1</button><button>2</button><button>3</button>
-  <button>4</button><button>5</button><button>6</button>
-  <button>7</button><button>8</button><button>9</button>
-  <button>0</button><button>.</button><button>C</button>
-</div>
+<input type="number" id="price" placeholder="Prix">
+<input type="number" id="stock" placeholder="Stock">
+
+<button id="add">Ajouter Produit</button>
 
 </div>
 
 <!-- RIGHT -->
-<div class="right">
+<div class="right-panel">
 
-<h3>🧾 Facture</h3>
+<h3>Liste Produits</h3>
 
 <table>
 <thead>
 <tr>
-<th>Produit</th>
+<th>Code</th>
+<th>Nom</th>
+<th>Catégorie</th>
 <th>Prix</th>
-<th>Qty</th>
-<th>Total</th>
+<th>Stock</th>
+<th>Action</th>
 </tr>
 </thead>
-<tbody id="invoice"></tbody>
+
+<tbody id="table"></tbody>
+
 </table>
-
-<div class="discount">
-<button onclick="setDiscount(0)">0%</button>
-<button onclick="setDiscount(10)">10%</button>
-<button onclick="setDiscount(20)">20%</button>
-<button onclick="setDiscount(50)">50%</button>
-</div>
-
-<div class="total" id="total">Total: 0</div>
 
 </div>
 
@@ -179,92 +148,111 @@ th{
 
 <script>
 
+/* LOAD */
 let products = JSON.parse(localStorage.getItem("products")) || [];
-let invoice = [];
-let discount = 0;
+let categoryCount = JSON.parse(localStorage.getItem("categoryCount")) || {};
 
-/* SEARCH */
-document.getElementById("search").addEventListener("input", function(){
-  let val = this.value.toLowerCase();
-  let res = document.getElementById("results");
-  res.innerHTML = "";
-
-  let found = products.filter(p =>
-    p.name.toLowerCase().includes(val) ||
-    p.code.toLowerCase().includes(val)
-  );
-
-  found.forEach(p=>{
-    let div = document.createElement("div");
-    div.className = "result";
-    div.innerHTML = `${p.code} - ${p.name} (${p.price})`;
-
-    div.onclick = ()=>{
-      addToInvoice(p);
-    };
-
-    res.appendChild(div);
-  });
-});
-
-/* ADD TO INVOICE */
-function addToInvoice(p){
-  invoice.push({
-    name:p.name,
-    price:p.price,
-    qty:1
-  });
-
-  renderInvoice();
+/* SAVE */
+function save(){
+  localStorage.setItem("products", JSON.stringify(products));
+  localStorage.setItem("categoryCount", JSON.stringify(categoryCount));
 }
 
-/* RENDER */
-function renderInvoice(){
-  let tbody = document.getElementById("invoice");
+/* CODE GENERATION */
+function generateCode(cat){
+  let prefix = cat.substring(0,2).toUpperCase();
+
+  if(!categoryCount[prefix]){
+    categoryCount[prefix] = 1;
+  } else {
+    categoryCount[prefix]++;
+  }
+
+  return prefix + String(categoryCount[prefix]).padStart(3,"0");
+}
+
+/* DISPLAY */
+function render(){
+  let tbody = document.getElementById("table");
   tbody.innerHTML = "";
 
-  let total = 0;
+  if(products.length === 0){
+    tbody.innerHTML = `<tr><td colspan="6">Aucun produit</td></tr>`;
+    return;
+  }
 
-  invoice.forEach(item=>{
-    let t = item.price * item.qty;
-    total += t;
-
+  products.forEach((p,i)=>{
     let tr = document.createElement("tr");
+
     tr.innerHTML = `
-      <td>${item.name}</td>
-      <td>${item.price}</td>
-      <td>${item.qty}</td>
-      <td>${t}</td>
+      <td>${p.code}</td>
+      <td contenteditable="true" data-i="${i}" data-f="name">${p.name}</td>
+      <td>${p.category}</td>
+      <td contenteditable="true" data-i="${i}" data-f="price">${p.price}</td>
+      <td contenteditable="true" data-i="${i}" data-f="stock">${p.stock}</td>
+      <td><button class="remove" data-i="${i}">X</button></td>
     `;
+
     tbody.appendChild(tr);
   });
-
-  let final = total - (total * discount / 100);
-
-  document.getElementById("total").innerText =
-    "Total: " + final.toFixed(2);
 }
 
-/* DISCOUNT */
-function setDiscount(p){
-  discount = p;
-  renderInvoice();
-}
+/* ADD */
+document.getElementById("add").addEventListener("click",()=>{
+  let name = document.getElementById("name").value.trim();
+  let category = document.getElementById("category").value;
+  let price = Number(document.getElementById("price").value) || 0;
+  let stock = Number(document.getElementById("stock").value) || 0;
 
-/* CALCULATOR FIX */
-let display = document.getElementById("display");
+  if(!name){
+    alert("Nom obligatoire");
+    return;
+  }
 
-document.querySelectorAll(".calc button").forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    let val = btn.innerText;
+  let code = generateCode(category);
 
-    if(val === "C"){
-      display.value = "";
-    } else {
-      display.value += val;
-    }
+  products.push({
+    code,
+    name,
+    category,
+    price,
+    stock
   });
+
+  save();
+  render();
+
+  document.getElementById("name").value="";
+  document.getElementById("price").value="";
+  document.getElementById("stock").value="";
 });
+
+/* DELETE */
+document.getElementById("table").addEventListener("click",(e)=>{
+  if(e.target.classList.contains("remove")){
+    let i = e.target.dataset.i;
+    products.splice(i,1);
+    save();
+    render();
+  }
+});
+
+/* EDIT */
+document.getElementById("table").addEventListener("input",(e)=>{
+  let i = e.target.dataset.i;
+  let f = e.target.dataset.f;
+
+  if(f){
+    products[i][f] = (f==="price" || f==="stock")
+      ? Number(e.target.innerText) || 0
+      : e.target.innerText;
+
+    save();
+  }
+});
+
+/* INIT */
+window.onload = render;
 
 </script>
 
