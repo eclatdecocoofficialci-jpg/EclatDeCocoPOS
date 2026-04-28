@@ -5,31 +5,64 @@
   <title>Éclat de Coco - Products</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
     body { font-family: 'Poppins', sans-serif; margin:0; background:#fdf0f6; }
     h2,h3{ margin:0 0 10px 0; color:#e91e63; }
+
     .container { display:flex; gap:20px; padding:20px; flex-wrap:wrap; }
-    .left-panel { flex:1; background:#fff; padding:20px; border-radius:16px; max-width:400px; }
-    .left-panel input, .left-panel select, .left-panel button { width:100%; padding:10px; margin-bottom:10px; border-radius:10px; border:2px solid #f8bbd0; font-size:1em; }
-    .left-panel button { background:#e91e63; color:#fff; border:none; cursor:pointer; }
-    .right-panel { flex:2; background:#fff; padding:20px; border-radius:16px; overflow-x:auto; }
+
+    .left-panel {
+      flex:1; background:#fff; padding:20px; border-radius:16px; max-width:400px;
+    }
+
+    .left-panel input, .left-panel select, .left-panel button {
+      width:100%; padding:10px; margin-bottom:10px;
+      border-radius:10px; border:2px solid #f8bbd0;
+    }
+
+    .left-panel button {
+      background:#e91e63; color:#fff; border:none; cursor:pointer;
+    }
+
+    .right-panel {
+      flex:2; background:#fff; padding:20px; border-radius:16px;
+      overflow-x:auto;
+    }
+
     table { width:100%; border-collapse:collapse; }
-    th,td { border:1px solid #f8bbd0; padding:8px; text-align:center; font-size:0.9em; word-wrap:break-word; vertical-align:middle; }
+
+    th,td {
+      border:1px solid #f8bbd0;
+      padding:8px;
+      text-align:center;
+    }
+
     th { background:#ffe6ef; color:#e91e63; }
-    button.remove-btn { background:#ff4081; color:#fff; padding:5px 10px; border:none; border-radius:6px; cursor:pointer; }
-    .barcode { margin-top:5px; }
-    @media(max-width:1024px){ .container{ flex-direction:column; align-items:center; } .left-panel,.right-panel{ max-width:100%; } }
+
+    button.remove-btn {
+      background:#ff4081;
+      color:#fff;
+      padding:5px 10px;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+    }
   </style>
 </head>
+
 <body>
 
-<h2>Gestion Produits</h2>
+<h2 style="padding:20px;">Gestion Produits</h2>
+
 <div class="container">
 
-  <!-- Formulaire gauche -->
+  <!-- LEFT -->
   <div class="left-panel">
     <h3>Ajouter un produit</h3>
+
     <input type="text" id="product-name" placeholder="Nom du produit">
+
     <select id="product-category">
       <option value="Savon">Savon</option>
       <option value="Lotions">Lotions</option>
@@ -40,14 +73,17 @@
       <option value="Édition Noël">Édition Noël</option>
       <option value="Souvenir">Souvenir</option>
     </select>
+
     <input type="number" id="product-price" placeholder="Prix unitaire">
     <input type="number" id="product-stock" placeholder="Stock">
+
     <button id="add-product-btn">Ajouter Produit</button>
   </div>
 
-  <!-- Tableau droite -->
+  <!-- RIGHT -->
   <div class="right-panel">
     <h3>Liste des Produits</h3>
+
     <table id="products-table">
       <thead>
         <tr>
@@ -56,34 +92,38 @@
           <th>Catégorie</th>
           <th>Prix</th>
           <th>Stock</th>
-          <th>Barcode</th>
           <th>Action</th>
         </tr>
       </thead>
+
       <tbody>
-        <tr><td colspan="7">Aucun produit</td></tr>
+        <tr><td colspan="6">Aucun produit</td></tr>
       </tbody>
     </table>
   </div>
 
 </div>
-// ===== LOAD PRODUCTS FROM STORAGE =====
+
+<!-- ✅ SCRIPT (THIS WAS YOUR PROBLEM BEFORE) -->
+<script>
+
+// LOAD DATA
 let products = JSON.parse(localStorage.getItem("products")) || [];
 let categoryCount = JSON.parse(localStorage.getItem("categoryCount")) || {};
 
-// ===== SAVE FUNCTION =====
+// SAVE
 function saveProducts() {
   localStorage.setItem("products", JSON.stringify(products));
   localStorage.setItem("categoryCount", JSON.stringify(categoryCount));
 }
 
-// ===== UPDATE TABLE =====
+// DISPLAY
 function updateTable() {
   const tbody = document.querySelector('#products-table tbody');
   tbody.innerHTML = '';
 
   if(products.length === 0){
-    tbody.innerHTML = '<tr><td colspan="7">Aucun produit</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6">Aucun produit</td></tr>';
     return;
   }
 
@@ -96,16 +136,14 @@ function updateTable() {
       <td>${p.category}</td>
       <td contenteditable="true" data-field="price" data-index="${i}">${p.price}</td>
       <td contenteditable="true" data-field="stock" data-index="${i}">${p.stock}</td>
-      <td><canvas class="barcode" id="barcode-${i}"></canvas></td>
       <td><button class="remove-btn" data-index="${i}">X</button></td>
     `;
 
     tbody.appendChild(tr);
-    generateBarcode(`barcode-${i}`, p.code);
   });
 }
 
-// ===== GENERATE PRODUCT CODE =====
+// GENERATE CODE
 function generateProductCode(category){
   const prefix = category.substring(0,2).toUpperCase();
 
@@ -115,7 +153,7 @@ function generateProductCode(category){
   return `${prefix}${String(categoryCount[prefix]).padStart(3,'0')}`;
 }
 
-// ===== ADD PRODUCT =====
+// ADD
 document.getElementById('add-product-btn').addEventListener('click',()=>{
   const name = document.getElementById('product-name').value.trim();
   const category = document.getElementById('product-category').value;
@@ -131,7 +169,7 @@ document.getElementById('add-product-btn').addEventListener('click',()=>{
 
   products.push({code, name, category, price, stock});
 
-  saveProducts();      // 🔥 SAVE HERE
+  saveProducts();
   updateTable();
 
   document.getElementById('product-name').value='';
@@ -139,61 +177,36 @@ document.getElementById('add-product-btn').addEventListener('click',()=>{
   document.getElementById('product-stock').value='';
 });
 
-// ===== DELETE PRODUCT =====
+// DELETE
 document.querySelector('#products-table tbody').addEventListener('click',e=>{
   if(e.target.classList.contains('remove-btn')){
     const index = parseInt(e.target.dataset.index);
 
     products.splice(index,1);
 
-    saveProducts();   // 🔥 SAVE HERE
+    saveProducts();
     updateTable();
   }
 });
 
-// ===== EDIT INLINE (AUTO SAVE) =====
+// EDIT
 document.querySelector('#products-table tbody').addEventListener('input', e=>{
   const field = e.target.dataset.field;
   const index = e.target.dataset.index;
 
   if(field){
-    if(field === "price" || field === "stock"){
-      products[index][field] = Number(e.target.innerText) || 0;
-    } else {
-      products[index][field] = e.target.innerText;
-    }
+    products[index][field] = (field === "price" || field === "stock")
+      ? Number(e.target.innerText) || 0
+      : e.target.innerText;
 
-    saveProducts();   // 🔥 SAVE AFTER EDIT
+    saveProducts();
   }
 });
 
-// ===== BARCODE =====
-function generateBarcode(canvasId, text){
-  const canvas = document.getElementById(canvasId);
-  const ctx = canvas.getContext('2d');
-
-  canvas.width = 120;
-  canvas.height = 60;
-
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.font = '12px Arial';
-  ctx.fillText(text, 10, 10);
-
-  for(let i=0;i<text.length;i++){
-    const x = i * 6;
-    const h = Math.random()*20+20;
-    ctx.fillRect(x,20,2,h);
-  }
-}
-
-// ===== LOAD ON PAGE START =====
+// LOAD ON START
 window.addEventListener("DOMContentLoaded", updateTable);
-<footer style="background:#f8bbd0; padding:20px 0; text-align:center; font-family:'Poppins', sans-serif; font-weight:500; position:fixed; bottom:0; width:100%; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);">
-  <p style="margin:5px 0; font-size:14px;">2025 | <strong>Éclat de Coco Official</strong> | All Right Reserved</p>
-  <p style="margin:5px 0; font-size:14px;">
-    📧 <a href="mailto:eclatdecocoofficialci@gmail.com" style="color:#e91e63; text-decoration:none;">eclatdecocoofficialci@gmail.com</a> | 
-    📱 <a href="tel:+2250777000803" style="color:#e91e63; text-decoration:none;">0777000803</a>
-  </p>
-</footer>
+
+</script>
+
 </body>
 </html>
