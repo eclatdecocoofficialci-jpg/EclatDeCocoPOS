@@ -35,6 +35,7 @@
         <th>Action</th>
       </tr>
     </thead>
+
     <tbody id="sales-table">
       <tr>
         <td colspan="4">Aucune vente enregistrée</td>
@@ -48,25 +49,61 @@
 </footer>
 
 <script>
-  const sales = JSON.parse(localStorage.getItem("sales")) || [];
-  const tbody = document.getElementById("sales-table");
+  // ===== LOAD SALES =====
+  function loadSales() {
+    const sales = JSON.parse(localStorage.getItem("sales")) || [];
+    const tbody = document.getElementById("sales-table");
 
-  tbody.innerHTML = "";
+    tbody.innerHTML = "";
 
-  if (sales.length === 0) {
-    tbody.innerHTML = "<tr><td colspan='4'>Aucune vente enregistrée</td></tr>";
-  } else {
+    if (sales.length === 0) {
+      tbody.innerHTML = "<tr><td colspan='4'>Aucune vente enregistrée</td></tr>";
+      return;
+    }
+
     sales.forEach(sale => {
       const tr = document.createElement("tr");
+
       tr.innerHTML = `
         <td>${sale.id}</td>
         <td>${sale.date}</td>
-        <td>${sale.total.toLocaleString()} FCFA</td>
-        <td><button>Voir</button></td>
+        <td>${Number(sale.total || 0).toLocaleString()} FCFA</td>
+        <td><button onclick="viewInvoice('${sale.id}')">Voir</button></td>
       `;
+
       tbody.appendChild(tr);
     });
   }
+
+  // ===== VIEW INVOICE =====
+  function viewInvoice(id) {
+    const sales = JSON.parse(localStorage.getItem("sales")) || [];
+    const invoice = sales.find(s => s.id === id);
+
+    if (!invoice) {
+      alert("Facture introuvable");
+      return;
+    }
+
+    let itemsText = "";
+
+    if (invoice.cart && invoice.cart.length > 0) {
+      invoice.cart.forEach(item => {
+        itemsText += `${item.name} x${item.qty} = ${item.price * item.qty} FCFA\n`;
+      });
+    }
+
+    alert(
+      `FACTURE: ${invoice.id}\n` +
+      `DATE: ${invoice.date}\n\n` +
+      itemsText +
+      `\nLIVRAISON: ${invoice.delivery || 0} FCFA\n` +
+      `TOTAL: ${invoice.total || 0} FCFA`
+    );
+  }
+
+  // ===== RUN ON PAGE LOAD =====
+  window.addEventListener("DOMContentLoaded", loadSales);
 </script>
 
 </body>
