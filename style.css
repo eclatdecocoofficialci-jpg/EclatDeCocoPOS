@@ -5,8 +5,6 @@ body {
   background: #fff5fb;
   color: #333;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
 /* ======= HEADER ======= */
@@ -15,91 +13,52 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 15px 30px;
-  background: #f06292; /* rose */
+  background: #f06292;
   color: #fff;
 }
+
 header h1 {
   font-size: 1.8em;
 }
+
 .main-nav a {
   margin-left: 15px;
   padding: 8px 12px;
   border-radius: 8px;
   font-weight: 500;
   background: #f8bbd0;
-  color: #000; /* texte visible */
+  color: #000;
   text-decoration: none;
   transition: 0.3s;
 }
+
 .main-nav a.active,
 .main-nav a:hover {
   background: #e91e63;
   color: #fff;
 }
 
-/* ======= DASHBOARD GRID ======= */
+/* ======= DASHBOARD ======= */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   padding: 20px;
-  flex: 1;
 }
 
-/* ======= DASHBOARD CARD ======= */
 .card {
   background: #ffe6ef;
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 4px 10px rgba(233, 30, 99, 0.1);
   text-align: center;
-  font-weight: 500;
   transition: 0.2s;
 }
+
 .card:hover {
   background: #f8bbd0;
-  transform: translateY(-2px);
 }
 
-/* ======= GRAPHIQUE ======= */
-canvas#salesChart {
-  grid-column: span 2;
-  background: #fff;
-  border-radius: 12px;
-  padding: 10px;
-  box-shadow: 0 4px 10px rgba(233, 30, 99, 0.1);
-}
-
-/* ======= FOOTER ======= */
-footer {
-  background: #f8bbd0;
-  padding: 20px 0;
-  text-align: center;
-  font-weight: 500;
-  position: relative; /* fixe pas pour que le footer suive le contenu */
-  width: 100%;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-}
-
-/* ======= RESPONSIVE ======= */
-@media(max-width: 1024px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-  canvas#salesChart {
-    grid-column: span 1;
-  }
-  header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .main-nav a {
-    margin: 5px 5px 0 0;
-  }
-}
-/* ===============================
-   TABLES ROSE (Customers, Sales)
-================================ */
+/* ======= TABLES ======= */
 .pink-table {
   width: 100%;
   border-collapse: collapse;
@@ -113,7 +72,6 @@ footer {
   background: #f8bbd0;
   color: #880e4f;
   padding: 12px;
-  font-weight: 600;
 }
 
 .pink-table td {
@@ -122,25 +80,7 @@ footer {
   border-bottom: 1px solid #fce4ec;
 }
 
-.pink-table tr:hover {
-  background: #fff0f6;
-}
-
-/* ===============================
-   CUSTOMERS PAGE
-================================ */
-.customers-container {
-  padding: 20px;
-}
-
-.customers-container h2 {
-  color: #e91e63;
-  margin-bottom: 15px;
-}
-
-/* ===============================
-   PRODUCTS PAGE (2 COLONNES)
-================================ */
+/* ======= PRODUCTS PAGE ======= */
 .products-container {
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -148,45 +88,111 @@ footer {
   padding: 20px;
 }
 
-.product-form {
-  background: #ffe6ef;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(233,30,99,0.1);
-}
-
-.product-form h2 {
-  color: #e91e63;
-  margin-bottom: 15px;
-}
-
+.product-form,
 .product-list {
   background: #fff;
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(233,30,99,0.1);
 }
 
-/* ===============================
-   PRODUCTS CARDS
-================================ */
-.product-item {
+/* ======= POS 3 COLONNES ======= */
+.container {
   display: flex;
-  justify-content: space-between;
-  padding: 12px;
-  background: #fce4ec;
+  gap: 20px;
+  padding: 20px;
+  align-items: flex-start;
+}
+
+/* LEFT */
+.left {
+  flex: 1;
+  background: #fff;
+  padding: 15px;
+  border-radius: 16px;
+  min-width: 250px;
+}
+
+/* MIDDLE */
+.middle {
+  flex: 1;
+  background: #fff;
+  padding: 15px;
+  border-radius: 16px;
+  min-width: 250px;
+}
+
+/* RIGHT */
+.right {
+  flex: 2;
+  background: #fff;
+  padding: 15px;
+  border-radius: 16px;
+  min-width: 300px;
+}
+
+/* SEARCH RESULT */
+.result {
+  background: #ffe6ef;
+  padding: 10px;
+  margin-bottom: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* SELECTED BOX */
+.selected-box {
+  background: #ffe6ef;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+/* TOTAL */
+.total {
+  font-size: 18px;
+  font-weight: bold;
+  color: #e91e63;
+  margin-top: 10px;
+}
+
+/* CALC */
+.calc {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.calc button {
+  padding: 15px;
+  border: none;
   border-radius: 8px;
-  margin-bottom: 10px;
-}
-
-.product-item:hover {
   background: #f8bbd0;
+  font-size: 16px;
 }
 
-/* ===============================
-   RESPONSIVE (Products & Tables)
-================================ */
+/* DISCOUNT */
+.discount {
+  display: flex;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.discount button {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  background: #ff80ab;
+  color: white;
+}
+
+/* RESPONSIVE */
 @media (max-width: 1024px) {
+  .container {
+    flex-direction: column;
+  }
+
   .products-container {
     grid-template-columns: 1fr;
   }
