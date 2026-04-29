@@ -1,1 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Éclat de Coco - Products</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
+  <style>
+    body { font-family: 'Poppins', sans-serif; margin:0; background:#fdf0f6; }
+    h2,h3{ margin:0 0 10px 0; color:#e91e63; }
+
+    .container { display:flex; gap:20px; padding:20px; flex-wrap:wrap; }
+
+    .left-panel {
+      flex:1; background:#fff; padding:20px; border-radius:16px; max-width:400px;
+    }
+
+    .left-panel input, .left-panel select, .left-panel button {
+      width:100%; padding:10px; margin-bottom:10px;
+      border-radius:10px; border:2px solid #f8bbd0;
+    }
+
+    .left-panel button {
+      background:#e91e63; color:#fff; border:none; cursor:pointer;
+    }
+
+    .right-panel {
+      flex:2; background:#fff; padding:20px; border-radius:16px;
+      overflow-x:auto;
+    }
+
+    table { width:100%; border-collapse:collapse; }
+
+    th,td {
+      border:1px solid #f8bbd0;
+      padding:8px;
+      text-align:center;
+    }
+
+    th { background:#ffe6ef; color:#e91e63; }
+
+    button.remove-btn {
+      background:#ff4081;
+      color:#fff;
+      padding:5px 10px;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2 style="padding:20px;">Gestion Produits</h2>
+
+<div class="container">
+
+  <!-- LEFT -->
+  <div class="left-panel">
+    <h3>Ajouter un produit</h3>
+
+    <input type="text" id="product-name" placeholder="Nom du produit">
+
+    <select id="product-category">
+      <option value="Savon">Savon</option>
+      <option value="Lotions">Lotions</option>
+      <option value="Body Butter">Body Butter</option>
+      <option value="Masque Cheveux">Masque Cheveux</option>
+      <option value="Sérum Cheveux">Sérum Cheveux</option>
+      <option value="Sérum Visage">Sérum Visage</option>
+      <option value="Édition Noël">Édition Noël</option>
+      <option value="Souvenir">Souvenir</option>
+    </select>
+
+    <input type="number" id="product-price" placeholder="Prix unitaire">
+    <input type="number" id="product-stock" placeholder="Stock">
+
+    <button id="add-product-btn">Ajouter Produit</button>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right-panel">
+    <h3>Liste des Produits</h3>
+
+    <table id="products-table">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Nom</th>
+          <th>Catégorie</th>
+          <th>Prix</th>
+          <th>Stock</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr><td colspan="6">Aucun produit</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ✅ SCRIPT (THIS WAS YOUR PROBLEM BEFORE) -->
+<script>
+
+// LOAD DATA
+let products = JSON.parse(localStorage.getItem("products")) || [];
+let categoryCount = JSON.parse(localStorage.getItem("categoryCount")) || {};
+
+// SAVE
+function saveProducts() {
+  localStorage.setItem("products", JSON.stringify(products));
+  localStorage.setItem("categoryCount", JSON.stringify(categoryCount));
+}
+
+// DISPLAY
+function updateTable() {
+  const tbody = document.querySelector('#products-table tbody');
+  tbody.innerHTML = '';
+
+  if(products.length === 0){
+    tbody.innerHTML = '<tr><td colspan="6">Aucun produit</td></tr>';
+    return;
+  }
+
+  products.forEach((p,i)=>{
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+      <td>${p.code}</td>
+      <td contenteditable="true" data-field="name" data-index="${i}">${p.name}</td>
+      <td>${p.category}</td>
+      <td contenteditable="true" data-field="price" data-index="${i}">${p.price}</td>
+      <td contenteditable="true" data-field="stock" data-index="${i}">${p.stock}</td>
+      <td><button class="remove-btn" data-index="${i}">X</button></td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+// GENERATE CODE
+function generateProductCode(category){
+  const prefix = category.substring(0,2).toUpperCase();
+
+  if(!categoryCount[prefix]) categoryCount[prefix] = 1;
+  else categoryCount[prefix]++;
+
+  return `${prefix}${String(categoryCount[prefix]).padStart(3,'0')}`;
+}
+
+// ADD
+document.getElementById('add-product-btn').addEventListener('click',()=>{
+  const name = document.getElementById('product-name').value.trim();
+  const category = document.getElementById('product-category').value;
+  const price = parseFloat(document.getElementById('product-price').value) || 0;
+  const stock = parseInt(document.getElementById('product-stock').value) || 0;
+
+  if(!name){
+    alert("Nom obligatoire");
+    return;
+  }
+
+  const code = generateProductCode(category);
+
+  products.push({code, name, category, price, stock});
+
+  saveProducts();
+  updateTable();
+
+  document.getElementById('product-name').value='';
+  document.getElementById('product-price').value='';
+  document.getElementById('product-stock').value='';
+});
+
+// DELETE
+document.querySelector('#products-table tbody').addEventListener('click',e=>{
+  if(e.target.classList.contains('remove-btn')){
+    const index = parseInt(e.target.dataset.index);
+
+    products.splice(index,1);
+
+    saveProducts();
+    updateTable();
+  }
+});
+
+// EDIT
+document.querySelector('#products-table tbody').addEventListener('input', e=>{
+  const field = e.target.dataset.field;
+  const index = e.target.dataset.index;
+
+  if(field){
+    products[index][field] = (field === "price" || field === "stock")
+      ? Number(e.target.innerText) || 0
+      : e.target.innerText;
+
+    saveProducts();
+  }
+});
+
+// LOAD ON START
+window.addEventListener("DOMContentLoaded", updateTable);
+
+</script>
+
+</body>
+</html>
