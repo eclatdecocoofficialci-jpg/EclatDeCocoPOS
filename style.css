@@ -121,3 +121,82 @@ header{
   background:white;
   border-radius:10px;
 }
+@media screen and (min-width: 900px) {
+
+  /* FULL SCREEN FEEL */
+  body{
+    height:100vh;
+    overflow:hidden;
+  }
+
+  /* CONTAINER PLUS GRAND */
+  .pos-container{
+    display:flex;
+    flex-direction:row;
+    height:95vh; /* 🔥 plus grand */
+    gap:12px;
+    padding:12px;
+  }
+
+  /* ================= LEFT PANEL ================= */
+  .left-panel{
+    width:18%;
+    min-width:220px;
+    height:100%;
+    background: linear-gradient(180deg, #ffe6ef, #fff5fb);
+    border-radius:15px;
+    padding:15px;
+  }
+
+  /* ================= CENTER PANEL ================= */
+  .center-panel{
+    width:52%;
+    min-width:400px;
+    height:100%;
+    background:white;
+    border-radius:15px;
+    padding:15px;
+  }
+
+  /* ================= RIGHT PANEL (FACTURE BIG) ================= */
+  .right-panel{
+    width:30%;
+    min-width:320px;
+    height:100%;
+    background: linear-gradient(180deg, #f8bbd0, #ffe6ef);
+    border-radius:15px;
+    padding:15px;
+  }
+
+  /* ================= MAKE CONTENT FEEL BIGGER ================= */
+
+  h3{
+    font-size:18px;
+  }
+
+  input, button{
+    font-size:14px;
+  }
+
+  #product-list{
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+  }
+
+  .calc{
+    gap:8px;
+  }
+
+  .calc button{
+    padding:14px;
+  }
+
+  /* ================= FACTURE TABLE BIGGER ================= */
+  .right-panel table{
+    font-size:14px;
+  }
+
+  #grand-total{
+    font-size:24px;
+  }
+}
