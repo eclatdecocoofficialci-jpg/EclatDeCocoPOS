@@ -197,3 +197,10 @@ function calculate(){
     alert("Erreur calcul");
   }
 }
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js", { scope: "/" })
+      .then(() => console.log("SW OK"))
+      .catch(() => console.log("SW ERROR"));
+  });
+}
