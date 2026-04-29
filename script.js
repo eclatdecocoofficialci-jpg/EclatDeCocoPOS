@@ -163,3 +163,27 @@ window.setDiscount = (p) => {
 };
 
 });
+const invoiceIdEl = document.getElementById("invoice-id");
+
+function generateInvoiceNumber() {
+  const year = new Date().getFullYear();
+
+  let last = localStorage.getItem("invoice-counter");
+
+  if(!last){
+    last = 1;
+  } else {
+    last = parseInt(last) + 1;
+  }
+
+  localStorage.setItem("invoice-counter", last);
+
+  return year + String(last).padStart(3, "0");
+}
+
+/* INIT NUMBER */
+let invoiceNumber = generateInvoiceNumber();
+
+if(invoiceIdEl){
+  invoiceIdEl.innerText = invoiceNumber;
+}
