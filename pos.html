@@ -20,10 +20,7 @@
 <input type="text" id="search" placeholder="Nom ou code produit">
 <div id="results"></div>
 
-<h3>🛍 Produits</h3>
-<div id="product-grid"></div>
-  <h3>📦 Catégories</h3>
-
+<h3>📦 Catégories</h3>
 <div id="category-boxes"></div>
 
 <h3>🛍 Produits</h3>
@@ -44,7 +41,6 @@
   <button>0</button><button>C</button>
 </div>
 
-<!-- PRODUIT SELECTION -->
 <div class="selected-box">
 
 <h3 id="selected-name">-</h3>
@@ -61,23 +57,25 @@
 
 </div>
 
-
-<!-- ================= RIGHT ================= -->
 <!-- ================= RIGHT ================= -->
 <div class="right">
 
 <h3 style="text-align:center;">🧾 Facture</h3>
-<h4>🧾 N° Facture : <span id="invoice-id"></span></h4>
+
+<h4 style="text-align:center;">
+N° Facture : <span id="invoice-id"></span>
+</h4>
+
 <h2 style="text-align:center;">✨ Bienvenue à Éclat de Coco Officiel</h2>
 <p style="text-align:center;">Abidjan - Côte d'Ivoire</p>
 
-<!-- DATE UNIQUE (CORRIGÉE) -->
+<hr>
+
 <h4>📅 Date de facture :</h4>
 <input type="date" id="invoice-date">
 
 <hr>
 
-<!-- CLIENT INFOS -->
 <h4>Client(e)</h4>
 <input type="text" id="client-name" placeholder="Nom du client">
 <input type="text" id="client-phone" placeholder="Téléphone">
@@ -85,7 +83,6 @@
 
 <hr>
 
-<!-- FACTURE TABLE -->
 <table>
 <thead>
 <tr>
@@ -94,27 +91,21 @@
   <th>Prix</th>
 </tr>
 </thead>
-
 <tbody id="invoice"></tbody>
 </table>
 
 <hr>
 
-<!-- LIVRAISON -->
 <h4>Livraison</h4>
 <input type="number" id="delivery" placeholder="Frais de livraison">
 
 <hr>
 
-<!-- TOTAL -->
 <h2 id="total">0 FCFA</h2>
 
-<!-- BOUTONS -->
 <div style="display:flex; gap:10px; margin-top:10px;">
-
 <button id="print-btn" class="btn">🖨 Imprimer</button>
 <button id="save-btn" class="btn">💾 Sauvegarder</button>
-
 </div>
 
 <hr>
@@ -125,6 +116,7 @@ Merci de choisir Éclat de Coco Officiel 💗
 
 </div>
 
+</div>
 
 <script src="script.js"></script>
 
