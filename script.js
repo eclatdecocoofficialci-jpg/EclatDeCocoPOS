@@ -246,3 +246,39 @@ if(saveBtn){
 }
 
 });
+function renderCategories() {
+  const categories = [...new Set(products.map(p => p.category))];
+
+  const box = document.getElementById("category-boxes");
+  box.innerHTML = "";
+
+  categories.forEach(cat => {
+    let btn = document.createElement("button");
+    btn.innerText = cat;
+
+    btn.onclick = () => filterByCategory(cat);
+
+    box.appendChild(btn);
+  });
+}
+
+function filterByCategory(category) {
+  const grid = document.getElementById("product-grid");
+  grid.innerHTML = "";
+
+  products
+    .filter(p => p.category === category)
+    .forEach(p => {
+      let div = document.createElement("div");
+      div.className = "product-box";
+      div.innerHTML = `
+        <strong>${p.name}</strong><br>
+        ${p.price} FCFA<br>
+        Stock: ${p.stock || 0}
+      `;
+
+      div.onclick = () => selectProduct(p);
+
+      grid.appendChild(div);
+    });
+}
