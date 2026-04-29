@@ -130,3 +130,82 @@ function calculate(){
 if(document.getElementById("delivery")){
   document.getElementById("delivery").addEventListener("input", renderInvoice);
 }
+let lang = localStorage.getItem("lang");
+if (!lang) {
+  // auto detect phone/iPad language
+  lang = navigator.language.startsWith("fr") ? "fr" : "en";
+}
+
+let currency = localStorage.getItem("currency") || "FCFA";
+
+const translations = {
+  fr: {
+    products: "Produits",
+    sales: "Ventes",
+    inventory: "Inventaire",
+    customers: "Clients",
+    expenses: "Dépenses",
+    reports: "Rapports",
+    categories: "Catégories",
+    calculator: "Calculatrice",
+    invoice: "Facture",
+    client: "Client(e)",
+    save: "Sauvegarder",
+    print: "Imprimer",
+    total: "Total",
+    welcome: "Bienvenue à Éclat de Coco Officiel",
+    thanks: "Merci d’avoir choisi Éclat de Coco 💗"
+  },
+
+  en: {
+    products: "Products",
+    sales: "Sales",
+    inventory: "Inventory",
+    customers: "Customers",
+    expenses: "Expenses",
+    reports: "Reports",
+    categories: "Categories",
+    calculator: "Calculator",
+    invoice: "Invoice",
+    client: "Client",
+    save: "Save",
+    print: "Print",
+    total: "Total",
+    welcome: "Welcome to Éclat de Coco Official",
+    thanks: "Thank you for choosing Éclat de Coco 💗"
+  }
+};
+
+// LANGUAGE SWITCH
+function setLang(l){
+  lang = l;
+  localStorage.setItem("lang", l);
+  applyLang();
+}
+
+// CURRENCY SWITCH
+function setCurrency(c){
+  currency = c;
+  localStorage.setItem("currency", c);
+  renderInvoice();
+}
+
+// APPLY TEXT TRANSLATION
+function applyLang(){
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const key = el.getAttribute("data-i18n");
+    if(translations[lang][key]){
+      el.innerText = translations[lang][key];
+    }
+  });
+}
+
+// FORMAT MONEY
+function formatMoney(value){
+  if(currency === "USD") return "$ " + (value / 600).toFixed(2);
+  if(currency === "EUR") return "€ " + (value / 650).toFixed(2);
+  return value + " FCFA";
+}
+
+// INIT
+window.addEventListener("DOMContentLoaded", applyLang);
