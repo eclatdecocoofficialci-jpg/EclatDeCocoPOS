@@ -1,4 +1,4 @@
-const CACHE_NAME = "eclatpos-cache-v5";
+const CACHE_NAME = "eclatpos-cache-999";
 
 /* ================= FILES ================= */
 const urlsToCache = [
@@ -57,4 +57,9 @@ self.addEventListener("fetch", (event) => {
         return caches.match(event.request);
       })
   );
+});
+self.addEventListener("fetch", (event) => {
+  if (event.request.method !== "GET") return;
+
+  event.respondWith(fetch(event.request));
 });
