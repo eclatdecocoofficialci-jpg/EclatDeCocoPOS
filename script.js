@@ -234,3 +234,8 @@ window.onload = function(){
     renderInvoice();
   }
 };
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/service-worker.js")
+    .then(() => console.log("Service Worker actif 💗"))
+    .catch(err => console.log("Erreur SW:", err));
+}
