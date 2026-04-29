@@ -226,31 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
-.right table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-  background: #fff;
-  border-radius: 12px;
-  overflow: hidden;
-}
 
-/* HEADER TABLE ROSE */
-.right table thead th {
-  background: #f8bbd0;
-  color: #880e4f;
-  padding: 10px;
-  font-weight: 600;
-}
-
-/* CELLULES */
-.right table td {
-  padding: 10px;
-  text-align: center;
-  border-bottom: 1px solid #fce4ec;
-}
-
-/* HOVER LIGNE */
 .right table tr:hover {
   background: #fff0f6;
 }
