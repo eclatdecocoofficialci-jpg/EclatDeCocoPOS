@@ -27,7 +27,9 @@ body {
   flex: 1;
   min-width: 260px;
 }
-
+body {
+  background: red !important;
+}
 /* MIDDLE */
 .middle {
   flex: 1;
