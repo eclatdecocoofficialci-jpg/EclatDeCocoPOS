@@ -1,6 +1,6 @@
-const CACHE_NAME = "eclat-de-coco-pos-v1";
+const CACHE_NAME = "eclat-de-coco-pos-v2";
 
-/* 📦 FICHIERS À METTRE EN CACHE (OFFLINE) */
+/* 📦 FILES TO CACHE */
 const urlsToCache = [
   "/",
   "/index.html",
@@ -9,8 +9,11 @@ const urlsToCache = [
   "/expenses.html",
   "/customers.html",
   "/reports.html",
+  "/inventory.html",
+  "/products.html",
   "/style.css",
-  "/script.js"
+  "/script.js",
+  "/manifest.json"
 ];
 
 /* ================= INSTALL ================= */
@@ -20,6 +23,8 @@ self.addEventListener("install", event => {
       return cache.addAll(urlsToCache);
     })
   );
+
+  // force new SW activation immediately
   self.skipWaiting();
 });
 
@@ -36,18 +41,36 @@ self.addEventListener("activate", event => {
       );
     })
   );
+
   self.clients.claim();
 });
 
-/* ================= FETCH (OFFLINE FIRST) ================= */
+/* ================= FETCH (SMART OFFLINE MODE) ================= */
 self.addEventListener("fetch", event => {
+
+  // HTML pages → network first, fallback offline
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        return caches.match("/pos.html");
+      })
+    );
+    return;
+  }
+
+  // STATIC FILES → cache first (fast POS)
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request).catch(() => {
-        // fallback offline si internet coupé
-        if (event.request.destination === "document") {
-          return caches.match("/index.html");
-        }
+    caches.match(event.request).then(cached => {
+      return cached || fetch(event.request).then(networkResponse => {
+
+        // update cache dynamically
+        return caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, networkResponse.clone());
+          return networkResponse;
+        });
+
+      }).catch(() => {
+        return cached;
       });
     })
   );
