@@ -6,7 +6,14 @@ let products = JSON.parse(localStorage.getItem("products")) || [
 let invoice = JSON.parse(localStorage.getItem("invoice")) || [];
 let discount = parseFloat(localStorage.getItem("discount")) || 0;
 
-/* ===== INVOICE NUMBER ===== */
+/* ================= STORAGE ================= */
+function saveState(){
+  localStorage.setItem("products", JSON.stringify(products));
+  localStorage.setItem("invoice", JSON.stringify(invoice));
+  localStorage.setItem("discount", discount);
+}
+
+/* ================= INVOICE NUMBER ================= */
 function generateInvoiceNumber(){
   let last = localStorage.getItem("invoiceNumber");
 
@@ -22,14 +29,7 @@ function generateInvoiceNumber(){
 
 document.getElementById("invoice-id").innerText = generateInvoiceNumber();
 
-/* ===== SAVE STATE ===== */
-function saveState(){
-  localStorage.setItem("products", JSON.stringify(products));
-  localStorage.setItem("invoice", JSON.stringify(invoice));
-  localStorage.setItem("discount", discount);
-}
-
-/* ===== CATEGORIES ===== */
+/* ================= CATEGORIES ================= */
 function renderCategories(){
   let categories = [...new Set(products.map(p => p.category))];
 
@@ -45,26 +45,28 @@ function renderCategories(){
   });
 }
 
-/* ===== PRODUCTS ===== */
+/* ================= PRODUCTS ================= */
 function filterProducts(cat){
   let list = document.getElementById("product-list");
   list.innerHTML = "";
 
-  products.filter(p => p.category === cat).forEach(p=>{
-    let div = document.createElement("div");
-    div.className = "product-box";
+  products
+    .filter(p => p.category === cat)
+    .forEach(p=>{
+      let div = document.createElement("div");
+      div.className = "product-box";
 
-    div.innerHTML = `
-      <strong>${p.name}</strong><br>
-      ${p.price} FCFA<br>
-      <button onclick="addToCart('${p.name}',${p.price})">Ajouter</button>
-    `;
+      div.innerHTML = `
+        <strong>${p.name}</strong><br>
+        ${p.price} FCFA<br>
+        <button onclick="addToCart('${p.name}',${p.price})">Ajouter</button>
+      `;
 
-    list.appendChild(div);
-  });
+      list.appendChild(div);
+    });
 }
 
-/* ===== ADD TO CART ===== */
+/* ================= ADD TO CART ================= */
 function addToCart(name, price){
   let item = invoice.find(i => i.name === name);
 
@@ -78,7 +80,7 @@ function addToCart(name, price){
   renderInvoice();
 }
 
-/* ===== RENDER INVOICE ===== */
+/* ================= INVOICE RENDER ================= */
 function renderInvoice(){
   let table = document.getElementById("invoice-body");
   table.innerHTML = "";
@@ -108,14 +110,14 @@ function renderInvoice(){
   saveState();
 }
 
-/* ===== DISCOUNT ===== */
+/* ================= DISCOUNT ================= */
 function setDiscount(p){
   discount = p;
   saveState();
   renderInvoice();
 }
 
-/* ===== CALCULATOR ===== */
+/* ================= CALCULATOR ================= */
 function press(val){
   document.getElementById("display").value += val;
 }
@@ -133,7 +135,70 @@ function calculate(){
   }
 }
 
-/* ===== SAVE SALE ===== */
+/* ================= SAVE CUSTOMER ================= */
+function saveCustomer(){
+  let customers = JSON.parse(localStorage.getItem("customers")) || [];
+
+  let customer = {
+    name: document.getElementById("client-name").value,
+    phone: document.getElementById("client-phone").value,
+    address: document.getElementById("client-address").value,
+    date: new Date().toISOString()
+  };
+
+  customers.push(customer);
+  localStorage.setItem("customers", JSON.stringify(customers));
+
+  alert("Client sauvegardé 💗");
+}
+
+/* ================= SAVE EXPENSE ================= */
+function saveExpense(){
+  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+  let expense = {
+    title: document.getElementById("expense-title").value,
+    amount: parseFloat(document.getElementById("expense-amount").value),
+    category: document.getElementById("expense-category").value,
+    date: new Date().toISOString()
+  };
+
+  expenses.push(expense);
+  localStorage.setItem("expenses", JSON.stringify(expenses));
+
+  alert("Dépense sauvegardée 💸");
+}
+
+/* ================= GENERATE REPORT ================= */
+function generateReport(){
+
+  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+  let totalSales = sales.reduce((sum, s) => {
+    return sum + parseFloat((s.total || "0").replace(" FCFA",""));
+  }, 0);
+
+  let totalExpenses = expenses.reduce((sum, e) => {
+    return sum + (e.amount || 0);
+  }, 0);
+
+  let report = {
+    date: new Date().toISOString(),
+    totalSales,
+    totalExpenses,
+    profit: totalSales - totalExpenses
+  };
+
+  let reports = JSON.parse(localStorage.getItem("reports")) || [];
+  reports.push(report);
+
+  localStorage.setItem("reports", JSON.stringify(reports));
+
+  alert("Report généré 📊");
+}
+
+/* ================= SAVE SALE ================= */
 function saveSale(){
 
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
@@ -156,13 +221,12 @@ function saveSale(){
 
   alert("Facture sauvegardée 💗");
 
-  // reset invoice after save
   invoice = [];
   saveState();
   renderInvoice();
 }
 
-/* ===== INIT ===== */
+/* ================= INIT ================= */
 window.onload = function(){
   renderCategories();
 
