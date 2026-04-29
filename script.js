@@ -19,23 +19,37 @@ const qtyEl = document.getElementById("qty");
 const invoiceEl = document.getElementById("invoice");
 const totalEl = document.getElementById("total");
 
-const display = document.getElementById("display");
-
 const dateInput = document.getElementById("invoice-date");
+const invoiceIdEl = document.getElementById("invoice-id");
+
+/* GLOBAL (pour save) */
+window.invoice = invoice;
 
 /* ================= INIT ================= */
 renderProducts();
 renderInvoice();
 setDefaultDate();
+generateInvoiceNumber();
 
 /* ================= DATE ================= */
 function setDefaultDate(){
-  if(!dateInput) return;
-
-  const today = new Date().toISOString().split("T")[0];
-
-  if(!dateInput.value){
+  if(dateInput){
+    const today = new Date().toISOString().split("T")[0];
     dateInput.value = today;
+  }
+}
+
+/* ================= NUMERO FACTURE ================= */
+function generateInvoiceNumber(){
+  const year = new Date().getFullYear();
+
+  let last = localStorage.getItem("invoice-counter") || 0;
+  last = parseInt(last) + 1;
+
+  localStorage.setItem("invoice-counter", last);
+
+  if(invoiceIdEl){
+    invoiceIdEl.innerText = year + String(last).padStart(3, "0");
   }
 }
 
@@ -63,17 +77,22 @@ search.addEventListener("input", () => {
 });
 }
 
-/* ================= PRODUCTS ================= */
+/* ================= PRODUCTS BOX ================= */
 function renderProducts(){
   if(!grid) return;
 
   grid.innerHTML = "";
 
   products.forEach(p => {
+
     let box = document.createElement("div");
     box.className = "result";
 
-    box.innerHTML = `<strong>${p.name}</strong><br>${p.price} FCFA`;
+    box.innerHTML = `
+      <strong>${p.name}</strong><br>
+      ${p.price} FCFA<br>
+      Stock: ${p.stock}
+    `;
 
     box.onclick = () => selectProduct(p);
 
@@ -104,7 +123,7 @@ window.minusQty = () => {
   }
 };
 
-/* ================= ADD ================= */
+/* ================= ADD CART ================= */
 window.addToCart = () => {
 
   if(!currentProduct) return;
@@ -120,6 +139,8 @@ window.addToCart = () => {
       qty: qty
     });
   }
+
+  window.invoice = invoice;
 
   currentProduct = null;
   qty = 1;
@@ -158,11 +179,6 @@ function renderInvoice(){
 
   totalEl.innerText = final.toFixed(0) + " FCFA";
 }
-  });
-
-  let final = total - (total * discount / 100);
-  totalEl.innerText = final.toFixed(0) + " FCFA";
-}
 
 /* ================= DISCOUNT ================= */
 window.setDiscount = (p) => {
@@ -170,71 +186,31 @@ window.setDiscount = (p) => {
   renderInvoice();
 };
 
-});
-const invoiceIdEl = document.getElementById("invoice-id");
-
-function generateInvoiceNumber() {
-  const year = new Date().getFullYear();
-
-  let last = localStorage.getItem("invoice-counter");
-
-  if(!last){
-    last = 1;
-  } else {
-    last = parseInt(last) + 1;
-  }
-
-  localStorage.setItem("invoice-counter", last);
-
-  return year + String(last).padStart(3, "0");
+/* ================= PRINT ================= */
+const printBtn = document.getElementById("print-btn");
+if(printBtn){
+  printBtn.onclick = () => window.print();
 }
 
-/* INIT NUMBER */
-let invoiceNumber = generateInvoiceNumber();
+/* ================= SAVE ================= */
+const saveBtn = document.getElementById("save-btn");
 
-if(invoiceIdEl){
-  invoiceIdEl.innerText = invoiceNumber;
+if(saveBtn){
+  saveBtn.onclick = () => {
+
+    let sales = JSON.parse(localStorage.getItem("sales")) || [];
+
+    sales.push({
+      id: invoiceIdEl?.innerText || "",
+      date: dateInput?.value || "",
+      items: invoice,
+      total: totalEl.innerText
+    });
+
+    localStorage.setItem("sales", JSON.stringify(sales));
+
+    alert("Facture sauvegardée 💗");
+  };
 }
-document.addEventListener("DOMContentLoaded", () => {
-
-  /* ================= IMPRIMER ================= */
-  const printBtn = document.getElementById("print-btn");
-  if(printBtn){
-    printBtn.addEventListener("click", () => {
-      window.print();
-    });
-  }
-
-  /* ================= SAUVEGARDER ================= */
-  const saveBtn = document.getElementById("save-btn");
-
-  if(saveBtn){
-    saveBtn.addEventListener("click", () => {
-
-      let sales = JSON.parse(localStorage.getItem("sales")) || [];
-
-      const invoiceData = {
-        id: document.getElementById("invoice-id")?.innerText || "",
-        date: document.getElementById("invoice-date")?.value || "",
-        client: {
-          name: document.getElementById("client-name")?.value || "",
-          phone: document.getElementById("client-phone")?.value || "",
-          address: document.getElementById("client-address")?.value || ""
-        },
-        items: window.invoice || [],
-        total: document.getElementById("total")?.innerText || "0"
-      };
-
-      sales.push(invoiceData);
-
-      localStorage.setItem("sales", JSON.stringify(sales));
-
-      alert("Facture sauvegardée 💗");
-    });
-  }
 
 });
-
-.right table tr:hover {
-  background: #fff0f6;
-}
