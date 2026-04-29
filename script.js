@@ -25,6 +25,11 @@ window.addEventListener("DOMContentLoaded", () => {
   renderInvoice();
 });
 
+/* ================= RESET PRODUCTS VIEW ================= */
+function renderAllProducts(){
+  renderProducts();
+}
+
 /* ================= CATEGORIES ================= */
 function renderCategories(){
   const box = document.getElementById("category-boxes");
@@ -33,6 +38,13 @@ function renderCategories(){
   const cats = [...new Set(products.map(p => p.category))];
 
   box.innerHTML = "";
+
+  // ALL button (IMPORTANT FIX)
+  let all = document.createElement("div");
+  all.className = "category";
+  all.innerText = "Tous";
+  all.onclick = renderAllProducts;
+  box.appendChild(all);
 
   cats.forEach(cat => {
     let div = document.createElement("div");
@@ -50,6 +62,7 @@ function filterByCategory(cat){
   if(!list) return;
 
   list.innerHTML = "";
+
   products
     .filter(p => p.category === cat)
     .forEach(renderProduct);
@@ -88,6 +101,11 @@ function searchProduct(){
   const list = document.getElementById("product-list");
   if(!list) return;
 
+  if(!val){
+    renderProducts();
+    return;
+  }
+
   list.innerHTML = "";
 
   products
@@ -109,7 +127,7 @@ function addToCart(name, price){
   renderInvoice();
 }
 
-/* ================= RENDER INVOICE ================= */
+/* ================= INVOICE ================= */
 function renderInvoice(){
 
   const table = document.getElementById("invoice-body");
@@ -145,12 +163,12 @@ function renderInvoice(){
   }
 }
 
-/* ================= SAVE SALE ================= */
+/* ================= SAVE ================= */
 function saveSale(){
 
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
-  let data = {
+  sales.push({
     id: document.getElementById("invoice-id")?.innerText,
     date: document.getElementById("date")?.value,
     client: {
@@ -160,23 +178,19 @@ function saveSale(){
     },
     cart: invoice,
     total: document.getElementById("grand-total")?.innerText
-  };
-
-  sales.push(data);
+  });
 
   localStorage.setItem("sales", JSON.stringify(sales));
 
-  // reset
   invoice = [];
   renderInvoice();
 
-  const inv = document.getElementById("invoice-id");
-  if(inv) inv.innerText = generateInvoiceNumber();
+  document.getElementById("invoice-id").innerText = generateInvoiceNumber();
 
-  alert("💗 Facture sauvegardée avec succès");
+  alert("💗 Facture sauvegardée");
 }
 
-/* ================= CALCULATOR ================= */
+/* ================= CALC ================= */
 function press(v){
   const d = document.getElementById("display");
   if(d) d.value += v;
@@ -197,15 +211,19 @@ function calculate(){
     alert("Erreur calcul");
   }
 }
+
+/* ================= SW FIX (IMPORTANT) ================= */
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/service-worker.js", { scope: "/" })
+    navigator.serviceWorker.register("./service-worker.js", { scope: "./" })
       .then(() => console.log("SW OK"))
       .catch(() => console.log("SW ERROR"));
   });
 }
+
+/* ================= PRINT FIX ================= */
 function printInvoice(){
-  let printContent = document.getElementById("invoice-area").innerHTML;
+  const content = document.getElementById("invoice-area");
 
   let win = window.open("", "", "width=900,height=650");
 
@@ -214,43 +232,14 @@ function printInvoice(){
     <head>
       <title>Facture</title>
       <style>
-        body{
-          font-family:Poppins, sans-serif;
-          padding:20px;
-        }
-
-        h2,h3,h4{
-          color:#e91e63;
-          text-align:center;
-        }
-
-        table{
-          width:100%;
-          border-collapse:collapse;
-          margin-top:10px;
-        }
-
-        table, th, td{
-          border:1px solid #ddd;
-        }
-
-        th, td{
-          padding:8px;
-          text-align:center;
-        }
-
-        button, input{
-          display:none;
-        }
-
-        .no-print{
-          display:none;
-        }
+        body{font-family:Poppins;padding:20px;}
+        h2,h3,h4{text-align:center;color:#e91e63;}
+        table{width:100%;border-collapse:collapse;}
+        th,td{border:1px solid #ddd;padding:8px;text-align:center;}
       </style>
     </head>
-
     <body onload="window.print(); window.close();">
-      ${printContent}
+      ${content.innerHTML}
     </body>
     </html>
   `);
