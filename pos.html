@@ -14,56 +14,65 @@
 
 <div class="container">
 
-<!-- LEFT -->
+<!-- ================= LEFT ================= -->
 <div class="left">
-  <h3>🔎 Recherche Produit</h3>
-  <input id="search" placeholder="Nom ou code produit">
-  <div id="results"></div>
+
+<h3>🔎 Recherche Produit</h3>
+<input type="text" id="search" placeholder="Nom ou code produit">
+<div id="results"></div>
+
+<h3>🛍 Produits</h3>
+<div id="product-grid"></div>
+
 </div>
 
-<!-- MIDDLE -->
+<!-- ================= MIDDLE ================= -->
 <div class="middle">
 
-  <h3>🧮 Calculatrice</h3>
-  <input id="display" readonly>
+<h3>🧮 Calculatrice</h3>
+<input type="text" id="display" readonly>
 
-  <div class="calc">
-    <button>1</button><button>2</button><button>3</button>
-    <button>4</button><button>5</button><button>6</button>
-    <button>7</button><button>8</button><button>9</button>
-    <button>0</button><button>C</button>
-  </div>
+<div class="calc">
+  <button>1</button><button>2</button><button>3</button>
+  <button>4</button><button>5</button><button>6</button>
+  <button>7</button><button>8</button><button>9</button>
+  <button>0</button><button>C</button>
+</div>
 
-  <div class="selected-box">
-    <h3 id="selected-name">-</h3>
-    <p>Prix: <span id="selected-price">0</span> FCFA</p>
+<!-- PRODUIT SELECTIONNE -->
+<div class="selected-box">
 
-    <button onclick="minusQty()">-</button>
-    <span id="qty">1</span>
-    <button onclick="plusQty()">+</button>
+<h3 id="selected-name">-</h3>
+<p>Prix: <span id="selected-price">0</span> FCFA</p>
 
-    <button onclick="addToCart()">Ajouter</button>
-  </div>
+<button onclick="minusQty()">-</button>
+<span id="qty">1</span>
+<button onclick="plusQty()">+</button>
+
+<br><br>
+<button onclick="addToCart()">Ajouter à la facture</button>
 
 </div>
 
-<!-- RIGHT -->
+</div>
+
+<!-- ================= RIGHT ================= -->
 <div class="right">
 
-  <h3>🧾 Facture</h3>
+<h3>🧾 Facture</h3>
 
-  <table>
-    <tbody id="invoice"></tbody>
-  </table>
+<table>
+<tbody id="invoice"></tbody>
+</table>
 
-  <div class="discount">
-    <button onclick="setDiscount(0)">0%</button>
-    <button onclick="setDiscount(10)">10%</button>
-    <button onclick="setDiscount(20)">20%</button>
-    <button onclick="setDiscount(50)">50%</button>
-  </div>
+<div class="discount">
+<button onclick="setDiscount(0)">0%</button>
+<button onclick="setDiscount(10)">10%</button>
+<button onclick="setDiscount(20)">20%</button>
+<button onclick="setDiscount(50)">50%</button>
+</div>
 
-  <div class="total" id="total">0 FCFA</div>
+<div class="total" id="total">0 FCFA</div>
 
 </div>
 
