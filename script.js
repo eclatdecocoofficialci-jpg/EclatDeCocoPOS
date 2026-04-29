@@ -1,3 +1,4 @@
+console.log("POS JS OK");
 document.addEventListener("DOMContentLoaded", () => {
 
 let products = JSON.parse(localStorage.getItem("products")) || [];
