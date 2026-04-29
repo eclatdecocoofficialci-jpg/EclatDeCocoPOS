@@ -204,3 +204,56 @@ if ("serviceWorker" in navigator) {
       .catch(() => console.log("SW ERROR"));
   });
 }
+function printInvoice(){
+  let printContent = document.getElementById("invoice-area").innerHTML;
+
+  let win = window.open("", "", "width=900,height=650");
+
+  win.document.write(`
+    <html>
+    <head>
+      <title>Facture</title>
+      <style>
+        body{
+          font-family:Poppins, sans-serif;
+          padding:20px;
+        }
+
+        h2,h3,h4{
+          color:#e91e63;
+          text-align:center;
+        }
+
+        table{
+          width:100%;
+          border-collapse:collapse;
+          margin-top:10px;
+        }
+
+        table, th, td{
+          border:1px solid #ddd;
+        }
+
+        th, td{
+          padding:8px;
+          text-align:center;
+        }
+
+        button, input{
+          display:none;
+        }
+
+        .no-print{
+          display:none;
+        }
+      </style>
+    </head>
+
+    <body onload="window.print(); window.close();">
+      ${printContent}
+    </body>
+    </html>
+  `);
+
+  win.document.close();
+}
