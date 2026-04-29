@@ -2,8 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 let products = JSON.parse(localStorage.getItem("products")) || [];
 let invoice = [];
-let discount = 0;
-
 let currentProduct = null;
 let qty = 1;
 
@@ -18,81 +16,23 @@ const qtyEl = document.getElementById("qty");
 
 const invoiceEl = document.getElementById("invoice");
 const totalEl = document.getElementById("total");
-
 const dateInput = document.getElementById("invoice-date");
-const invoiceIdEl = document.getElementById("invoice-id");
 
-/* GLOBAL (pour save) */
-window.invoice = invoice;
-
-/* ================= INIT ================= */
-renderProducts();
-renderInvoice();
-setDefaultDate();
-generateInvoiceNumber();
-
-/* ================= DATE ================= */
-function setDefaultDate(){
-  if(dateInput){
-    const today = new Date().toISOString().split("T")[0];
-    dateInput.value = today;
-  }
+/* ===== DATE AUTO ===== */
+if(dateInput && !dateInput.value){
+  dateInput.value = new Date().toISOString().split("T")[0];
 }
 
-/* ================= NUMERO FACTURE ================= */
-function generateInvoiceNumber(){
-  const year = new Date().getFullYear();
-
-  let last = localStorage.getItem("invoice-counter") || 0;
-  last = parseInt(last) + 1;
-
-  localStorage.setItem("invoice-counter", last);
-
-  if(invoiceIdEl){
-    invoiceIdEl.innerText = year + String(last).padStart(3, "0");
-  }
-}
-
-/* ================= SEARCH ================= */
-if(search){
-search.addEventListener("input", () => {
-
-  results.innerHTML = "";
-
-  let found = products.filter(p =>
-    p.name.toLowerCase().includes(search.value.toLowerCase()) ||
-    p.code.toLowerCase().includes(search.value.toLowerCase())
-  );
-
-  found.forEach(p => {
-    let div = document.createElement("div");
-    div.className = "result";
-    div.innerText = `${p.code} - ${p.name}`;
-
-    div.onclick = () => selectProduct(p);
-
-    results.appendChild(div);
-  });
-
-});
-}
-
-/* ================= PRODUCTS BOX ================= */
+/* ===== RENDER PRODUCTS ===== */
 function renderProducts(){
   if(!grid) return;
 
   grid.innerHTML = "";
 
   products.forEach(p => {
-
     let box = document.createElement("div");
     box.className = "result";
-
-    box.innerHTML = `
-      <strong>${p.name}</strong><br>
-      ${p.price} FCFA<br>
-      Stock: ${p.stock}
-    `;
+    box.innerHTML = `<strong>${p.name}</strong><br>${p.price} FCFA`;
 
     box.onclick = () => selectProduct(p);
 
@@ -100,7 +40,7 @@ function renderProducts(){
   });
 }
 
-/* ================= SELECT ================= */
+/* ===== SELECT PRODUCT ===== */
 function selectProduct(p){
   currentProduct = p;
   qty = 1;
@@ -110,7 +50,7 @@ function selectProduct(p){
   qtyEl.innerText = qty;
 }
 
-/* ================= QTY ================= */
+/* ===== QTY ===== */
 window.plusQty = () => {
   qty++;
   qtyEl.innerText = qty;
@@ -123,9 +63,8 @@ window.minusQty = () => {
   }
 };
 
-/* ================= ADD CART ================= */
+/* ===== ADD TO CART ===== */
 window.addToCart = () => {
-
   if(!currentProduct) return;
 
   let exist = invoice.find(i => i.name === currentProduct.name);
@@ -140,8 +79,6 @@ window.addToCart = () => {
     });
   }
 
-  window.invoice = invoice;
-
   currentProduct = null;
   qty = 1;
 
@@ -152,65 +89,51 @@ window.addToCart = () => {
   renderInvoice();
 };
 
-/* ================= INVOICE ================= */
+/* ===== INVOICE ===== */
 function renderInvoice(){
-
   invoiceEl.innerHTML = "";
 
   let total = 0;
 
-  invoice.forEach(item => {
-
-    let lineTotal = item.qty * item.price;
-    total += lineTotal;
+  invoice.forEach(i => {
+    let line = i.qty * i.price;
+    total += line;
 
     let tr = document.createElement("tr");
-
     tr.innerHTML = `
-      <td>${item.name}</td>
-      <td>${item.qty}</td>
-      <td>${lineTotal} FCFA</td>
+      <td>${i.name}</td>
+      <td>${i.qty}</td>
+      <td>${line} FCFA</td>
     `;
-
     invoiceEl.appendChild(tr);
   });
 
-  let final = total - (total * discount / 100);
-
-  totalEl.innerText = final.toFixed(0) + " FCFA";
+  totalEl.innerText = total + " FCFA";
 }
 
-/* ================= DISCOUNT ================= */
-window.setDiscount = (p) => {
-  discount = p;
-  renderInvoice();
-};
+/* ===== INIT ===== */
+renderProducts();
+renderInvoice();
 
-/* ================= PRINT ================= */
-const printBtn = document.getElementById("print-btn");
-if(printBtn){
-  printBtn.onclick = () => window.print();
-}
+/* ===== PRINT ===== */
+document.getElementById("print-btn")?.addEventListener("click", () => {
+  window.print();
+});
 
-/* ================= SAVE ================= */
-const saveBtn = document.getElementById("save-btn");
+/* ===== SAVE ===== */
+document.getElementById("save-btn")?.addEventListener("click", () => {
 
-if(saveBtn){
-  saveBtn.onclick = () => {
+  let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
-    let sales = JSON.parse(localStorage.getItem("sales")) || [];
+  sales.push({
+    date: dateInput?.value,
+    items: invoice,
+    total: totalEl.innerText
+  });
 
-    sales.push({
-      id: invoiceIdEl?.innerText || "",
-      date: dateInput?.value || "",
-      items: invoice,
-      total: totalEl.innerText
-    });
+  localStorage.setItem("sales", JSON.stringify(sales));
 
-    localStorage.setItem("sales", JSON.stringify(sales));
-
-    alert("Facture sauvegardée 💗");
-  };
-}
+  alert("Facture sauvegardée 💗");
+});
 
 });
