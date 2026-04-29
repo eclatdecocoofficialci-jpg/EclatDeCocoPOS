@@ -66,40 +66,64 @@
     </div>
 
     <!-- FACTURE -->
-    <div class="right-panel">
+<div class="right-panel">
 
-      <h3>🧾 Facture</h3>
+  <!-- HEADER FACTURE -->
+  <div style="text-align:center; margin-bottom:10px;">
 
-      <h4>N° : <span id="invoice-id"></span></h4>
+    <h2 style="margin:0; font-weight:bold; color:#e91e63;">
+      Bienvenue à Éclat de Coco Officiel 
+    </h2>
 
-      <h4>Client(e)</h4>
-      <input id="client-name" placeholder="Nom client(e)">
-      <input id="client-phone" placeholder="Téléphone">
-      <input id="client-address" placeholder="Adresse">
+    <p style="margin:5px 0; font-weight:500;">
+      Abidjan - Côte d’Ivoire
+    </p>
 
-      <input type="date" id="date">
+  </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Produit</th>
-            <th>Qté</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody id="invoice-body"></tbody>
-      </table>
+  <!-- INVOICE NUMBER -->
+  <h3 style="text-align:center; color:#e91e63;">
+    N° Facture : <span id="invoice-id"></span>
+  </h3>
 
-      <input id="delivery" type="number" placeholder="Livraison">
+  <!-- CLIENT -->
+  <h4>Client(e)</h4>
+  <input id="client-name" placeholder="Nom client(e)">
+  <input id="client-phone" placeholder="Téléphone">
+  <input id="client-address" placeholder="Adresse">
 
-      <h2 id="grand-total">0 FCFA</h2>
+  <input type="date" id="date">
 
-      <button onclick="window.print()">🖨 Imprimer</button>
-      <button onclick="saveSale()">💾 Sauvegarder</button>
+  <!-- TABLE -->
+  <table>
+    <thead>
+      <tr>
+        <th>Produit</th>
+        <th>Qté</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="invoice-body"></tbody>
+  </table>
 
-      <p style="text-align:center;">🙏 Merci Éclat de Coco 💗</p>
+  <!-- DELIVERY -->
+  <input id="delivery" type="number" placeholder="Livraison">
 
-    </div>
+  <!-- TOTAL -->
+  <h2 id="grand-total" style="color:#e91e63; text-align:center;">
+    0 FCFA
+  </h2>
+
+  <!-- BUTTONS -->
+  <button onclick="window.print()">🖨 Imprimer</button>
+  <button onclick="saveSale()">💾 Sauvegarder</button>
+
+  <!-- FOOTER -->
+  <p style="text-align:center; margin-top:10px; font-weight:500;">
+    Merci d’avoir choisi Éclat de Coco 💗
+  </p>
+
+</div>
 
   </div>
 
