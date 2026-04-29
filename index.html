@@ -2,118 +2,94 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Éclat de Coco - POS</title>
+<title>Éclat de Coco - Home</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+
+<style>
+body{
+  margin:0;
+  font-family:Poppins;
+  background: linear-gradient(90deg,#fff5fb,#ffe6ef,#fff5fb);
+  color:#333;
+}
+
+/* HEADER */
+header{
+  background:#f06292;
+  color:white;
+  padding:15px;
+  text-align:center;
+}
+
+/* MENU GRID */
+.menu{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:15px;
+  padding:20px;
+}
+
+/* CARD */
+.card{
+  background:white;
+  padding:20px;
+  border-radius:15px;
+  text-align:center;
+  box-shadow:0 4px 10px rgba(233,30,99,0.1);
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.card:hover{
+  background:#ffe6ef;
+  transform:scale(1.03);
+}
+
+/* BUTTON TEXT */
+a{
+  text-decoration:none;
+  color:#e91e63;
+  font-weight:600;
+}
+</style>
 </head>
 
 <body>
 
-<div class="container">
+<header>
+  <h1>✨ Éclat de Coco Officiel</h1>
+  <p>Gestion Business - POS System</p>
+</header>
 
-<!-- ================= LEFT ================= -->
-<div class="left">
+<div class="menu">
 
-<h3>🔎 Recherche Produit</h3>
-<input type="text" id="search" placeholder="Nom ou code produit">
-<div id="results"></div>
+  <div class="card">
+    <a href="pos.html">🧾 Open POS</a>
+  </div>
 
-<h3>📦 Catégories</h3>
-<div id="category-boxes"></div>
+  <div class="card">
+    <a href="dashboard.html">📊 Dashboard</a>
+  </div>
 
-</div>
+  <div class="card">
+    <a href="sales.html">💰 Sales</a>
+  </div>
 
-<!-- ================= MIDDLE ================= -->
-<div class="middle">
+  <div class="card">
+    <a href="products.html">🛍 Products</a>
+  </div>
 
-<h3>🛍 Produits</h3>
-<div class="products-grid" id="products-list"></div>
+  <div class="card">
+    <a href="inventory.html">📦 Inventory</a>
+  </div>
 
-<h3>🧮 Calculatrice</h3>
-<input type="text" id="display" readonly>
-
-<div class="calc">
-  <button>1</button><button>2</button><button>3</button>
-  <button>4</button><button>5</button><button>6</button>
-  <button>7</button><button>8</button><button>9</button>
-  <button>0</button><button>C</button>
-</div>
-
-<!-- PRODUIT SELECTION -->
-<div class="selected-box">
-
-<h3 id="selected-name">-</h3>
-<p>Prix: <span id="selected-price">0</span> FCFA</p>
-
-<button onclick="minusQty()">-</button>
-<span id="qty">1</span>
-<button onclick="plusQty()">+</button>
-
-<br><br>
-<button onclick="addToCart()">Ajouter à la facture</button>
+  <div class="card">
+    <a href="customers.html">👤 Customers</a>
+  </div>
 
 </div>
-
-</div>
-
-<!-- ================= RIGHT ================= -->
-<div class="right" id="invoice-section">
-
-<h3>🧾 Facture</h3>
-
-<h4>N° : <span id="invoice-id"></span></h4>
-
-<h2>✨ Bienvenue à Éclat de Coco Officiel</h2>
-<p>Abidjan - Côte d'Ivoire</p>
-
-<hr>
-
-<h4>📅 Date :</h4>
-<input type="date" id="invoice-date">
-
-<h4>Client</h4>
-<input type="text" id="client-name" placeholder="Nom">
-<input type="text" id="client-phone" placeholder="Téléphone">
-<input type="text" id="client-address" placeholder="Adresse">
-
-<hr>
-
-<table>
-<thead>
-<tr>
-  <th>Produit</th>
-  <th>Qté</th>
-  <th>Prix</th>
-</tr>
-</thead>
-<tbody id="invoice"></tbody>
-</table>
-
-<hr>
-
-<h4>🚚 Livraison</h4>
-<input type="number" id="delivery" placeholder="Frais livraison">
-
-<h2 id="total">0 FCFA</h2>
-
-<div class="btn-row">
-<button id="print-btn" class="btn">🖨 Imprimer</button>
-<button id="save-btn" class="btn">💾 Sauvegarder</button>
-</div>
-
-<hr>
-
-<p style="text-align:center;">
-Merci de choisir Éclat de Coco 💗
-</p>
-
-</div>
-
-</div>
-
-<script src="script.js"></script>
 
 </body>
 </html>
