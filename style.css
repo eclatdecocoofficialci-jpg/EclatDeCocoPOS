@@ -2,9 +2,8 @@
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  background: #fff5fb;
+  background: linear-gradient(90deg, #fff5fb 0%, #ffe6ef 50%, #fff5fb 100%);
   color: #333;
-  min-height: 100vh;
 }
 
 /* ======= HEADER ======= */
@@ -56,6 +55,7 @@ header h1 {
 
 .card:hover {
   background: #f8bbd0;
+  transform: translateY(-2px);
 }
 
 /* ======= TABLES ======= */
@@ -80,6 +80,10 @@ header h1 {
   border-bottom: 1px solid #fce4ec;
 }
 
+.pink-table tr:hover {
+  background: #fff0f6;
+}
+
 /* ======= PRODUCTS PAGE ======= */
 .products-container {
   display: grid;
@@ -95,7 +99,7 @@ header h1 {
   border-radius: 12px;
 }
 
-/* ======= POS 3 COLONNES ======= */
+/* ======= POS CONTAINER ======= */
 .container {
   display: flex;
   gap: 20px;
@@ -103,43 +107,45 @@ header h1 {
   align-items: flex-start;
 }
 
-/* LEFT */
+/* ======= POS COLONNES ======= */
+.left, .middle, .right {
+  background: #fff;
+  padding: 15px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.08);
+}
+
 .left {
   flex: 1;
-  background: #fff;
-  padding: 15px;
-  border-radius: 16px;
-  min-width: 250px;
+  min-width: 260px;
 }
 
-/* MIDDLE */
 .middle {
   flex: 1;
-  background: #fff;
-  padding: 15px;
-  border-radius: 16px;
-  min-width: 250px;
+  min-width: 260px;
 }
 
-/* RIGHT */
 .right {
   flex: 2;
-  background: #fff;
-  padding: 15px;
-  border-radius: 16px;
-  min-width: 300px;
+  min-width: 320px;
 }
 
-/* SEARCH RESULT */
+/* ======= SEARCH RESULT ======= */
 .result {
   background: #ffe6ef;
   padding: 10px;
   margin-bottom: 5px;
   border-radius: 10px;
   cursor: pointer;
+  transition: 0.2s;
 }
 
-/* SELECTED BOX */
+.result:hover {
+  background: #f8bbd0;
+  transform: scale(1.02);
+}
+
+/* ======= SELECTED BOX ======= */
 .selected-box {
   background: #ffe6ef;
   padding: 10px;
@@ -147,7 +153,7 @@ header h1 {
   margin-top: 10px;
 }
 
-/* TOTAL */
+/* ======= TOTAL ======= */
 .total {
   font-size: 18px;
   font-weight: bold;
@@ -155,7 +161,7 @@ header h1 {
   margin-top: 10px;
 }
 
-/* CALC */
+/* ======= CALCULATOR ======= */
 .calc {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -169,9 +175,10 @@ header h1 {
   border-radius: 8px;
   background: #f8bbd0;
   font-size: 16px;
+  cursor: pointer;
 }
 
-/* DISCOUNT */
+/* ======= DISCOUNT ======= */
 .discount {
   display: flex;
   gap: 5px;
@@ -185,9 +192,38 @@ header h1 {
   border-radius: 8px;
   background: #ff80ab;
   color: white;
+  cursor: pointer;
 }
 
-/* RESPONSIVE */
+/* ======= BUTTONS ======= */
+.btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #f8bbd0;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #e91e63;
+  color: #fff;
+}
+
+/* ======= FACTURE STYLE ======= */
+.right h2,
+.right h3 {
+  color: #e91e63;
+}
+
+.right hr {
+  border: none;
+  border-top: 1px solid #f8bbd0;
+}
+
+/* ======= RESPONSIVE ======= */
 @media (max-width: 1024px) {
   .container {
     flex-direction: column;
