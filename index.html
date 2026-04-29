@@ -16,24 +16,26 @@ body{
   justify-content:center;
   align-items:center;
 
-  /* MARBLE LUXURY BACKGROUND */
   background-image: url("https://images.unsplash.com/photo-1523413651479-597eb2da0ad6");
   background-size:cover;
   background-position:center;
 }
 
-/* soft pink overlay */
+/* overlay */
 .overlay{
-  position:absolute;
+  position:fixed;
+  top:0;
+  left:0;
   width:100%;
   height:100%;
   background:rgba(255, 192, 203, 0.25);
 }
 
-/* CENTER CARD */
+/* CARD */
 .card{
   position:relative;
-  background:rgba(255,255,255,0.88);
+  z-index:2;
+  background:rgba(255,255,255,0.9);
   padding:40px;
   border-radius:20px;
   text-align:center;
@@ -53,7 +55,6 @@ p{
   font-size:14px;
 }
 
-/* INPUT */
 input{
   width:100%;
   padding:12px;
@@ -65,7 +66,6 @@ input{
   outline:none;
 }
 
-/* BUTTON */
 button{
   margin-top:15px;
   width:100%;
@@ -76,14 +76,8 @@ button{
   color:white;
   font-weight:bold;
   cursor:pointer;
-  transition:0.2s;
 }
 
-button:hover{
-  background:#c2185b;
-}
-
-/* small text */
 .small{
   font-size:12px;
   margin-top:10px;
@@ -97,12 +91,12 @@ button:hover{
 <div class="overlay"></div>
 
 <div class="card">
-  <h1>✨ Welcome to Éclat de Coco Official</h1>
-  <p>Luxury Business Management System</p>
+  <h1>✨ Welcome to Éclat de Coco</h1>
+  <p>Luxury POS & Business System</p>
 
   <input type="password" id="code" placeholder="Enter Access Code">
 
-  <button onclick="enterApp()">Enter POS</button>
+  <button onclick="enterApp()">Enter</button>
 
   <div class="small">Secure access required</div>
 </div>
@@ -112,7 +106,7 @@ function enterApp(){
   const code = document.getElementById("code").value;
 
   if(code === "29121509"){
-    window.location.href = "pos.html";
+    window.location.href = "pos.html?v=1"; // 🔥 force reload
   } else {
     alert("Incorrect code ❌");
   }
