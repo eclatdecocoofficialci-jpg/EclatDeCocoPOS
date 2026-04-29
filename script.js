@@ -21,11 +21,26 @@ const totalEl = document.getElementById("total");
 
 const display = document.getElementById("display");
 
-/* INIT */
+const dateInput = document.getElementById("invoice-date");
+
+/* ================= INIT ================= */
 renderProducts();
 renderInvoice();
+setDefaultDate();
+
+/* ================= DATE ================= */
+function setDefaultDate(){
+  if(!dateInput) return;
+
+  const today = new Date().toISOString().split("T")[0];
+
+  if(!dateInput.value){
+    dateInput.value = today;
+  }
+}
 
 /* ================= SEARCH ================= */
+if(search){
 search.addEventListener("input", () => {
 
   results.innerHTML = "";
@@ -46,8 +61,9 @@ search.addEventListener("input", () => {
   });
 
 });
+}
 
-/* ================= PRODUCT BOXES ================= */
+/* ================= PRODUCTS ================= */
 function renderProducts(){
   if(!grid) return;
 
