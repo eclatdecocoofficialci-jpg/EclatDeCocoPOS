@@ -138,18 +138,26 @@ function renderInvoice(){
 
   let total = 0;
 
-  invoice.forEach(i => {
-    let t = i.qty * i.price;
-    total += t;
+  invoice.forEach(item => {
+
+    let lineTotal = item.qty * item.price;
+    total += lineTotal;
 
     let tr = document.createElement("tr");
+
     tr.innerHTML = `
-      <td>${i.name}</td>
-      <td>${i.qty}</td>
-      <td>${t}</td>
+      <td>${item.name}</td>
+      <td>${item.qty}</td>
+      <td>${lineTotal} FCFA</td>
     `;
 
     invoiceEl.appendChild(tr);
+  });
+
+  let final = total - (total * discount / 100);
+
+  totalEl.innerText = final.toFixed(0) + " FCFA";
+}
   });
 
   let final = total - (total * discount / 100);
