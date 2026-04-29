@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-/* ================= DATA ================= */
 let products = JSON.parse(localStorage.getItem("products")) || [];
 let invoice = [];
 let discount = 0;
@@ -8,10 +7,9 @@ let discount = 0;
 let currentProduct = null;
 let qty = 1;
 
-/* ================= ELEMENTS ================= */
+/* ELEMENTS */
 const search = document.getElementById("search");
 const results = document.getElementById("results");
-
 const grid = document.getElementById("product-grid");
 
 const nameEl = document.getElementById("selected-name");
@@ -23,20 +21,18 @@ const totalEl = document.getElementById("total");
 
 const display = document.getElementById("display");
 
-/* ================= INIT ================= */
-renderProductBoxes();
-render();
+/* INIT */
+renderProducts();
+renderInvoice();
 
 /* ================= SEARCH ================= */
-if(search){
 search.addEventListener("input", () => {
+
   results.innerHTML = "";
 
-  let val = search.value.toLowerCase();
-
   let found = products.filter(p =>
-    p.name.toLowerCase().includes(val) ||
-    p.code.toLowerCase().includes(val)
+    p.name.toLowerCase().includes(search.value.toLowerCase()) ||
+    p.code.toLowerCase().includes(search.value.toLowerCase())
   );
 
   found.forEach(p => {
@@ -48,11 +44,11 @@ search.addEventListener("input", () => {
 
     results.appendChild(div);
   });
+
 });
-}
 
 /* ================= PRODUCT BOXES ================= */
-function renderProductBoxes(){
+function renderProducts(){
   if(!grid) return;
 
   grid.innerHTML = "";
@@ -61,10 +57,7 @@ function renderProductBoxes(){
     let box = document.createElement("div");
     box.className = "result";
 
-    box.innerHTML = `
-      <strong>${p.name}</strong><br>
-      ${p.price} FCFA
-    `;
+    box.innerHTML = `<strong>${p.name}</strong><br>${p.price} FCFA`;
 
     box.onclick = () => selectProduct(p);
 
@@ -72,7 +65,7 @@ function renderProductBoxes(){
   });
 }
 
-/* ================= SELECT PRODUCT ================= */
+/* ================= SELECT ================= */
 function selectProduct(p){
   currentProduct = p;
   qty = 1;
@@ -95,8 +88,9 @@ window.minusQty = () => {
   }
 };
 
-/* ================= ADD TO CART ================= */
+/* ================= ADD ================= */
 window.addToCart = () => {
+
   if(!currentProduct) return;
 
   let exist = invoice.find(i => i.name === currentProduct.name);
@@ -107,7 +101,7 @@ window.addToCart = () => {
     invoice.push({
       name: currentProduct.name,
       price: currentProduct.price,
-      qty
+      qty: qty
     });
   }
 
@@ -118,12 +112,11 @@ window.addToCart = () => {
   priceEl.innerText = "0";
   qtyEl.innerText = "1";
 
-  render();
+  renderInvoice();
 };
 
 /* ================= INVOICE ================= */
-function render(){
-  if(!invoiceEl || !totalEl) return;
+function renderInvoice(){
 
   invoiceEl.innerHTML = "";
 
@@ -139,6 +132,7 @@ function render(){
       <td>${i.qty}</td>
       <td>${t}</td>
     `;
+
     invoiceEl.appendChild(tr);
   });
 
@@ -149,24 +143,7 @@ function render(){
 /* ================= DISCOUNT ================= */
 window.setDiscount = (p) => {
   discount = p;
-  render();
+  renderInvoice();
 };
-
-/* ================= CALCULATOR ================= */
-if(document.querySelectorAll(".calc button")){
-document.querySelectorAll(".calc button").forEach(btn=>{
-  btn.addEventListener("click", () => {
-    if(!display) return;
-
-    let v = btn.innerText;
-
-    if(v === "C"){
-      display.value = "";
-    } else {
-      display.value += v;
-    }
-  });
-});
-}
 
 });
