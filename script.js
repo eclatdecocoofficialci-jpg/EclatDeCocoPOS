@@ -187,3 +187,42 @@ let invoiceNumber = generateInvoiceNumber();
 if(invoiceIdEl){
   invoiceIdEl.innerText = invoiceNumber;
 }
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* ================= IMPRIMER ================= */
+  const printBtn = document.getElementById("print-btn");
+  if(printBtn){
+    printBtn.addEventListener("click", () => {
+      window.print();
+    });
+  }
+
+  /* ================= SAUVEGARDER ================= */
+  const saveBtn = document.getElementById("save-btn");
+
+  if(saveBtn){
+    saveBtn.addEventListener("click", () => {
+
+      let sales = JSON.parse(localStorage.getItem("sales")) || [];
+
+      const invoiceData = {
+        id: document.getElementById("invoice-id")?.innerText || "",
+        date: document.getElementById("invoice-date")?.value || "",
+        client: {
+          name: document.getElementById("client-name")?.value || "",
+          phone: document.getElementById("client-phone")?.value || "",
+          address: document.getElementById("client-address")?.value || ""
+        },
+        items: window.invoice || [],
+        total: document.getElementById("total")?.innerText || "0"
+      };
+
+      sales.push(invoiceData);
+
+      localStorage.setItem("sales", JSON.stringify(sales));
+
+      alert("Facture sauvegardée 💗");
+    });
+  }
+
+});
