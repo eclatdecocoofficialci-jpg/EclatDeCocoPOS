@@ -1,144 +1,28 @@
-body{
-  margin:0;
-  font-family:Poppins;
-  background:#fff0f5;
-}
-
-header{
-  background:#e91e63;
-  color:white;
-  padding:10px;
-}
-
-.main-nav{
-  display:flex;
-  gap:5px;
-  padding:10px;
-  background:white;
-}
-
-.main-nav button{
-  padding:8px;
-  border:none;
-  background:#f8bbd0;
-  border-radius:8px;
-}
-
-.pos-container{
-  display:flex;
-  height:85vh;
-  gap:10px;
-  padding:10px;
-}
-
-.left-panel,.center-panel,.right-panel{
-  background:white;
-  padding:10px;
-  border-radius:10px;
-  overflow:auto;
-}
-
-.left-panel{width:18%;}
-.center-panel{width:52%;}
-.right-panel{width:30%;}
-
-#product-list{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-}
-
-.calc{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:5px;
-}
-
-.calc button{
-  padding:10px;
-  background:#f8bbd0;
-  border:none;
-  border-radius:6px;
-}
-
-@media(max-width:900px){
-  .pos-container{flex-direction:column;height:auto;}
-}
-/* ================= FORCE IPAD LANDSCAPE 3 COLONNES ================= */
 @media screen and (min-width: 900px) {
 
-  .pos-container{
-    display:flex;
-    flex-direction:row;
-    height:85vh;
-    gap:10px;
-  }
-
-  /* LEFT */
-  .left-panel{
-    width:18%;
-    min-width:180px;
-    background: linear-gradient(180deg, #ffe6ef, #fff0f5);
-  }
-
-  /* CENTER */
-  .center-panel{
-    width:52%;
-    min-width:300px;
-    background:#ffffff;
-  }
-
-  /* RIGHT (FACTURE) */
-  .right-panel{
-    width:30%;
-    min-width:280px;
-    background: linear-gradient(180deg, #f8bbd0, #ffe6ef);
-  }
-
-  /* FORCE BLOCK STABILITY */
-  .left-panel,
-  .center-panel,
-  .right-panel{
-    height:100%;
-    overflow:auto;
-  }
-}
-.right-panel h3{
-  color:#e91e63;
-}
-
-#grand-total{
-  background:white;
-  padding:10px;
-  border-radius:10px;
-  font-size:20px;
-  font-weight:bold;
-  color:#e91e63;
-  text-align:center;
-}
-
-.right-panel table{
-  background:white;
-  border-radius:10px;
-}
-@media screen and (min-width: 900px) {
-
-  /* FULL SCREEN FEEL */
   body{
     height:100vh;
     overflow:hidden;
+    margin:0;
+    font-family:Poppins;
+    background:#fff0f5;
   }
 
-  /* CONTAINER PLUS GRAND */
+  header{
+    background:#e91e63;
+    color:white;
+    padding:10px;
+  }
+
   .pos-container{
     display:flex;
     flex-direction:row;
-    height:95vh; /* 🔥 plus grand */
+    height:92vh;
     gap:12px;
     padding:12px;
   }
 
-  /* ================= LEFT PANEL ================= */
+  /* LEFT */
   .left-panel{
     width:18%;
     min-width:220px;
@@ -146,9 +30,10 @@ header{
     background: linear-gradient(180deg, #ffe6ef, #fff5fb);
     border-radius:15px;
     padding:15px;
+    overflow:auto;
   }
 
-  /* ================= CENTER PANEL ================= */
+  /* CENTER */
   .center-panel{
     width:52%;
     min-width:400px;
@@ -156,9 +41,10 @@ header{
     background:white;
     border-radius:15px;
     padding:15px;
+    overflow:auto;
   }
 
-  /* ================= RIGHT PANEL (FACTURE BIG) ================= */
+  /* RIGHT */
   .right-panel{
     width:30%;
     min-width:320px;
@@ -166,40 +52,58 @@ header{
     background: linear-gradient(180deg, #f8bbd0, #ffe6ef);
     border-radius:15px;
     padding:15px;
+    overflow:auto;
   }
 
-  /* ================= MAKE CONTENT FEEL BIGGER ================= */
+  /* PRODUCTS GRID */
+  #product-list{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+  }
+
+  /* CALCULATOR */
+  .calc{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+  }
+
+  .calc button{
+    padding:14px;
+    background:#f8bbd0;
+    border:none;
+    border-radius:6px;
+  }
+
+  /* FACTURE */
+  #grand-total{
+    font-size:24px;
+    font-weight:bold;
+    color:#e91e63;
+    text-align:center;
+    background:white;
+    padding:10px;
+    border-radius:10px;
+  }
+
+  .right-panel table{
+    font-size:14px;
+    background:white;
+    border-radius:10px;
+  }
 
   h3{
     font-size:18px;
+    color:#e91e63;
   }
 
   input, button{
     font-size:14px;
   }
 
-  #product-list{
-    grid-template-columns:repeat(2,1fr);
-    gap:12px;
-  }
-
-  .calc{
-    gap:8px;
-  }
-
-  .calc button{
-    padding:14px;
-  }
-
-  /* ================= FACTURE TABLE BIGGER ================= */
-  .right-panel table{
-    font-size:14px;
-  }
-
-  #grand-total{
-    font-size:24px;
-  }
 }
+
 * {
   box-sizing: border-box;
 }
