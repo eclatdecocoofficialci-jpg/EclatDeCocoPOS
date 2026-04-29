@@ -14,17 +14,19 @@
   <h1>✨ Éclat de Coco POS</h1>
 </header>
 
+<!-- ================= NAVIGATION (MULTI-PAGE SYSTEM) ================= -->
 <nav class="main-nav">
-  <button onclick="showSection('products')">Produits</button>
-  <button onclick="showSection('sales')">Ventes</button>
-  <button onclick="showSection('expenses')">Dépenses</button>
-  <button onclick="showSection('customers')">Clients</button>
-  <button onclick="showSection('reports')">Rapports</button>
+  <a href="pos.html">Dashboard</a>
+  <a href="sales.html">Ventes</a>
+  <a href="products.html">Produits</a>
+  <a href="inventory.html">Inventaire</a>
+  <a href="expenses.html">Dépenses</a>
+  <a href="reports.html">Rapports</a>
 </nav>
 
 <div class="pos-container">
 
-  <!-- PRODUCTS -->
+  <!-- ================= PRODUCTS ================= -->
   <div id="products" class="section">
 
     <div class="left-panel">
@@ -65,101 +67,72 @@
       <button onclick="setDiscount(50)">-50%</button>
     </div>
 
-    <!-- FACTURE -->
-<div class="right-panel">
+    <!-- ================= INVOICE ================= -->
+    <div class="right-panel">
 
-  <!-- HEADER FACTURE -->
-  <div style="text-align:center; margin-bottom:10px;">
+      <div style="text-align:center; margin-bottom:10px;">
+        <h2 style="margin:0; font-weight:bold; color:#e91e63;">
+          Bienvenue à Éclat de Coco Officiel
+        </h2>
 
-    <h2 style="margin:0; font-weight:bold; color:#e91e63;">
-      Bienvenue à Éclat de Coco Officiel 
-    </h2>
+        <p style="margin:5px 0; font-weight:500;">
+          Abidjan - Côte d’Ivoire
+        </p>
+      </div>
 
-    <p style="margin:5px 0; font-weight:500;">
-      Abidjan - Côte d’Ivoire
-    </p>
+      <h3 style="text-align:center; color:#e91e63;">
+        N° Facture : <span id="invoice-id"></span>
+      </h3>
 
-  </div>
+      <h4>Client(e)</h4>
+      <input id="client-name" placeholder="Nom client(e)">
+      <input id="client-phone" placeholder="Téléphone">
+      <input id="client-address" placeholder="Adresse">
 
-  <!-- INVOICE NUMBER -->
-  <h3 style="text-align:center; color:#e91e63;">
-    N° Facture : <span id="invoice-id"></span>
-  </h3>
+      <input type="date" id="date">
 
-  <!-- CLIENT -->
-  <h4>Client(e)</h4>
-  <input id="client-name" placeholder="Nom client(e)">
-  <input id="client-phone" placeholder="Téléphone">
-  <input id="client-address" placeholder="Adresse">
+      <table>
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th>Qté</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="invoice-body"></tbody>
+      </table>
 
-  <input type="date" id="date">
+      <input id="delivery" type="number" placeholder="Livraison">
 
-  <!-- TABLE -->
-  <table>
-    <thead>
-      <tr>
-        <th>Produit</th>
-        <th>Qté</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody id="invoice-body"></tbody>
-  </table>
+      <h2 id="grand-total" style="color:#e91e63; text-align:center;">
+        0 FCFA
+      </h2>
 
-  <!-- DELIVERY -->
-  <input id="delivery" type="number" placeholder="Livraison">
+      <button onclick="window.print()">🖨 Imprimer</button>
+      <button onclick="saveSale()">💾 Sauvegarder</button>
 
-  <!-- TOTAL -->
-  <h2 id="grand-total" style="color:#e91e63; text-align:center;">
-    0 FCFA
-  </h2>
+      <p style="text-align:center; margin-top:10px; font-weight:500;">
+        Merci d’avoir choisi Éclat de Coco 💗
+      </p>
 
-  <!-- BUTTONS -->
-  <button onclick="window.print()">🖨 Imprimer</button>
-  <button onclick="saveSale()">💾 Sauvegarder</button>
+    </div>
 
-  <!-- FOOTER -->
-  <p style="text-align:center; margin-top:10px; font-weight:500;">
-    Merci d’avoir choisi Éclat de Coco 💗
-  </p>
-
-</div>
-
-  </div>
-
-  <!-- SALES -->
-  <div id="sales" class="section">
-    <iframe src="sales.html" style="width:100%;height:85vh;border:none;"></iframe>
-  </div>
-
-  <div id="expenses" class="section"><h2>Dépenses</h2></div>
-  <div id="customers" class="section"><h2>Clients</h2></div>
-  <div id="reports" class="section">
-    <h2>Rapports</h2>
-    <button onclick="generateReport()">Générer</button>
   </div>
 
 </div>
 
+<!-- ================= SCRIPT ================= -->
 <script src="script.js"></script>
 
-<!-- ✅ SERVICE WORKER PROPRE -->
+<!-- ================= SERVICE WORKER ================= -->
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("/service-worker.js")
-      .then(() => console.log("Service Worker OK ✔"))
-      .catch(err => console.log("SW error ❌", err));
+      .then(() => console.log("SW OK ✔"))
+      .catch(err => console.log("SW ERROR ❌", err));
   });
 }
-</script>
-
-<script>
-function showSection(id){
-  document.querySelectorAll(".section").forEach(s=>s.style.display="none");
-  document.getElementById(id).style.display="block";
-}
-window.onload=()=>showSection("products");
 </script>
 
 </body>
