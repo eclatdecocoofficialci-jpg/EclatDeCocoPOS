@@ -3,7 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <title>Éclat de Coco Login</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- PWA SUPPORT -->
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#e91e63">
+
+<link rel="apple-touch-icon" href="./icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <style>
 body{
@@ -31,6 +40,7 @@ input{
   margin-top:15px;
   border-radius:10px;
   border:2px solid #f8bbd0;
+  outline:none;
 }
 
 button{
@@ -41,6 +51,7 @@ button{
   border-radius:10px;
   background:#e91e63;
   color:white;
+  font-weight:bold;
 }
 </style>
 </head>
@@ -60,7 +71,8 @@ function enterApp(){
   const code = document.getElementById("code").value;
 
   if(code === "29121509"){
-    window.location.href = "pos.html";
+    // IMPORTANT FIX (GitHub Pages + iPad safe)
+    window.location.href = "./pos.html?v=1";
   } else {
     alert("Wrong code ❌");
   }
