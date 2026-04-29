@@ -11,20 +11,20 @@
 <body>
 
 <header>
-  <h1>✨ Éclat de Coco POS</h1>
+  <h2 data-i18n="welcome">Bienvenue à Éclat de Coco Officiel</h2>
+  <p>Abidjan - Côte d’Ivoire</p>
 </header>
 
-<!-- ================= NAVIGATION (MULTI-PAGE SYSTEM) ================= -->
+<!-- ================= NAVIGATION ================= -->
 <nav class="top-nav">
 
-  <a href="pos.html" class="nav-box">Dashboard</a>
-  <a href="sales.html" class="nav-box">Sales</a>
-  <a href="products.html" class="nav-box">Products</a>
-  <a href="inventory.html" class="nav-box">Inventory</a>
-  <a href="customers.html" class="nav-box">Customers</a>
-  <a href="expenses.html" class="nav-box">Expenses</a>
-  <a href="reports.html" class="nav-box">Reports</a>
-  <a href="orders.html" class="nav-box">Orders</a>
+  <a href="pos.html" class="nav-box" data-i18n="dashboard">Dashboard</a>
+  <a href="sales.html" class="nav-box" data-i18n="sales">Sales</a>
+  <a href="products.html" class="nav-box" data-i18n="products">Products</a>
+  <a href="inventory.html" class="nav-box" data-i18n="inventory">Inventory</a>
+  <a href="customers.html" class="nav-box" data-i18n="customers">Customers</a>
+  <a href="expenses.html" class="nav-box" data-i18n="expenses">Expenses</a>
+  <a href="reports.html" class="nav-box" data-i18n="reports">Reports</a>
 
 </nav>
 
@@ -34,15 +34,15 @@
   <div id="products" class="section">
 
     <div class="left-panel">
-      <h3>Catégories</h3>
+      <h3 data-i18n="categories">Categories</h3>
       <div id="category-boxes"></div>
     </div>
 
     <div class="center-panel">
-      <h3>🔎 Produits</h3>
+      <h3 data-i18n="products">Products</h3>
       <div id="product-list"></div>
 
-      <h3>Calculatrice</h3>
+      <h3 data-i18n="calculator">Calculator</h3>
       <input id="display" readonly>
 
       <div class="calc">
@@ -75,48 +75,42 @@
     <div class="right-panel">
 
       <div style="text-align:center; margin-bottom:10px;">
-        <h2 style="margin:0; font-weight:bold; color:#e91e63;">
-          Bienvenue à Éclat de Coco Officiel
-        </h2>
+        <h3 data-i18n="invoice" style="color:#e91e63;">Invoice</h3>
 
-        <p style="margin:5px 0; font-weight:500;">
-          Abidjan - Côte d’Ivoire
+        <p data-i18n="welcome" style="font-weight:600;">
+          Welcome to Éclat de Coco Official
         </p>
       </div>
 
-      <h3 style="text-align:center; color:#e91e63;">
-        N° Facture : <span id="invoice-id"></span>
-      </h3>
+      <h4>N° : <span id="invoice-id"></span></h4>
 
-      <h4>Client(e)</h4>
-      <input id="client-name" placeholder="Nom client(e)">
-      <input id="client-phone" placeholder="Téléphone">
-      <input id="client-address" placeholder="Adresse">
+      <h4 data-i18n="client">Client</h4>
+      <input id="client-name" placeholder="Name">
+      <input id="client-phone" placeholder="Phone">
+      <input id="client-address" placeholder="Address">
 
       <input type="date" id="date">
 
       <table>
         <thead>
           <tr>
-            <th>Produit</th>
-            <th>Qté</th>
+            <th>Product</th>
+            <th>Qty</th>
             <th>Total</th>
           </tr>
         </thead>
         <tbody id="invoice-body"></tbody>
       </table>
 
-      <input id="delivery" type="number" placeholder="Livraison">
+      <input id="delivery" type="number" placeholder="Delivery">
 
-      <h2 id="grand-total" style="color:#e91e63; text-align:center;">
-        0 FCFA
-      </h2>
+      <h2 id="grand-total" style="color:#e91e63; text-align:center;">0 FCFA</h2>
 
-      <button onclick="window.print()">🖨 Imprimer</button>
-      <button onclick="saveSale()">💾 Sauvegarder</button>
+      <button onclick="window.print()" data-i18n="print">Print</button>
+      <button onclick="saveSale()" data-i18n="save">Save</button>
 
-      <p style="text-align:center; margin-top:10px; font-weight:500;">
-        Merci d’avoir choisi Éclat de Coco 💗
+      <p data-i18n="thanks" style="text-align:center;">
+        Thank you for choosing Éclat de Coco 💗
       </p>
 
     </div>
@@ -125,19 +119,7 @@
 
 </div>
 
-<!-- ================= SCRIPT ================= -->
 <script src="script.js"></script>
-
-<!-- ================= SERVICE WORKER ================= -->
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/service-worker.js")
-      .then(() => console.log("SW OK ✔"))
-      .catch(err => console.log("SW ERROR ❌", err));
-  });
-}
-</script>
 
 </body>
 </html>
