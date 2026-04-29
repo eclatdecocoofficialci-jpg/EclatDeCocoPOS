@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/service-worker.js");
-}
 <meta charset="UTF-8">
 <title>Éclat de Coco POS</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -120,6 +118,17 @@
 </div>
 
 <script src="script.js"></script>
+
+<!-- ✅ SERVICE WORKER PROPRE -->
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js")
+      .then(() => console.log("Service Worker OK ✔"))
+      .catch(err => console.log("SW error ❌", err));
+  });
+}
+</script>
 
 <script>
 function showSection(id){
