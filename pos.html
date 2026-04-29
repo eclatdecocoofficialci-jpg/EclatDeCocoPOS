@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+
 <meta charset="UTF-8">
-<title>Éclat de Coco POS</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>Éclat de Coco POS</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#e91e63">
+
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<!-- STYLE -->
 <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
@@ -14,7 +26,7 @@
   <h1>✨ Éclat de Coco POS</h1>
 </header>
 
-<!-- NAV BAR (BOX STYLE) -->
+<!-- NAV -->
 <nav class="top-nav">
   <a href="pos.html">Dashboard</a>
   <a href="sales.html">Ventes</a>
@@ -25,15 +37,13 @@
   <a href="reports.html">Reports</a>
 </nav>
 
-<!-- MAIN 3 COLUMNS -->
+<!-- MAIN -->
 <div class="pos-container">
 
   <!-- LEFT -->
   <div class="panel left">
-
     <h3>Catégories</h3>
     <div id="category-boxes"></div>
-
   </div>
 
   <!-- CENTER -->
@@ -72,50 +82,60 @@
 
   </div>
 
-<!-- RIGHT INVOICE -->
-<div class="panel right" id="invoice-area">
+  <!-- RIGHT INVOICE -->
+  <div class="panel right" id="invoice-area">
 
-  <div class="invoice-header">
-    <h2>Bienvenue à Éclat de Coco</h2>
-    <p>Abidjan - Côte d’Ivoire</p>
+    <div class="invoice-header">
+      <h2>Bienvenue à Éclat de Coco</h2>
+      <p>Abidjan - Côte d’Ivoire</p>
+    </div>
+
+    <h3>Facture N°: <span id="invoice-id"></span></h3>
+
+    <h4>Client(e)</h4>
+    <input id="client-name" placeholder="Nom">
+    <input id="client-phone" placeholder="Téléphone">
+    <input id="client-address" placeholder="Adresse">
+
+    <h4>Date</h4>
+    <input type="date" id="date">
+
+    <table>
+      <thead>
+        <tr>
+          <th>Produit</th>
+          <th>Qté</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="invoice-body"></tbody>
+    </table>
+
+    <h4>Livraison</h4>
+    <input id="delivery" type="number" placeholder="0">
+
+    <h2 id="grand-total">0 FCFA</h2>
+
+    <button onclick="saveSale()">💾 Sauvegarder</button>
+    <button onclick="printInvoice()">🖨 Imprimer</button>
+
+    <p class="thanks">Merci d’avoir choisi Éclat de Coco 💗</p>
+
   </div>
 
-  <h3>Facture N°: <span id="invoice-id"></span></h3>
-
-  <h4>Client(e)</h4>
-  <input id="client-name" placeholder="Nom">
-  <input id="client-phone" placeholder="Téléphone">
-  <input id="client-address" placeholder="Adresse">
-
-  <h4>Date</h4>
-  <input type="date" id="date">
-
-  <table>
-    <thead>
-      <tr>
-        <th>Produit</th>
-        <th>Qté</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody id="invoice-body"></tbody>
-  </table>
-
-  <h4>Livraison</h4>
-  <input id="delivery" type="number" placeholder="0">
-
-  <h2 id="grand-total">0 FCFA</h2>
-
-  <button onclick="saveSale()">💾 Sauvegarder</button>
-  <button onclick="printInvoice()">🖨 Imprimer</button>
-
-  <p class="thanks">Merci d’avoir choisi Éclat de Coco 💗</p>
-
 </div>
 
-</div>
-
+<!-- JS -->
 <script src="script.js"></script>
+
+<!-- SERVICE WORKER (IMPORTANT FOR PWA) -->
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js");
+  });
+}
+</script>
 
 </body>
 </html>
