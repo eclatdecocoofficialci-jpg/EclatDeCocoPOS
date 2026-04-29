@@ -1,18 +1,17 @@
 let products = JSON.parse(localStorage.getItem("products")) || [
-  {name:"Savon Rose", price:3000, category:"Savon"},
-  {name:"Lotion Vanille", price:5000, category:"Lotion"}
+  {name:"Savon Rose", price:3000, category:"Savon", stock:10},
+  {name:"Lotion Vanille", price:5000, category:"Lotion", stock:8}
 ];
 
 let invoice = [];
 let discount = 0;
 
-/* ================= INVOICE NUMBER ================= */
+/* ================= FACTURE NUMBER ================= */
 function generateInvoiceNumber(){
   let last = localStorage.getItem("invoiceNumber");
   last = last ? parseInt(last) + 1 : 1;
   localStorage.setItem("invoiceNumber", last);
-
-  return "2026" + String(last).padStart(3, "0");
+  return "2026" + String(last).padStart(3,"0");
 }
 
 /* ================= INIT ================= */
@@ -21,9 +20,80 @@ window.addEventListener("DOMContentLoaded", () => {
   const inv = document.getElementById("invoice-id");
   if(inv) inv.innerText = generateInvoiceNumber();
 
-  applyLang();
+  renderCategories();
+  renderProducts();
   renderInvoice();
 });
+
+/* ================= CATEGORIES ================= */
+function renderCategories(){
+  const box = document.getElementById("category-boxes");
+  if(!box) return;
+
+  const cats = [...new Set(products.map(p => p.category))];
+
+  box.innerHTML = "";
+
+  cats.forEach(cat => {
+    let div = document.createElement("div");
+    div.className = "category";
+    div.innerText = cat;
+
+    div.onclick = () => filterByCategory(cat);
+
+    box.appendChild(div);
+  });
+}
+
+function filterByCategory(cat){
+  const list = document.getElementById("product-list");
+  if(!list) return;
+
+  list.innerHTML = "";
+  products
+    .filter(p => p.category === cat)
+    .forEach(renderProduct);
+}
+
+/* ================= PRODUCTS ================= */
+function renderProducts(){
+  const list = document.getElementById("product-list");
+  if(!list) return;
+
+  list.innerHTML = "";
+  products.forEach(renderProduct);
+}
+
+function renderProduct(p){
+  const list = document.getElementById("product-list");
+  if(!list) return;
+
+  let div = document.createElement("div");
+  div.className = "product";
+
+  div.innerHTML = `
+    <strong>${p.name}</strong><br>
+    ${p.price} FCFA<br>
+    Stock: ${p.stock ?? 0}
+  `;
+
+  div.onclick = () => addToCart(p.name, p.price);
+
+  list.appendChild(div);
+}
+
+/* ================= SEARCH ================= */
+function searchProduct(){
+  const val = document.getElementById("search")?.value.toLowerCase();
+  const list = document.getElementById("product-list");
+  if(!list) return;
+
+  list.innerHTML = "";
+
+  products
+    .filter(p => p.name.toLowerCase().includes(val))
+    .forEach(renderProduct);
+}
 
 /* ================= CART ================= */
 function addToCart(name, price){
@@ -42,7 +112,7 @@ function addToCart(name, price){
 /* ================= RENDER INVOICE ================= */
 function renderInvoice(){
 
-  let table = document.getElementById("invoice-body");
+  const table = document.getElementById("invoice-body");
   if(!table) return;
 
   table.innerHTML = "";
@@ -50,11 +120,11 @@ function renderInvoice(){
   let total = 0;
 
   invoice.forEach(i => {
-
     let t = i.qty * i.price;
     total += t;
 
     let tr = document.createElement("tr");
+
     tr.innerHTML = `
       <td>${i.name}</td>
       <td>${i.qty}</td>
@@ -64,43 +134,36 @@ function renderInvoice(){
     table.appendChild(tr);
   });
 
-  let deliveryEl = document.getElementById("delivery");
-  let delivery = deliveryEl ? parseFloat(deliveryEl.value) || 0 : 0;
-
+  let delivery = parseFloat(document.getElementById("delivery")?.value) || 0;
   total += delivery;
 
   let final = total - (total * discount / 100);
 
-  let grand = document.getElementById("grand-total");
+  const grand = document.getElementById("grand-total");
   if(grand){
-    grand.innerText = formatMoney(final);
+    grand.innerText = final + " FCFA";
   }
 }
 
-/* ================= DISCOUNT ================= */
-function setDiscount(p){
-  discount = p;
-  renderInvoice();
-}
-
-/* ================= SAVE SALE (OFFLINE SAFE) ================= */
+/* ================= SAVE SALE ================= */
 function saveSale(){
 
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
-  const data = {
-    id: document.getElementById("invoice-id")?.innerText || "",
-    date: document.getElementById("date")?.value || "",
+  let data = {
+    id: document.getElementById("invoice-id")?.innerText,
+    date: document.getElementById("date")?.value,
     client: {
-      name: document.getElementById("client-name")?.value || "",
-      phone: document.getElementById("client-phone")?.value || "",
-      address: document.getElementById("client-address")?.value || ""
+      name: document.getElementById("client-name")?.value,
+      phone: document.getElementById("client-phone")?.value,
+      address: document.getElementById("client-address")?.value
     },
     cart: invoice,
-    total: document.getElementById("grand-total")?.innerText || "0"
+    total: document.getElementById("grand-total")?.innerText
   };
 
   sales.push(data);
+
   localStorage.setItem("sales", JSON.stringify(sales));
 
   // reset
@@ -110,7 +173,7 @@ function saveSale(){
   const inv = document.getElementById("invoice-id");
   if(inv) inv.innerText = generateInvoiceNumber();
 
-  alert("💗 Facture sauvegardée");
+  alert("💗 Facture sauvegardée avec succès");
 }
 
 /* ================= CALCULATOR ================= */
@@ -130,23 +193,7 @@ function calculate(){
 
   try{
     d.value = Function("return " + d.value)();
-  }catch(e){
+  } catch(e){
     alert("Erreur calcul");
   }
 }
-
-/* ================= DELIVERY LIVE UPDATE ================= */
-const deliveryInput = document.getElementById("delivery");
-if(deliveryInput){
-  deliveryInput.addEventListener("input", renderInvoice);
-}
-
-/* ================= LANGUAGE SYSTEM ================= */
-let lang = localStorage.getItem("lang") ||
-  (navigator.language.startsWith("fr") ? "fr" : "en");
-
-let currency = localStorage.getItem("currency") || "FCFA";
-
-const translations = {
-  fr: {
-    products
