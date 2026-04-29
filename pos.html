@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Éclat de Coco POS</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -70,7 +69,7 @@
 
       <h3>🧾 Facture</h3>
 
-      <h4>N° Facture : <span id="invoice-id"></span></h4>
+      <h4>N° : <span id="invoice-id"></span></h4>
 
       <h4>Client(e)</h4>
       <input id="client-name" placeholder="Nom client(e)">
@@ -97,9 +96,7 @@
       <button onclick="window.print()">🖨 Imprimer</button>
       <button onclick="saveSale()">💾 Sauvegarder</button>
 
-      <p style="text-align:center;">
-        🙏 Merci d’avoir choisi Éclat de Coco 💗
-      </p>
+      <p style="text-align:center;">🙏 Merci Éclat de Coco 💗</p>
 
     </div>
 
@@ -107,8 +104,7 @@
 
   <!-- SALES -->
   <div id="sales" class="section">
-    <h2>📊 Ventes</h2>
-    <iframe src="sales.html"></iframe>
+    <iframe src="sales.html" style="width:100%;height:85vh;border:none;"></iframe>
   </div>
 
   <div id="expenses" class="section"><h2>Dépenses</h2></div>
@@ -127,7 +123,6 @@ function showSection(id){
   document.querySelectorAll(".section").forEach(s=>s.style.display="none");
   document.getElementById(id).style.display="block";
 }
-
 window.onload=()=>showSection("products");
 </script>
 
