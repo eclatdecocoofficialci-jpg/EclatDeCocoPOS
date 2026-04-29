@@ -20,10 +20,9 @@ function generateInvoiceNumber(){
   return "2026" + String(last).padStart(3,"0");
 }
 
-/* ===== SET INVOICE ID ===== */
 document.getElementById("invoice-id").innerText = generateInvoiceNumber();
 
-/* ===== SAVE STATE (IMPORTANT OFFLINE) ===== */
+/* ===== SAVE STATE ===== */
 function saveState(){
   localStorage.setItem("products", JSON.stringify(products));
   localStorage.setItem("invoice", JSON.stringify(invoice));
@@ -51,20 +50,18 @@ function filterProducts(cat){
   let list = document.getElementById("product-list");
   list.innerHTML = "";
 
-  products
-    .filter(p => p.category === cat)
-    .forEach(p=>{
-      let div = document.createElement("div");
-      div.className = "product-box";
+  products.filter(p => p.category === cat).forEach(p=>{
+    let div = document.createElement("div");
+    div.className = "product-box";
 
-      div.innerHTML = `
-        <strong>${p.name}</strong><br>
-        ${p.price} FCFA<br>
-        <button onclick="addToCart('${p.name}',${p.price})">Ajouter</button>
-      `;
+    div.innerHTML = `
+      <strong>${p.name}</strong><br>
+      ${p.price} FCFA<br>
+      <button onclick="addToCart('${p.name}',${p.price})">Ajouter</button>
+    `;
 
-      list.appendChild(div);
-    });
+    list.appendChild(div);
+  });
 }
 
 /* ===== ADD TO CART ===== */
@@ -129,8 +126,8 @@ function clearCalc(){
 
 function calculate(){
   try {
-    let res = eval(document.getElementById("display").value);
-    document.getElementById("display").value = res;
+    document.getElementById("display").value =
+      eval(document.getElementById("display").value);
   } catch {
     document.getElementById("display").value = "Erreur";
   }
@@ -138,30 +135,38 @@ function calculate(){
 
 /* ===== SAVE SALE ===== */
 function saveSale(){
+
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
-  sales.push({
+  let data = {
     id: document.getElementById("invoice-id").innerText,
-    total: document.getElementById("grand-total").innerText,
-    date: new Date().toISOString()
-  });
+    date: document.getElementById("date").value,
+    client: {
+      name: document.getElementById("client-name").value,
+      phone: document.getElementById("client-phone").value,
+      address: document.getElementById("client-address").value
+    },
+    items: invoice,
+    delivery: document.getElementById("delivery").value || 0,
+    total: document.getElementById("grand-total").innerText
+  };
 
+  sales.push(data);
   localStorage.setItem("sales", JSON.stringify(sales));
 
   alert("Facture sauvegardée 💗");
+
+  // reset invoice after save
+  invoice = [];
+  saveState();
+  renderInvoice();
 }
 
-/* ===== RESTORE ON LOAD ===== */
+/* ===== INIT ===== */
 window.onload = function(){
-
   renderCategories();
 
   if(invoice.length > 0){
     renderInvoice();
-  }
-
-  let savedDiscount = localStorage.getItem("discount");
-  if(savedDiscount){
-    discount = parseFloat(savedDiscount);
   }
 };
