@@ -1,6 +1,6 @@
 const CACHE_NAME = "eclat-de-coco-pos-v2";
 
-/* 📦 FILES TO CACHE */
+/* FILES TO CACHE */
 const urlsToCache = [
   "/",
   "/index.html",
@@ -19,59 +19,52 @@ const urlsToCache = [
 /* ================= INSTALL ================= */
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(urlsToCache);
-    })
+    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
   );
-
-  // force new SW activation immediately
   self.skipWaiting();
 });
 
 /* ================= ACTIVATE ================= */
 self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then(keys => {
-      return Promise.all(
+    caches.keys().then(keys =>
+      Promise.all(
         keys.map(key => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
+          if (key !== CACHE_NAME) return caches.delete(key);
         })
-      );
-    })
+      )
+    )
   );
-
   self.clients.claim();
 });
 
-/* ================= FETCH (SMART OFFLINE MODE) ================= */
+/* ================= FETCH ================= */
 self.addEventListener("fetch", event => {
 
-  // HTML pages → network first, fallback offline
-  if (event.request.mode === "navigate") {
+  const request = event.request;
+
+  // NAVIGATION (pages HTML)
+  if (request.mode === "navigate") {
     event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match("/pos.html");
-      })
+      fetch(request).catch(() => caches.match("/pos.html"))
     );
     return;
   }
 
-  // STATIC FILES → cache first (fast POS)
+  // STATIC FILES (CSS / JS / images)
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      return cached || fetch(event.request).then(networkResponse => {
-
-        // update cache dynamically
-        return caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, networkResponse.clone());
-          return networkResponse;
-        });
-
-      }).catch(() => {
-        return cached;
-      });
+    caches.match(request).then(cached => {
+      return (
+        cached ||
+        fetch(request)
+          .then(response => {
+            return caches.open(CACHE_NAME).then(cache => {
+              cache.put(request, response.clone());
+              return response;
+            });
+          })
+          .catch(() => cached)
+      );
     })
   );
 });
