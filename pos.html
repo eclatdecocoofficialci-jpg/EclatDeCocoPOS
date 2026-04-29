@@ -57,27 +57,23 @@
 
 </div>
 
-<!-- ================= RIGHT ================= -->
-<div class="right">
+<!-- ================= RIGHT (FACTURE) ================= -->
+<div class="right" id="invoice-section">
 
-<h3 style="text-align:center;">🧾 Facture</h3>
+<h3>🧾 Facture</h3>
 
-<h4 style="text-align:center;">
-N° Facture : <span id="invoice-id"></span>
-</h4>
+<h4>N° : <span id="invoice-id"></span></h4>
 
-<h2 style="text-align:center;">✨ Bienvenue à Éclat de Coco Officiel</h2>
-<p style="text-align:center;">Abidjan - Côte d'Ivoire</p>
+<h2>✨ Bienvenue à Éclat de Coco Officiel</h2>
+<p>Abidjan - Côte d'Ivoire</p>
 
-<hr>
-
-<h4>📅 Date de facture :</h4>
+<h4>📅 Date :</h4>
 <input type="date" id="invoice-date">
 
 <hr>
 
-<h4>Client(e)</h4>
-<input type="text" id="client-name" placeholder="Nom du client">
+<h4>Client</h4>
+<input type="text" id="client-name" placeholder="Nom">
 <input type="text" id="client-phone" placeholder="Téléphone">
 <input type="text" id="client-address" placeholder="Adresse">
 
@@ -87,7 +83,7 @@ N° Facture : <span id="invoice-id"></span>
 <thead>
 <tr>
   <th>Produit</th>
-  <th>Quantité</th>
+  <th>Qté</th>
   <th>Prix</th>
 </tr>
 </thead>
@@ -97,22 +93,16 @@ N° Facture : <span id="invoice-id"></span>
 <hr>
 
 <h4>Livraison</h4>
-<input type="number" id="delivery" placeholder="Frais de livraison">
-
-<hr>
+<input type="number" id="delivery">
 
 <h2 id="total">0 FCFA</h2>
 
-<div style="display:flex; gap:10px; margin-top:10px;">
+<div class="btn-row">
 <button id="print-btn" class="btn">🖨 Imprimer</button>
 <button id="save-btn" class="btn">💾 Sauvegarder</button>
 </div>
 
-<hr>
-
-<p style="text-align:center;">
-Merci de choisir Éclat de Coco Officiel 💗
-</p>
+<p class="thanks">Merci de choisir Éclat de Coco 💗</p>
 
 </div>
 
