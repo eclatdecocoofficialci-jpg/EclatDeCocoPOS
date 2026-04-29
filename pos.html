@@ -72,46 +72,46 @@
 
   </div>
 
-  <!-- RIGHT INVOICE -->
-  <div class="panel right">
+<!-- RIGHT INVOICE -->
+<div class="panel right" id="invoice-area">
 
-    <div class="invoice-header">
-      <h2>Bienvenue à Éclat de Coco</h2>
-      <p>Abidjan - Côte d’Ivoire</p>
-    </div>
-
-    <h3>Facture N°: <span id="invoice-id"></span></h3>
-
-    <h4>Client(e)</h4>
-    <input id="client-name" placeholder="Nom">
-    <input id="client-phone" placeholder="Téléphone">
-    <input id="client-address" placeholder="Adresse">
-
-    <h4>Date</h4>
-    <input type="date" id="date">
-
-    <table>
-      <thead>
-        <tr>
-          <th>Produit</th>
-          <th>Qté</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      <tbody id="invoice-body"></tbody>
-    </table>
-
-    <h4>Livraison</h4>
-    <input id="delivery" type="number" placeholder="0">
-
-    <h2 id="grand-total">0 FCFA</h2>
-
-    <button onclick="saveSale()">💾 Sauvegarder</button>
-    <button onclick="window.print()">🖨 Imprimer</button>
-
-    <p class="thanks">Merci d’avoir choisi Éclat de Coco 💗</p>
-
+  <div class="invoice-header">
+    <h2>Bienvenue à Éclat de Coco</h2>
+    <p>Abidjan - Côte d’Ivoire</p>
   </div>
+
+  <h3>Facture N°: <span id="invoice-id"></span></h3>
+
+  <h4>Client(e)</h4>
+  <input id="client-name" placeholder="Nom">
+  <input id="client-phone" placeholder="Téléphone">
+  <input id="client-address" placeholder="Adresse">
+
+  <h4>Date</h4>
+  <input type="date" id="date">
+
+  <table>
+    <thead>
+      <tr>
+        <th>Produit</th>
+        <th>Qté</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="invoice-body"></tbody>
+  </table>
+
+  <h4>Livraison</h4>
+  <input id="delivery" type="number" placeholder="0">
+
+  <h2 id="grand-total">0 FCFA</h2>
+
+  <button onclick="saveSale()">💾 Sauvegarder</button>
+  <button onclick="printInvoice()">🖨 Imprimer</button>
+
+  <p class="thanks">Merci d’avoir choisi Éclat de Coco 💗</p>
+
+</div>
 
 </div>
 
