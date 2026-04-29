@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+/* ================= DATA ================= */
 let products = JSON.parse(localStorage.getItem("products")) || [];
 let invoice = [];
 let discount = 0;
@@ -7,8 +8,11 @@ let discount = 0;
 let currentProduct = null;
 let qty = 1;
 
+/* ================= ELEMENTS ================= */
 const search = document.getElementById("search");
 const results = document.getElementById("results");
+
+const grid = document.getElementById("product-grid");
 
 const nameEl = document.getElementById("selected-name");
 const priceEl = document.getElementById("selected-price");
@@ -17,13 +21,22 @@ const qtyEl = document.getElementById("qty");
 const invoiceEl = document.getElementById("invoice");
 const totalEl = document.getElementById("total");
 
-/* SEARCH */
+const display = document.getElementById("display");
+
+/* ================= INIT ================= */
+renderProductBoxes();
+render();
+
+/* ================= SEARCH ================= */
+if(search){
 search.addEventListener("input", () => {
   results.innerHTML = "";
 
+  let val = search.value.toLowerCase();
+
   let found = products.filter(p =>
-    p.name.toLowerCase().includes(search.value.toLowerCase()) ||
-    p.code.toLowerCase().includes(search.value.toLowerCase())
+    p.name.toLowerCase().includes(val) ||
+    p.code.toLowerCase().includes(val)
   );
 
   found.forEach(p => {
@@ -36,8 +49,30 @@ search.addEventListener("input", () => {
     results.appendChild(div);
   });
 });
+}
 
-/* SELECT */
+/* ================= PRODUCT BOXES ================= */
+function renderProductBoxes(){
+  if(!grid) return;
+
+  grid.innerHTML = "";
+
+  products.forEach(p => {
+    let box = document.createElement("div");
+    box.className = "result";
+
+    box.innerHTML = `
+      <strong>${p.name}</strong><br>
+      ${p.price} FCFA
+    `;
+
+    box.onclick = () => selectProduct(p);
+
+    grid.appendChild(box);
+  });
+}
+
+/* ================= SELECT PRODUCT ================= */
 function selectProduct(p){
   currentProduct = p;
   qty = 1;
@@ -47,6 +82,7 @@ function selectProduct(p){
   qtyEl.innerText = qty;
 }
 
+/* ================= QTY ================= */
 window.plusQty = () => {
   qty++;
   qtyEl.innerText = qty;
@@ -59,6 +95,7 @@ window.minusQty = () => {
   }
 };
 
+/* ================= ADD TO CART ================= */
 window.addToCart = () => {
   if(!currentProduct) return;
 
@@ -84,7 +121,10 @@ window.addToCart = () => {
   render();
 };
 
+/* ================= INVOICE ================= */
 function render(){
+  if(!invoiceEl || !totalEl) return;
+
   invoiceEl.innerHTML = "";
 
   let total = 0;
@@ -103,12 +143,30 @@ function render(){
   });
 
   let final = total - (total * discount / 100);
-  totalEl.innerText = final + " FCFA";
+  totalEl.innerText = final.toFixed(0) + " FCFA";
 }
 
+/* ================= DISCOUNT ================= */
 window.setDiscount = (p) => {
   discount = p;
   render();
 };
+
+/* ================= CALCULATOR ================= */
+if(document.querySelectorAll(".calc button")){
+document.querySelectorAll(".calc button").forEach(btn=>{
+  btn.addEventListener("click", () => {
+    if(!display) return;
+
+    let v = btn.innerText;
+
+    if(v === "C"){
+      display.value = "";
+    } else {
+      display.value += v;
+    }
+  });
+});
+}
 
 });
