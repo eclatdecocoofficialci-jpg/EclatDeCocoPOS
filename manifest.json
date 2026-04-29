@@ -3,16 +3,16 @@
   "short_name": "EclatPOS",
   "description": "Point de vente professionnel Éclat de Coco, gestion produits, ventes, inventaire et factures.",
 
-  "start_url": "./pos.html",
-  "scope": "./",
+  "start_url": "/pos.html",
+  "scope": "/",
 
   "display": "standalone",
-  "orientation": "landscape",
+  "orientation": "landscape-primary",
 
   "background_color": "#fff5fb",
   "theme_color": "#e91e63",
 
-  "lang": "fr",
+  "lang": "fr-FR",
 
   "icons": [
     {
