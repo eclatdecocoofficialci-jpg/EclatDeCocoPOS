@@ -1,109 +1,55 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Sales | Éclat de Coco</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<meta charset="UTF-8">
+<title>Sales</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<nav>
-  <h2>Éclat de Coco POS</h2>
-  <div class="nav-buttons">
-    <a href="index.html">POS</a>
-    <a class="active" href="sales.html">Sales</a>
-    <a href="products.html">Products</a>
-    <a href="inventory.html">Inventory</a>
-    <a href="expenses.html">Expenses</a>
-    <a href="orders.html">Orders</a>
-    <a href="costumers.html">Costumers</a>
-  </div>
-</nav>
+<h2>📊 Historique des ventes</h2>
 
-<main style="padding:20px;">
-  <h1>Sales Invoices</h1>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Date</th>
+<th>Client(e)</th>
+<th>Téléphone</th>
+<th>Adresse</th>
+<th>Total</th>
+<th>Détails</th>
+</tr>
+</thead>
 
-  <table border="1" width="100%" cellpadding="8">
-    <thead>
-      <tr>
-        <th>ID Facture</th>
-        <th>Date</th>
-        <th>Total</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-
-    <tbody id="sales-table">
-      <tr>
-        <td colspan="4">Aucune vente enregistrée</td>
-      </tr>
-    </tbody>
-  </table>
-</main>
-
-<footer>
-  2025 | Éclat de Coco Official | All Rights Reserved
-</footer>
+<tbody id="sales-table"></tbody>
+</table>
 
 <script>
-  // ===== LOAD SALES =====
-  function loadSales() {
-    const sales = JSON.parse(localStorage.getItem("sales")) || [];
-    const tbody = document.getElementById("sales-table");
+function loadSales(){
+  let sales=JSON.parse(localStorage.getItem("sales"))||[];
+  let table=document.getElementById("sales-table");
+  table.innerHTML="";
 
-    tbody.innerHTML = "";
+  sales.forEach(s=>{
+    let tr=document.createElement("tr");
 
-    if (sales.length === 0) {
-      tbody.innerHTML = "<tr><td colspan='4'>Aucune vente enregistrée</td></tr>";
-      return;
-    }
+    tr.innerHTML=`
+      <td>${s.id}</td>
+      <td>${s.date}</td>
+      <td>${s.client.name}</td>
+      <td>${s.client.phone}</td>
+      <td>${s.client.address}</td>
+      <td>${s.total}</td>
+      <td><button onclick='alert(JSON.stringify(${JSON.stringify(s.cart)}))'>Voir</button></td>
+    `;
 
-    sales.forEach(sale => {
-      const tr = document.createElement("tr");
+    table.appendChild(tr);
+  });
+}
 
-      tr.innerHTML = `
-        <td>${sale.id}</td>
-        <td>${sale.date}</td>
-        <td>${Number(sale.total || 0).toLocaleString()} FCFA</td>
-        <td><button onclick="viewInvoice('${sale.id}')">Voir</button></td>
-      `;
-
-      tbody.appendChild(tr);
-    });
-  }
-
-  // ===== VIEW INVOICE =====
-  function viewInvoice(id) {
-    const sales = JSON.parse(localStorage.getItem("sales")) || [];
-    const invoice = sales.find(s => s.id === id);
-
-    if (!invoice) {
-      alert("Facture introuvable");
-      return;
-    }
-
-    let itemsText = "";
-
-    if (invoice.cart && invoice.cart.length > 0) {
-      invoice.cart.forEach(item => {
-        itemsText += `${item.name} x${item.qty} = ${item.price * item.qty} FCFA\n`;
-      });
-    }
-
-    alert(
-      `FACTURE: ${invoice.id}\n` +
-      `DATE: ${invoice.date}\n\n` +
-      itemsText +
-      `\nLIVRAISON: ${invoice.delivery || 0} FCFA\n` +
-      `TOTAL: ${invoice.total || 0} FCFA`
-    );
-  }
-
-  // ===== RUN ON PAGE LOAD =====
-  window.addEventListener("DOMContentLoaded", loadSales);
+window.onload=loadSales;
 </script>
 
 </body>
