@@ -23,13 +23,13 @@
 <h3>📦 Catégories</h3>
 <div id="category-boxes"></div>
 
-<h3>🛍 Produits</h3>
-<div id="product-grid"></div>
-
 </div>
 
 <!-- ================= MIDDLE ================= -->
 <div class="middle">
+
+<h3>🛍 Produits</h3>
+<div class="products-grid" id="products-list"></div>
 
 <h3>🧮 Calculatrice</h3>
 <input type="text" id="display" readonly>
@@ -41,6 +41,7 @@
   <button>0</button><button>C</button>
 </div>
 
+<!-- PRODUIT SELECTION -->
 <div class="selected-box">
 
 <h3 id="selected-name">-</h3>
@@ -57,7 +58,7 @@
 
 </div>
 
-<!-- ================= RIGHT (FACTURE) ================= -->
+<!-- ================= RIGHT ================= -->
 <div class="right" id="invoice-section">
 
 <h3>🧾 Facture</h3>
@@ -67,10 +68,10 @@
 <h2>✨ Bienvenue à Éclat de Coco Officiel</h2>
 <p>Abidjan - Côte d'Ivoire</p>
 
+<hr>
+
 <h4>📅 Date :</h4>
 <input type="date" id="invoice-date">
-
-<hr>
 
 <h4>Client</h4>
 <input type="text" id="client-name" placeholder="Nom">
@@ -92,8 +93,8 @@
 
 <hr>
 
-<h4>Livraison</h4>
-<input type="number" id="delivery">
+<h4>🚚 Livraison</h4>
+<input type="number" id="delivery" placeholder="Frais livraison">
 
 <h2 id="total">0 FCFA</h2>
 
@@ -102,7 +103,11 @@
 <button id="save-btn" class="btn">💾 Sauvegarder</button>
 </div>
 
-<p class="thanks">Merci de choisir Éclat de Coco 💗</p>
+<hr>
+
+<p style="text-align:center;">
+Merci de choisir Éclat de Coco 💗
+</p>
 
 </div>
 
