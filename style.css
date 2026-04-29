@@ -5,14 +5,14 @@ body {
   color: #333;
 }
 
-/* HEADER */
+/* ================= HEADER ================= */
 header {
   padding: 12px 20px;
   background: #e91e63;
   color: white;
 }
 
-/* MAIN LAYOUT */
+/* ================= MAIN POS LAYOUT ================= */
 .pos-container {
   display: flex;
   height: calc(100vh - 70px);
@@ -21,7 +21,7 @@ header {
   box-sizing: border-box;
 }
 
-/* PANELS */
+/* ================= PANELS ================= */
 .left-panel {
   width: 18%;
   background: white;
@@ -46,7 +46,7 @@ header {
   overflow-y: auto;
 }
 
-/* CATEGORY */
+/* ================= CATEGORY ================= */
 .category {
   width: 100%;
   padding: 12px;
@@ -54,8 +54,8 @@ header {
   border-radius: 10px;
   background: #f8bbd0;
   text-align: center;
-  cursor: pointer;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .category:hover {
@@ -63,7 +63,7 @@ header {
   color: white;
 }
 
-/* PRODUCTS */
+/* ================= PRODUCTS ================= */
 #product-list {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -75,13 +75,29 @@ header {
   padding: 10px;
   border-radius: 12px;
   text-align: center;
+  cursor: pointer;
 }
 
-/* CALCULATOR */
+.product-box button {
+  margin-top: 5px;
+  padding: 6px;
+  border: none;
+  border-radius: 8px;
+  background: #f8bbd0;
+  cursor: pointer;
+}
+
+.product-box button:hover {
+  background: #e91e63;
+  color: white;
+}
+
+/* ================= CALCULATOR ================= */
 .calc {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
+  margin-top: 10px;
 }
 
 .calc button {
@@ -90,18 +106,25 @@ header {
   border-radius: 8px;
   background: #f8bbd0;
   font-size: 16px;
+  cursor: pointer;
 }
 
-/* INPUTS */
+.calc button:hover {
+  background: #e91e63;
+  color: white;
+}
+
+/* ================= INPUTS ================= */
 input {
   width: 100%;
   padding: 10px;
   margin: 5px 0;
   border-radius: 10px;
   border: 1px solid #ddd;
+  box-sizing: border-box;
 }
 
-/* TABLE */
+/* ================= TABLE FACTURE ================= */
 .right-panel table {
   width: 100%;
   border-collapse: collapse;
@@ -111,6 +134,7 @@ input {
 .right-panel th {
   background: #f8bbd0;
   padding: 8px;
+  color: #880e4f;
 }
 
 .right-panel td {
@@ -119,15 +143,21 @@ input {
   border-bottom: 1px solid #fce4ec;
 }
 
-/* TOTAL */
+/* ================= TOTAL ================= */
 #grand-total {
   font-size: 22px;
   text-align: center;
   margin-top: 10px;
   color: #e91e63;
+  font-weight: bold;
 }
 
-/* PRINT ONLY FACTURE */
+/* ================= BUTTONS ================= */
+button {
+  cursor: pointer;
+}
+
+/* ================= PRINT ONLY FACTURE ================= */
 @media print {
   body * {
     visibility: hidden;
@@ -144,16 +174,15 @@ input {
     width: 100%;
   }
 
-  header, .left-panel, .center-panel {
-    display: none !important;
-  }
-
+  header,
+  .left-panel,
+  .center-panel,
   button {
     display: none !important;
   }
 }
 
-/* RESPONSIVE IPAD */
+/* ================= IPAD RESPONSIVE ================= */
 @media (max-width: 1024px) {
   .pos-container {
     flex-direction: column;
@@ -164,5 +193,9 @@ input {
   .center-panel,
   .right-panel {
     width: 100%;
+  }
+
+  #product-list {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
