@@ -1,201 +1,66 @@
-body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(90deg, #fff5fb 0%, #ffe6ef 50%, #fff5fb 100%);
-  color: #333;
+body{
+  margin:0;
+  font-family:Poppins;
+  background:#fff0f5;
 }
 
-/* ================= HEADER ================= */
-header {
-  padding: 12px 20px;
-  background: #e91e63;
-  color: white;
+header{
+  background:#e91e63;
+  color:white;
+  padding:10px;
 }
 
-/* ================= MAIN POS LAYOUT ================= */
-.pos-container {
-  display: flex;
-  height: calc(100vh - 70px);
-  gap: 10px;
-  padding: 10px;
-  box-sizing: border-box;
+.main-nav{
+  display:flex;
+  gap:5px;
+  padding:10px;
+  background:white;
 }
 
-/* ================= PANELS ================= */
-.left-panel {
-  width: 18%;
-  background: white;
-  padding: 10px;
-  border-radius: 15px;
-  overflow-y: auto;
+.main-nav button{
+  padding:8px;
+  border:none;
+  background:#f8bbd0;
+  border-radius:8px;
 }
 
-.center-panel {
-  width: 52%;
-  background: white;
-  padding: 10px;
-  border-radius: 15px;
-  overflow-y: auto;
+.pos-container{
+  display:flex;
+  height:85vh;
+  gap:10px;
+  padding:10px;
 }
 
-.right-panel {
-  width: 30%;
-  background: white;
-  padding: 10px;
-  border-radius: 15px;
-  overflow-y: auto;
+.left-panel,.center-panel,.right-panel{
+  background:white;
+  padding:10px;
+  border-radius:10px;
+  overflow:auto;
 }
 
-/* ================= CATEGORY ================= */
-.category {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 8px;
-  border-radius: 10px;
-  background: #f8bbd0;
-  text-align: center;
-  font-weight: bold;
-  cursor: pointer;
+.left-panel{width:18%;}
+.center-panel{width:52%;}
+.right-panel{width:30%;}
+
+#product-list{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
 }
 
-.category:hover {
-  background: #e91e63;
-  color: white;
+.calc{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
 }
 
-/* ================= PRODUCTS ================= */
-#product-list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+.calc button{
+  padding:10px;
+  background:#f8bbd0;
+  border:none;
+  border-radius:6px;
 }
 
-.product-box {
-  background: #ffe6ef;
-  padding: 10px;
-  border-radius: 12px;
-  text-align: center;
-  cursor: pointer;
-}
-
-.product-box button {
-  margin-top: 5px;
-  padding: 6px;
-  border: none;
-  border-radius: 8px;
-  background: #f8bbd0;
-  cursor: pointer;
-}
-
-.product-box button:hover {
-  background: #e91e63;
-  color: white;
-}
-
-/* ================= CALCULATOR ================= */
-.calc {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-  margin-top: 10px;
-}
-
-.calc button {
-  padding: 14px;
-  border: none;
-  border-radius: 8px;
-  background: #f8bbd0;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.calc button:hover {
-  background: #e91e63;
-  color: white;
-}
-
-/* ================= INPUTS ================= */
-input {
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  box-sizing: border-box;
-}
-
-/* ================= TABLE FACTURE ================= */
-.right-panel table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-.right-panel th {
-  background: #f8bbd0;
-  padding: 8px;
-  color: #880e4f;
-}
-
-.right-panel td {
-  text-align: center;
-  padding: 6px;
-  border-bottom: 1px solid #fce4ec;
-}
-
-/* ================= TOTAL ================= */
-#grand-total {
-  font-size: 22px;
-  text-align: center;
-  margin-top: 10px;
-  color: #e91e63;
-  font-weight: bold;
-}
-
-/* ================= BUTTONS ================= */
-button {
-  cursor: pointer;
-}
-
-/* ================= PRINT ONLY FACTURE ================= */
-@media print {
-  body * {
-    visibility: hidden;
-  }
-
-  .right-panel, .right-panel * {
-    visibility: visible;
-  }
-
-  .right-panel {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-  }
-
-  header,
-  .left-panel,
-  .center-panel,
-  button {
-    display: none !important;
-  }
-}
-
-/* ================= IPAD RESPONSIVE ================= */
-@media (max-width: 1024px) {
-  .pos-container {
-    flex-direction: column;
-    height: auto;
-  }
-
-  .left-panel,
-  .center-panel,
-  .right-panel {
-    width: 100%;
-  }
-
-  #product-list {
-    grid-template-columns: repeat(2, 1fr);
-  }
+@media(max-width:900px){
+  .pos-container{flex-direction:column;height:auto;}
 }
