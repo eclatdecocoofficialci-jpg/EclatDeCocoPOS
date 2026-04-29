@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Éclat de Coco - Home</title>
+<title>Éclat de Coco Official</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
@@ -11,67 +11,113 @@
 body{
   margin:0;
   font-family:Poppins;
-  background: linear-gradient(90deg,#fff5fb,#ffe6ef,#fff5fb);
-  color:#333;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  /* MARBLE LUXURY BACKGROUND */
+  background-image: url("https://images.unsplash.com/photo-1523413651479-597eb2da0ad6");
+  background-size:cover;
+  background-position:center;
 }
 
-/* HEADER */
-header{
-  background:#f06292;
-  color:white;
-  padding:15px;
-  text-align:center;
+/* soft pink overlay */
+.overlay{
+  position:absolute;
+  width:100%;
+  height:100%;
+  background:rgba(255, 192, 203, 0.25);
 }
 
-/* MENU GRID */
-.menu{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:15px;
-  padding:20px;
-}
-
-/* CARD */
+/* CENTER CARD */
 .card{
-  background:white;
-  padding:20px;
-  border-radius:15px;
+  position:relative;
+  background:rgba(255,255,255,0.88);
+  padding:40px;
+  border-radius:20px;
   text-align:center;
-  box-shadow:0 4px 10px rgba(233,30,99,0.1);
+  width:320px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  backdrop-filter: blur(6px);
+}
+
+h1{
+  color:#e91e63;
+  font-size:22px;
+  margin-bottom:10px;
+}
+
+p{
+  color:#555;
+  font-size:14px;
+}
+
+/* INPUT */
+input{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:2px solid #f8bbd0;
+  margin-top:15px;
+  text-align:center;
+  font-size:16px;
+  outline:none;
+}
+
+/* BUTTON */
+button{
+  margin-top:15px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#e91e63;
+  color:white;
+  font-weight:bold;
   cursor:pointer;
   transition:0.2s;
 }
 
-.card:hover{
-  background:#ffe6ef;
-  transform:scale(1.03);
+button:hover{
+  background:#c2185b;
 }
 
-/* BUTTON TEXT */
-a{
-  text-decoration:none;
-  color:#e91e63;
-  font-weight:600;
+/* small text */
+.small{
+  font-size:12px;
+  margin-top:10px;
+  color:#777;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>✨ Éclat de Coco Officiel</h1>
-  <p>Gestion Business - POS System</p>
-</header>
+<div class="overlay"></div>
 
-<div class="menu">
+<div class="card">
+  <h1>✨ Welcome to Éclat de Coco Official</h1>
+  <p>Luxury Business Management System</p>
 
-  <div class="card">
-    <a href="pos.html">🧾 Open POS</a>
-  </div>
+  <input type="password" id="code" placeholder="Enter Access Code">
 
+  <button onclick="enterApp()">Enter POS</button>
 
-
+  <div class="small">Secure access required</div>
 </div>
+
+<script>
+function enterApp(){
+  const code = document.getElementById("code").value;
+
+  if(code === "29121509"){
+    window.location.href = "pos.html";
+  } else {
+    alert("Incorrect code ❌");
+  }
+}
+</script>
 
 </body>
 </html>
