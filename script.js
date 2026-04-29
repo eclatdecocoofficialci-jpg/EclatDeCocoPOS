@@ -3,22 +3,32 @@ let products = JSON.parse(localStorage.getItem("products")) || [
   {name:"Lotion Vanille", price:5000, category:"Lotion"}
 ];
 
-let invoice = [];
-let discount = 0;
+let invoice = JSON.parse(localStorage.getItem("invoice")) || [];
+let discount = parseFloat(localStorage.getItem("discount")) || 0;
 
 /* ===== INVOICE NUMBER ===== */
 function generateInvoiceNumber(){
   let last = localStorage.getItem("invoiceNumber");
 
-  if(!last){ last = 1; }
-  else { last = parseInt(last) + 1; }
+  if(!last){
+    last = 1;
+  } else {
+    last = parseInt(last) + 1;
+  }
 
   localStorage.setItem("invoiceNumber", last);
-
   return "2026" + String(last).padStart(3,"0");
 }
 
+/* ===== SET INVOICE ID ===== */
 document.getElementById("invoice-id").innerText = generateInvoiceNumber();
+
+/* ===== SAVE STATE (IMPORTANT OFFLINE) ===== */
+function saveState(){
+  localStorage.setItem("products", JSON.stringify(products));
+  localStorage.setItem("invoice", JSON.stringify(invoice));
+  localStorage.setItem("discount", discount);
+}
 
 /* ===== CATEGORIES ===== */
 function renderCategories(){
@@ -41,31 +51,39 @@ function filterProducts(cat){
   let list = document.getElementById("product-list");
   list.innerHTML = "";
 
-  products.filter(p=>p.category===cat).forEach(p=>{
-    let div = document.createElement("div");
+  products
+    .filter(p => p.category === cat)
+    .forEach(p=>{
+      let div = document.createElement("div");
+      div.className = "product-box";
 
-    div.innerHTML = `
-      ${p.name} - ${p.price} FCFA
-      <button onclick="addToCart('${p.name}',${p.price})">+</button>
-    `;
+      div.innerHTML = `
+        <strong>${p.name}</strong><br>
+        ${p.price} FCFA<br>
+        <button onclick="addToCart('${p.name}',${p.price})">Ajouter</button>
+      `;
 
-    list.appendChild(div);
-  });
+      list.appendChild(div);
+    });
 }
 
 /* ===== ADD TO CART ===== */
 function addToCart(name, price){
-  let item = invoice.find(i=>i.name===name);
+  let item = invoice.find(i => i.name === name);
 
-  if(item){ item.qty++; }
-  else{ invoice.push({name,price,qty:1}); }
+  if(item){
+    item.qty++;
+  } else {
+    invoice.push({name, price, qty:1});
+  }
 
+  saveState();
   renderInvoice();
 }
 
-/* ===== RENDER ===== */
+/* ===== RENDER INVOICE ===== */
 function renderInvoice(){
-  let table = document.getElementById("invoice");
+  let table = document.getElementById("invoice-body");
   table.innerHTML = "";
 
   let total = 0;
@@ -75,22 +93,28 @@ function renderInvoice(){
     total += t;
 
     let tr = document.createElement("tr");
-    tr.innerHTML = `<td>${i.name}</td><td>${i.qty}</td><td>${t}</td>`;
+    tr.innerHTML = `
+      <td>${i.name}</td>
+      <td>${i.qty}</td>
+      <td>${t}</td>
+    `;
     table.appendChild(tr);
   });
 
   let delivery = parseFloat(document.getElementById("delivery").value) || 0;
-
   total += delivery;
 
   let final = total - (total * discount / 100);
 
-  document.getElementById("total").innerText = final + " FCFA";
+  document.getElementById("grand-total").innerText = final + " FCFA";
+
+  saveState();
 }
 
 /* ===== DISCOUNT ===== */
 function setDiscount(p){
   discount = p;
+  saveState();
   renderInvoice();
 }
 
@@ -104,8 +128,12 @@ function clearCalc(){
 }
 
 function calculate(){
-  let res = eval(document.getElementById("display").value);
-  document.getElementById("display").value = res;
+  try {
+    let res = eval(document.getElementById("display").value);
+    document.getElementById("display").value = res;
+  } catch {
+    document.getElementById("display").value = "Erreur";
+  }
 }
 
 /* ===== SAVE SALE ===== */
@@ -114,7 +142,8 @@ function saveSale(){
 
   sales.push({
     id: document.getElementById("invoice-id").innerText,
-    total: document.getElementById("total").innerText
+    total: document.getElementById("grand-total").innerText,
+    date: new Date().toISOString()
   });
 
   localStorage.setItem("sales", JSON.stringify(sales));
@@ -122,5 +151,17 @@ function saveSale(){
   alert("Facture sauvegardée 💗");
 }
 
-/* ===== INIT ===== */
-renderCategories();
+/* ===== RESTORE ON LOAD ===== */
+window.onload = function(){
+
+  renderCategories();
+
+  if(invoice.length > 0){
+    renderInvoice();
+  }
+
+  let savedDiscount = localStorage.getItem("discount");
+  if(savedDiscount){
+    discount = parseFloat(savedDiscount);
+  }
+};
