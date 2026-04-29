@@ -1,109 +1,122 @@
-@media screen and (min-width: 900px) {
-
-  body{
-    height:100vh;
-    overflow:hidden;
-    margin:0;
-    font-family:Poppins;
-    background:#fff0f5;
-  }
-
-  header{
-    background:#e91e63;
-    color:white;
-    padding:10px;
-  }
-
-  .pos-container{
-    display:flex;
-    flex-direction:row;
-    height:92vh;
-    gap:12px;
-    padding:12px;
-  }
-
-  /* LEFT */
-  .left-panel{
-    width:18%;
-    min-width:220px;
-    height:100%;
-    background: linear-gradient(180deg, #ffe6ef, #fff5fb);
-    border-radius:15px;
-    padding:15px;
-    overflow:auto;
-  }
-
-  /* CENTER */
-  .center-panel{
-    width:52%;
-    min-width:400px;
-    height:100%;
-    background:white;
-    border-radius:15px;
-    padding:15px;
-    overflow:auto;
-  }
-
-  /* RIGHT */
-  .right-panel{
-    width:30%;
-    min-width:320px;
-    height:100%;
-    background: linear-gradient(180deg, #f8bbd0, #ffe6ef);
-    border-radius:15px;
-    padding:15px;
-    overflow:auto;
-  }
-
-  /* PRODUCTS GRID */
-  #product-list{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:12px;
-  }
-
-  /* CALCULATOR */
-  .calc{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:8px;
-  }
-
-  .calc button{
-    padding:14px;
-    background:#f8bbd0;
-    border:none;
-    border-radius:6px;
-  }
-
-  /* FACTURE */
-  #grand-total{
-    font-size:24px;
-    font-weight:bold;
-    color:#e91e63;
-    text-align:center;
-    background:white;
-    padding:10px;
-    border-radius:10px;
-  }
-
-  .right-panel table{
-    font-size:14px;
-    background:white;
-    border-radius:10px;
-  }
-
-  h3{
-    font-size:18px;
-    color:#e91e63;
-  }
-
-  input, button{
-    font-size:14px;
-  }
-
+body{
+  margin:0;
+  font-family:Poppins;
+  background:#fff0f5;
 }
 
-* {
-  box-sizing: border-box;
+/* HEADER */
+header{
+  background:#e91e63;
+  color:white;
+  padding:10px;
+  text-align:center;
+}
+
+/* NAV */
+.top-nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:10px;
+  background:white;
+}
+
+.top-nav a{
+  background:#f8bbd0;
+  padding:8px 12px;
+  border-radius:10px;
+  text-decoration:none;
+  color:black;
+}
+
+/* MAIN LAYOUT */
+.pos-container{
+  display:flex;
+  height:90vh;
+  gap:10px;
+  padding:10px;
+}
+
+/* PANELS */
+.panel{
+  background:white;
+  border-radius:12px;
+  padding:10px;
+  overflow:auto;
+}
+
+.left{width:18%;}
+.center{width:52%;}
+.right{width:30%;}
+
+/* CATEGORIES BUTTONS */
+#category-boxes{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.category{
+  background:linear-gradient(135deg,#f8bbd0,#ffe6ef);
+  padding:18px;
+  border-radius:14px;
+  text-align:center;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.2s;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+
+.category:hover{
+  transform:scale(1.03);
+  background:#f06292;
+  color:white;
+}
+
+/* PRODUCTS */
+#product-list{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+}
+
+.product{
+  background:#ffe6ef;
+  padding:10px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+/* CALC */
+.calc{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+}
+
+.calc button{
+  padding:10px;
+  background:#f8bbd0;
+  border:none;
+  border-radius:8px;
+}
+
+/* FACTURE */
+.invoice-header{
+  text-align:center;
+}
+
+#grand-total{
+  text-align:center;
+  background:#fff;
+  padding:10px;
+  border-radius:10px;
+  color:#e91e63;
+  font-weight:bold;
+}
+
+/* IPAD LANDSCAPE FIX */
+@media(min-width:900px){
+  body{overflow:hidden;}
+  .pos-container{height:95vh;}
 }
