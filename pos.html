@@ -55,34 +55,69 @@
 
 </div>
 
+
+<!-- ================= RIGHT ================= -->
 <!-- ================= RIGHT ================= -->
 <div class="right">
 
-<h3>🧾 Facture</h3>
+<h3 style="text-align:center;">🧾 Facture</h3>
 
+<h2 style="text-align:center;">✨ Bienvenue à Éclat de Coco Officiel</h2>
+<p style="text-align:center;">Abidjan - Côte d'Ivoire</p>
+
+<!-- DATE UNIQUE (CORRIGÉE) -->
+<h4>📅 Date de facture :</h4>
+<input type="date" id="invoice-date">
+
+<hr>
+
+<!-- CLIENT INFOS -->
+<h4>👤 Client</h4>
+<input type="text" id="client-name" placeholder="Nom du client">
+<input type="text" id="client-phone" placeholder="Téléphone">
+<input type="text" id="client-address" placeholder="Adresse">
+
+<hr>
+
+<!-- FACTURE TABLE -->
 <table>
 <thead>
 <tr>
-<th>Produit</th>
-<th>Qty</th>
-<th>Total</th>
+  <th>Produit</th>
+  <th>Qty</th>
+  <th>Total</th>
 </tr>
 </thead>
 <tbody id="invoice"></tbody>
 </table>
 
-<div class="discount">
-<button onclick="setDiscount(0)">0%</button>
-<button onclick="setDiscount(10)">10%</button>
-<button onclick="setDiscount(20)">20%</button>
-<button onclick="setDiscount(50)">50%</button>
+<hr>
+
+<!-- LIVRAISON -->
+<h4>🚚 Livraison</h4>
+<input type="number" id="delivery" placeholder="Frais de livraison">
+
+<hr>
+
+<!-- TOTAL -->
+<h2 id="total">0 FCFA</h2>
+
+<!-- BOUTONS -->
+<div style="display:flex; gap:10px; margin-top:10px;">
+
+<button id="print-btn" class="btn">🖨 Imprimer</button>
+<button id="save-btn" class="btn">💾 Sauvegarder</button>
+
 </div>
 
-<div class="total" id="total">0 FCFA</div>
+<hr>
+
+<p style="text-align:center;">
+Merci de choisir Éclat de Coco Officiel 💗
+</p>
 
 </div>
 
-</div>
 
 <script src="script.js"></script>
 
