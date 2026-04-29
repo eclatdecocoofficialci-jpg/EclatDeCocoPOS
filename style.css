@@ -1,3 +1,4 @@
+/* ================= GENERAL ================= */
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
@@ -15,7 +16,21 @@ header {
   color: white;
 }
 
-/* ================= POS LAYOUT ================= */
+.main-nav a {
+  margin-left: 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #f8bbd0;
+  color: black;
+  text-decoration: none;
+}
+
+.main-nav a:hover {
+  background: #ff80ab;
+  color: white;
+}
+
+/* ================= POS LAYOUT (IMPORTANT) ================= */
 .pos-container {
   display: flex;
   gap: 15px;
@@ -23,23 +38,22 @@ header {
   align-items: flex-start;
 }
 
-/* PANELS FIXES */
+/* ================= PANELS ================= */
 .left-panel,
 .center-panel,
 .right-panel {
   background: white;
   padding: 12px;
   border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(233,30,99,0.08);
-  min-height: 85vh;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
-/* WIDTH CONTROL */
+/* widths */
 .left-panel { flex: 1; }
 .center-panel { flex: 2; }
 .right-panel { flex: 1.5; }
 
-/* ================= LEFT ================= */
+/* ================= CATEGORY BUTTONS ================= */
 .left-panel button {
   width: 100%;
   padding: 10px;
@@ -55,35 +69,25 @@ header {
   color: white;
 }
 
-/* ================= PRODUCTS GRID ================= */
+/* ================= PRODUCT GRID ================= */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
 }
 
-.product-box,
-.products-grid div {
+.product-box {
   background: #ffe6ef;
   padding: 10px;
   border-radius: 12px;
   cursor: pointer;
 }
 
-.product-box:hover,
-.products-grid div:hover {
+.product-box:hover {
   background: #f8bbd0;
 }
 
 /* ================= CALCULATOR ================= */
-.calc-display {
-  width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  border: 2px solid #f8bbd0;
-  margin-bottom: 10px;
-}
-
 .calc-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -95,24 +99,9 @@ header {
   border: none;
   border-radius: 8px;
   background: #f8bbd0;
-  cursor: pointer;
 }
 
-/* ================= FACTURE ================= */
-.right-panel h3 {
-  text-align: center;
-  color: #e91e63;
-}
-
-.right-panel input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 6px;
-  border-radius: 8px;
-  border: 2px solid #f8bbd0;
-}
-
-/* TABLE */
+/* ================= FACTURE TABLE ================= */
 .right-panel table {
   width: 100%;
   border-collapse: collapse;
@@ -130,22 +119,13 @@ header {
   border-bottom: 1px solid #fce4ec;
 }
 
-/* TOTAL */
-#total,
-#total-final {
-  font-size: 18px;
-  font-weight: bold;
-  color: #e91e63;
-}
-
-/* ================= BUTTON FIX (IMPORTANT) ================= */
+/* ================= BUTTONS ================= */
 .btn {
   padding: 10px;
-  border: none;
   border-radius: 10px;
+  border: none;
   background: #f8bbd0;
   cursor: pointer;
-  font-weight: 500;
 }
 
 .btn:hover {
@@ -153,19 +133,9 @@ header {
   color: white;
 }
 
-/* IMPORTANT: ne pas casser tous les buttons */
-button:not(.calc-grid button):not(.btn) {
-  padding: 8px;
-  border-radius: 8px;
-}
-
 /* ================= RESPONSIVE ================= */
 @media (max-width: 900px) {
   .pos-container {
     flex-direction: column;
-  }
-
-  .products-grid {
-    grid-template-columns: 1fr;
   }
 }
