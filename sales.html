@@ -2,54 +2,95 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Sales</title>
+<title>Ventes | Éclat de Coco</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<h2>📊 Historique des ventes</h2>
+<header>
+  <h2>ventes</h2>
+</header>
 
-<table>
-<thead>
-<tr>
-<th>ID</th>
-<th>Date</th>
-<th>Client(e)</th>
-<th>Téléphone</th>
-<th>Adresse</th>
-<th>Total</th>
-<th>Détails</th>
-</tr>
-</thead>
+<main style="padding:10px;">
 
-<tbody id="sales-table"></tbody>
-</table>
+  <table class="sales-table">
+    <thead>
+      <tr>
+        <th>Facture</th>
+        <th>Date</th>
+        <th>Client</th>
+        <th>Total</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody id="sales-body"></tbody>
+  </table>
+
+</main>
 
 <script>
 function loadSales(){
-  let sales=JSON.parse(localStorage.getItem("sales"))||[];
-  let table=document.getElementById("sales-table");
-  table.innerHTML="";
 
-  sales.forEach(s=>{
-    let tr=document.createElement("tr");
+  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+  let tbody = document.getElementById("sales-body");
 
-    tr.innerHTML=`
+  tbody.innerHTML = "";
+
+  if(sales.length === 0){
+    tbody.innerHTML = `<tr><td colspan="5">Aucune vente</td></tr>`;
+    return;
+  }
+
+  sales.forEach((s, index) => {
+
+    let tr = document.createElement("tr");
+
+    tr.innerHTML = `
       <td>${s.id}</td>
-      <td>${s.date}</td>
-      <td>${s.client.name}</td>
-      <td>${s.client.phone}</td>
-      <td>${s.client.address}</td>
+      <td>${s.date || "-"}</td>
+      <td>${s.client?.name || "-"}</td>
       <td>${s.total}</td>
-      <td><button onclick='alert(JSON.stringify(${JSON.stringify(s.cart)}))'>Voir</button></td>
+      <td>
+        <button onclick="viewInvoice(${index})">Voir</button>
+        <button class="delete" onclick="deleteSale(${index})">Supprimer</button>
+      </td>
     `;
 
-    table.appendChild(tr);
+    tbody.appendChild(tr);
   });
 }
 
-window.onload=loadSales;
+/* VIEW */
+function viewInvoice(i){
+  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+  let s = sales[i];
+
+  alert(
+    "FACTURE: " + s.id +
+    "\nCLIENT: " + (s.client?.name || "") +
+    "\nTOTAL: " + s.total
+  );
+}
+
+/* DELETE */
+function deleteSale(i){
+
+  if(!confirm("Supprimer cette facture ?")) return;
+
+  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+
+  sales.splice(i, 1);
+
+  localStorage.setItem("sales", JSON.stringify(sales));
+
+  loadSales();
+}
+
+window.onload = loadSales;
 </script>
 
 </body>
