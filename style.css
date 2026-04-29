@@ -121,3 +121,39 @@ header{
   body{overflow:hidden;}
   .pos-container{height:95vh;}
 }
+.sales-table{
+  width:100%;
+  border-collapse:collapse;
+  background:white;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.sales-table th{
+  background:#e91e63;
+  color:white;
+  padding:10px;
+}
+
+.sales-table td{
+  padding:10px;
+  border-bottom:1px solid #eee;
+  text-align:center;
+}
+
+.sales-table button{
+  padding:6px 10px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  margin:2px;
+}
+
+.sales-table button:hover{
+  opacity:0.8;
+}
+
+.sales-table .delete{
+  background:#ff4d6d;
+  color:white;
+}
