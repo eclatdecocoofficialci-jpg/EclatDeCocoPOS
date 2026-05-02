@@ -2,6 +2,8 @@ body{
   margin:0;
   font-family:Poppins;
   background:#fff0f5;
+  overflow-x:hidden;
+  overflow-y:auto;
 }
 
 /* HEADER */
@@ -30,10 +32,16 @@ header{
   font-weight:500;
 }
 
-/* 3 COLUMNS */
+.top-nav a.active-nav{
+  background:#e91e63;
+  color:white;
+}
+
+/* ================= POS LAYOUT ================= */
 .pos-container{
   display:flex;
-  height:90vh;
+  height:auto;
+  min-height:90vh;
   gap:10px;
   padding:10px;
 }
@@ -44,13 +52,14 @@ header{
   border-radius:12px;
   padding:10px;
   overflow:auto;
+  -webkit-overflow-scrolling:touch;
 }
 
 .left{width:18%;}
 .center{width:52%;}
 .right{width:30%;}
 
-/* CATEGORIES BUTTONS */
+/* ================= CATEGORIES ================= */
 #category-boxes{
   display:flex;
   flex-direction:column;
@@ -74,7 +83,7 @@ header{
   color:white;
 }
 
-/* PRODUCTS */
+/* ================= PRODUCTS ================= */
 #product-list{
   display:grid;
   grid-template-columns:repeat(2,1fr);
@@ -127,9 +136,9 @@ header{
 .calc button:active{
   transform:scale(0.96);
 }
-}
 
-/* INVOICE */
+/* ================= INVOICE ================= */
+
 .invoice-header{
   text-align:center;
 }
@@ -143,11 +152,44 @@ header{
   font-weight:bold;
 }
 
-/* IPAD LANDSCAPE FIX */
-@media(min-width:900px){
-  body{overflow:hidden;}
-  .pos-container{height:95vh;}
+/* ================= PAYMENT ================= */
+
+.payment-boxes{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+  flex-wrap:wrap;
 }
+
+.pay-btn{
+  flex:1;
+  min-width:120px;
+  padding:15px;
+  text-align:center;
+  border-radius:12px;
+  background:#f8c1d9;
+  color:#6a0036;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.2s;
+  user-select:none;
+  border:2px solid transparent;
+}
+
+.pay-btn:hover{
+  transform:scale(1.03);
+  background:#f4a9c8;
+}
+
+.pay-btn.active{
+  background:#e91e63;
+  color:white;
+  border:2px solid #ffdde9;
+  transform:scale(1.05);
+}
+
+/* ================= SALES TABLE ================= */
+
 .sales-table{
   width:100%;
   border-collapse:collapse;
@@ -184,6 +226,7 @@ header{
   background:#ff4d6d;
   color:white;
 }
+
 /* ================= DASHBOARD ================= */
 
 .dashboard-grid{
@@ -217,41 +260,17 @@ header{
   padding:20px;
   border-radius:20px;
 }
-.top-nav a.active-nav{
-  background:#e91e63;
-  color:white;
-}
-.payment-boxes{
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-  flex-wrap: wrap;
-}
 
-.pay-btn{
-  flex: 1;
-  min-width: 120px;
-  padding: 15px;
-  text-align: center;
-  border-radius: 12px;
-  background: #f8c1d9;
-  color: #6a0036;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.2s;
-  user-select: none;
-  border: 2px solid transparent;
-}
+/* ================= IPAD FIX ================= */
 
-.pay-btn:hover{
-  transform: scale(1.03);
-  background: #f4a9c8;
-}
+@media(min-width:900px){
+  body{
+    overflow-x:hidden;
+    overflow-y:auto;
+  }
 
-/* sélection active */
-.pay-btn.active{
-  background: #e91e63;
-  color: white;
-  border: 2px solid #ffdde9;
-  transform: scale(1.05);
+  .pos-container{
+    height:auto;
+    min-height:95vh;
+  }
 }
