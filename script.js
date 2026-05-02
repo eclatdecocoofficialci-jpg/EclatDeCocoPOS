@@ -198,18 +198,13 @@ function updatePrice(index){
 }
 
 /* ================= DISCOUNT ================= */
-function setDiscount(percent){
-  discount = percent;
+function setDiscount(p){
+  discount = p;
   renderInvoice();
 }
 
-function discount20(){
-  setDiscount(20);
-}
-
-function discount50(){
-  setDiscount(50);
-}
+function discount20(){ setDiscount(20); }
+function discount50(){ setDiscount(50); }
 
 /* ================= PAYMENT ================= */
 function setPayment(method){
@@ -219,7 +214,7 @@ function setPayment(method){
 /* ================= MODE RAPIDE ================= */
 function toggleCheckoutMode(){
   checkoutMode = !checkoutMode;
-  alert(checkoutMode ? "⚡ Mode rapide activé" : "Mode normal activé");
+  alert(checkoutMode ? "⚡ Mode rapide activé" : "Mode normal");
 }
 
 /* ================= CALCULATRICE ================= */
@@ -229,7 +224,8 @@ function press(v){
 }
 
 function clearCalc(){
-  document.getElementById("display").value = "";
+  const d = document.getElementById("display");
+  if(d) d.value = "";
   currentCalcResult = 0;
 }
 
@@ -263,6 +259,8 @@ function calculate(){
 /* ================= SAVE SALE ================= */
 function saveSale(){
 
+  let total = document.getElementById("grand-total")?.innerText || "0";
+
   let sale = {
     id: document.getElementById("invoice-id")?.innerText,
     date: document.getElementById("date")?.value,
@@ -274,7 +272,7 @@ function saveSale(){
     cart: invoice,
     discount: discount,
     paymentMethod: paymentMethod,
-    total: document.getElementById("grand-total")?.innerText
+    total: total
   };
 
   sales.push(sale);
@@ -290,30 +288,13 @@ function saveSale(){
   alert("💗 Vente enregistrée (" + paymentMethod + ")");
 }
 
-/* ================= STATS ================= */
-function getStats(){
-
-  let totalSales = sales.length;
-
-  let totalRevenue = sales.reduce((sum, s) => {
-    return sum + parseFloat((s.total || "0").replace("FCFA",""));
-  }, 0);
-
-  return {
-    totalSales,
-    totalRevenue
-  };
-}
-
-/* ================= KEYBOARD ================= */
+/* ================= KEYBOARD FIX ================= */
 document.addEventListener("keydown", function(e){
 
   const display = document.getElementById("display");
 
-  if(e.key === "Enter"){
-    if(document.activeElement === display){
-      calculate();
-    }
+  if(e.key === "Enter" && document.activeElement === display){
+    calculate();
   }
 
   if(e.key === "Backspace" && document.activeElement === display){
@@ -326,31 +307,4 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./service-worker.js");
   });
-}
-
-/* ================= PRINT ================= */
-function printInvoice(){
-
-  const content = document.getElementById("invoice-area");
-
-  let win = window.open("", "", "width=900,height=650");
-
-  win.document.write(`
-    <html>
-    <head>
-      <title>Facture</title>
-      <style>
-        body{font-family:Poppins;padding:20px;}
-        h2,h3,h4{text-align:center;color:#e91e63;}
-        table{width:100%;border-collapse:collapse;}
-        th,td{border:1px solid #ddd;padding:8px;text-align:center;}
-      </style>
-    </head>
-    <body onload="window.print(); window.close();">
-      ${content.innerHTML}
-    </body>
-    </html>
-  `);
-
-  win.document.close();
 }
