@@ -83,7 +83,7 @@
 
   </div>
 
-  <!-- RIGHT INVOICE -->
+<!-- RIGHT INVOICE -->
 <div class="panel right" id="invoice-area">
 
   <div class="invoice-header">
@@ -116,24 +116,45 @@
   <h4>Livraison</h4>
   <input id="delivery" type="number" placeholder="0">
 
+  <!-- REMISE AFFICHAGE (IMPORTANT) -->
+  <h4>Remise appliquée: <span id="discount-value">0%</span></h4>
+
   <h2 id="grand-total">0 FCFA</h2>
 
   <!-- PAYMENT -->
-<h4>Paiement</h4>
+  <h4>Paiement</h4>
 
-<div class="payment-boxes">
+  <div class="payment-boxes">
 
-  <div class="pay-btn" onclick="selectPayment(this, 'cash')">
-    Cash
+    <div class="pay-btn" onclick="selectPayment(this, 'cash')">
+      Cash
+    </div>
+
+    <div class="pay-btn" onclick="selectPayment(this, 'orange')">
+      Orange Money
+    </div>
+
+    <div class="pay-btn" onclick="selectPayment(this, 'wave')">
+      Wave
+    </div>
+
   </div>
 
-  <div class="pay-btn" onclick="selectPayment(this, 'orange')">
-    Orange Money
-  </div>
+  <!-- DISCOUNT -->
+  <h4>Remise</h4>
+  <button onclick="discount20()">-20%</button>
+  <button onclick="discount50()">-50%</button>
 
-  <div class="pay-btn" onclick="selectPayment(this, 'wave')">
-    Wave 
-  </div>
+  <!-- MODE RAPIDE -->
+  <button onclick="toggleCheckoutMode()">Mode rapide</button>
+
+  <!-- ACTIONS -->
+  <button onclick="saveSale()">💾 Sauvegarder</button>
+  <button onclick="window.print()">🖨 Imprimer</button>
+
+  <p class="thanks">Merci d’avoir choisi Éclat de Coco 💗</p>
+
+</div>
 
 </div>
 
