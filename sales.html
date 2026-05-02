@@ -16,6 +16,7 @@
 
 <main style="padding:10px;">
 
+  <!-- TOTAL GLOBAL -->
   <h3>Total des ventes: <span id="total-sales">0</span> FCFA</h3>
 
   <table class="sales-table">
@@ -24,6 +25,8 @@
         <th>Facture</th>
         <th>Date</th>
         <th>Client</th>
+        <th>Remise</th>
+        <th>Paiement</th>
         <th>Total</th>
         <th>Action</th>
       </tr>
@@ -43,7 +46,7 @@ function loadSales(){
   tbody.innerHTML = "";
 
   if(sales.length === 0){
-    tbody.innerHTML = `<tr><td colspan="5">Aucune vente</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7">Aucune vente</td></tr>`;
     updateTotalSales();
     return;
   }
@@ -56,6 +59,8 @@ function loadSales(){
       <td>${s.id}</td>
       <td>${s.date || "-"}</td>
       <td>${s.client?.name || "-"}</td>
+      <td>${s.discount || "0%"}</td>
+      <td>${s.paymentMethod || "-"}</td>
       <td>${s.total}</td>
       <td>
         <button onclick="viewInvoice(${index})">Voir</button>
@@ -83,7 +88,8 @@ function viewInvoice(i){
     "FACTURE: " + s.id +
     "\nCLIENT: " + (s.client?.name || "-") +
     "\n\nPRODUITS:\n" + items +
-    "\n\nPAIEMENT: " + (s.paymentMethod || "cash") +
+    "\n\nREMISE: " + (s.discount || "0%") +
+    "\nPAIEMENT: " + (s.paymentMethod || "-") +
     "\nTOTAL: " + s.total
   );
 }
@@ -102,7 +108,7 @@ function deleteSale(i){
   loadSales();
 }
 
-/* ================= TOTAL ================= */
+/* ================= TOTAL GLOBAL ================= */
 function updateTotalSales(){
 
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
