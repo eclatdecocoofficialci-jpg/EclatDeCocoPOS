@@ -6,12 +6,17 @@ let products = JSON.parse(localStorage.getItem("products")) || [
 let invoice = [];
 let discount = 0;
 
-/* ================= FACTURE NUMBER ================= */
-function generateInvoiceNumber(){
-  let last = localStorage.getItem("invoiceNumber");
-  last = last ? parseInt(last) + 1 : 1;
-  localStorage.setItem("invoiceNumber", last);
-  return "2026" + String(last).padStart(3,"0");
+function calculate(){
+  const d = document.getElementById("display");
+  if(!d) return;
+  try {
+    currentCalcResult = Function("return " + d.value)();
+    // OPTION 1: ajouter directement à la facture
+    addManualToInvoice(currentCalcResult);
+    d.value = currentCalcResult;
+  } catch(e){
+    alert("Erreur calcul");
+  }
 }
 
 /* ================= INIT ================= */
