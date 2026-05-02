@@ -5,12 +5,13 @@ let products = JSON.parse(localStorage.getItem("products")) || [
 
 let invoice = [];
 let discount = 0;
-let currentCalcResult = 0;
 
 let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
 let paymentMethod = "cash";
 let checkoutMode = false;
+
+let currentCalcResult = 0;
 
 /* ================= INVOICE NUMBER ================= */
 function generateInvoiceNumber(){
@@ -33,6 +34,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 /* ================= CATEGORIES ================= */
 function renderCategories(){
+
   const box = document.getElementById("category-boxes");
   if(!box) return;
 
@@ -56,6 +58,7 @@ function renderCategories(){
 }
 
 function filterByCategory(cat){
+
   const list = document.getElementById("product-list");
   if(!list) return;
 
@@ -68,6 +71,7 @@ function filterByCategory(cat){
 
 /* ================= PRODUCTS ================= */
 function renderProducts(){
+
   const list = document.getElementById("product-list");
   if(!list) return;
 
@@ -76,6 +80,7 @@ function renderProducts(){
 }
 
 function renderProduct(p){
+
   const list = document.getElementById("product-list");
 
   let div = document.createElement("div");
@@ -94,6 +99,7 @@ function renderProduct(p){
 
 /* ================= SEARCH ================= */
 function searchProduct(){
+
   const val = document.getElementById("search")?.value.toLowerCase();
   const list = document.getElementById("product-list");
   if(!list) return;
@@ -236,6 +242,7 @@ function backspace(){
 }
 
 function calculate(){
+
   const d = document.getElementById("display");
   if(!d) return;
 
@@ -271,7 +278,7 @@ function saveSale(){
       address: document.getElementById("client-address")?.value
     },
     cart: invoice,
-    discount: discount,
+    discount: discount + "%",
     paymentMethod: paymentMethod,
     total: total
   };
@@ -289,7 +296,7 @@ function saveSale(){
   alert("💗 Vente enregistrée (" + paymentMethod + ")");
 }
 
-/* ================= KEYBOARD ================= */
+/* ================= KEYBOARD FIX ================= */
 document.addEventListener("keydown", function(e){
 
   const display = document.getElementById("display");
