@@ -176,6 +176,10 @@ function renderInvoice(){
   final = final - (final * discount / 100);
 
   document.getElementById("grand-total").innerText = final + " FCFA";
+
+  // 🔥 AFFICHAGE REMISE LIVE
+  const disc = document.getElementById("discount-value");
+  if(disc) disc.innerText = discount + "%";
 }
 
 /* ================= EDIT QTY ================= */
@@ -216,6 +220,18 @@ function discount50(){ setDiscount(50); }
 /* ================= PAYMENT ================= */
 function setPayment(method){
   paymentMethod = method;
+}
+
+/* ================= PAYMENT UI (SELECT STYLE) ================= */
+function selectPayment(el, method){
+
+  paymentMethod = method;
+
+  document.querySelectorAll(".pay-btn").forEach(b => {
+    b.classList.remove("active");
+  });
+
+  el.classList.add("active");
 }
 
 /* ================= MODE RAPIDE ================= */
