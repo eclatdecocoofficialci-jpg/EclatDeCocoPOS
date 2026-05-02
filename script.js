@@ -5,18 +5,14 @@ let products = JSON.parse(localStorage.getItem("products")) || [
 
 let invoice = [];
 let discount = 0;
+let currentCalcResult = 0;
 
-function calculate(){
-  const d = document.getElementById("display");
-  if(!d) return;
-  try {
-    currentCalcResult = Function("return " + d.value)();
-    // OPTION 1: ajouter directement à la facture
-    addManualToInvoice(currentCalcResult);
-    d.value = currentCalcResult;
-  } catch(e){
-    alert("Erreur calcul");
-  }
+/* ================= FACTURE NUMBER ================= */
+function generateInvoiceNumber(){
+  let last = localStorage.getItem("invoiceNumber");
+  last = last ? parseInt(last) + 1 : 1;
+  localStorage.setItem("invoiceNumber", last);
+  return "2026" + String(last).padStart(3,"0");
 }
 
 /* ================= INIT ================= */
@@ -30,11 +26,6 @@ window.addEventListener("DOMContentLoaded", () => {
   renderInvoice();
 });
 
-/* ================= RESET PRODUCTS VIEW ================= */
-function renderAllProducts(){
-  renderProducts();
-}
-
 /* ================= CATEGORIES ================= */
 function renderCategories(){
   const box = document.getElementById("category-boxes");
@@ -44,20 +35,17 @@ function renderCategories(){
 
   box.innerHTML = "";
 
-  // ALL button (IMPORTANT FIX)
   let all = document.createElement("div");
   all.className = "category";
   all.innerText = "Tous";
-  all.onclick = renderAllProducts;
+  all.onclick = renderProducts;
   box.appendChild(all);
 
   cats.forEach(cat => {
     let div = document.createElement("div");
     div.className = "category";
     div.innerText = cat;
-
     div.onclick = () => filterByCategory(cat);
-
     box.appendChild(div);
   });
 }
@@ -84,7 +72,6 @@ function renderProducts(){
 
 function renderProduct(p){
   const list = document.getElementById("product-list");
-  if(!list) return;
 
   let div = document.createElement("div");
   div.className = "product";
@@ -142,7 +129,8 @@ function renderInvoice(){
 
   let total = 0;
 
-  invoice.forEach(i => {
+  invoice.forEach((i, index) => {
+
     let t = i.qty * i.price;
     total += t;
 
@@ -150,7 +138,9 @@ function renderInvoice(){
 
     tr.innerHTML = `
       <td>${i.name}</td>
-      <td>${i.qty}</td>
+      <td onclick="updateQty(${index})" style="cursor:pointer;color:#e91e63;font-weight:bold;">
+        ${i.qty}
+      </td>
       <td>${t} FCFA</td>
     `;
 
@@ -158,14 +148,79 @@ function renderInvoice(){
   });
 
   let delivery = parseFloat(document.getElementById("delivery")?.value) || 0;
-  total += delivery;
 
-  let final = total - (total * discount / 100);
+  let final = total + delivery;
+  final = final - (final * discount / 100);
 
-  const grand = document.getElementById("grand-total");
-  if(grand){
-    grand.innerText = final + " FCFA";
+  document.getElementById("grand-total").innerText = final + " FCFA";
+}
+
+/* ================= EDIT QTY ================= */
+function updateQty(index){
+
+  let newQty = prompt("Nouvelle quantité:");
+
+  if(newQty === null) return;
+
+  newQty = parseInt(newQty);
+
+  if(isNaN(newQty) || newQty <= 0) return;
+
+  invoice[index].qty = newQty;
+
+  renderInvoice();
+}
+
+/* ================= DISCOUNT ================= */
+function setDiscount(percent){
+  discount = percent;
+  renderInvoice();
+}
+
+/* ================= CALCULATRICE ================= */
+function press(v){
+  const d = document.getElementById("display");
+  if(d) d.value += v;
+}
+
+function clearCalc(){
+  document.getElementById("display").value = "";
+  currentCalcResult = 0;
+}
+
+function backspace(){
+  const d = document.getElementById("display");
+  if(d) d.value = d.value.slice(0, -1);
+}
+
+function calculate(){
+  const d = document.getElementById("display");
+  if(!d) return;
+
+  try {
+    currentCalcResult = Function("return " + d.value)();
+
+    d.value = currentCalcResult;
+
+    addManualToInvoice(currentCalcResult);
+
+  } catch(e){
+    alert("Erreur calcul");
   }
+}
+
+/* ================= LINK CALC → FACTURE ================= */
+function addManualToInvoice(value){
+
+  if(!value || isNaN(value)) return;
+
+  invoice.push({
+    name: "Calculatrice",
+    price: Number(value),
+    qty: 1
+  });
+
+  renderInvoice();
 }
 
 /* ================= SAVE ================= */
@@ -182,12 +237,14 @@ function saveSale(){
       address: document.getElementById("client-address")?.value
     },
     cart: invoice,
+    discount: discount,
     total: document.getElementById("grand-total")?.innerText
   });
 
   localStorage.setItem("sales", JSON.stringify(sales));
 
   invoice = [];
+  discount = 0;
   renderInvoice();
 
   document.getElementById("invoice-id").innerText = generateInvoiceNumber();
@@ -195,38 +252,28 @@ function saveSale(){
   alert("💗 Facture sauvegardée");
 }
 
-/* ================= CALC ================= */
-function press(v){
-  const d = document.getElementById("display");
-  if(d) d.value += v;
-}
+/* ================= KEYBOARD ================= */
+document.addEventListener("keydown", function(e){
 
-function clearCalc(){
-  const d = document.getElementById("display");
-  if(d) d.value = "";
-}
+  const display = document.getElementById("display");
 
-function calculate(){
-  const d = document.getElementById("display");
-  if(!d) return;
-
-  try{
-    d.value = Function("return " + d.value)();
-  } catch(e){
-    alert("Erreur calcul");
+  if(e.key === "Enter" && document.activeElement === display){
+    calculate();
   }
-}
 
-/* ================= SW FIX (IMPORTANT) ================= */
+  if(e.key === "Backspace" && document.activeElement === display){
+    backspace();
+  }
+});
+
+/* ================= SW ================= */
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js", { scope: "./" })
-      .then(() => console.log("SW OK"))
-      .catch(() => console.log("SW ERROR"));
+    navigator.serviceWorker.register("./service-worker.js");
   });
 }
 
-/* ================= PRINT FIX ================= */
+/* ================= PRINT ================= */
 function printInvoice(){
   const content = document.getElementById("invoice-area");
 
@@ -251,17 +298,3 @@ function printInvoice(){
 
   win.document.close();
 }
-document.addEventListener("keydown", function(e){
-
-  if(e.key === "Enter"){
-
-    const display = document.getElementById("display");
-
-    // si focus sur calculatrice
-    if(document.activeElement === display){
-      calculate();
-    }
-
-  }
-
-});
