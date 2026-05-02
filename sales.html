@@ -11,10 +11,12 @@
 <body>
 
 <header>
-  <h2>ventes</h2>
+  <h2>Ventes</h2>
 </header>
 
 <main style="padding:10px;">
+
+  <h3>Total des ventes: <span id="total-sales">0</span> FCFA</h3>
 
   <table class="sales-table">
     <thead>
@@ -42,6 +44,7 @@ function loadSales(){
 
   if(sales.length === 0){
     tbody.innerHTML = `<tr><td colspan="5">Aucune vente</td></tr>`;
+    updateTotalSales();
     return;
   }
 
@@ -56,30 +59,39 @@ function loadSales(){
       <td>${s.total}</td>
       <td>
         <button onclick="viewInvoice(${index})">Voir</button>
-        <button class="delete" onclick="deleteSale(${index})">Supprimer</button>
+        <button onclick="deleteSale(${index})">Supprimer</button>
       </td>
     `;
 
     tbody.appendChild(tr);
   });
+
+  updateTotalSales();
 }
 
-/* VIEW */
+/* ================= VIEW ================= */
 function viewInvoice(i){
+
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
   let s = sales[i];
 
+  let items = s.cart?.map(p =>
+    `${p.name} x${p.qty} = ${p.price * p.qty} FCFA`
+  ).join("\n") || "";
+
   alert(
     "FACTURE: " + s.id +
-    "\nCLIENT: " + (s.client?.name || "") +
+    "\nCLIENT: " + (s.client?.name || "-") +
+    "\n\nPRODUITS:\n" + items +
+    "\n\nPAIEMENT: " + (s.paymentMethod || "cash") +
     "\nTOTAL: " + s.total
   );
 }
 
-/* DELETE */
+/* ================= DELETE ================= */
 function deleteSale(i){
 
-  if(!confirm("Supprimer cette facture ?")) return;
+  if(!confirm("Supprimer cette vente ?")) return;
 
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
@@ -88,6 +100,18 @@ function deleteSale(i){
   localStorage.setItem("sales", JSON.stringify(sales));
 
   loadSales();
+}
+
+/* ================= TOTAL ================= */
+function updateTotalSales(){
+
+  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+
+  let total = sales.reduce((sum, s) => {
+    return sum + (parseFloat(s.total) || 0);
+  }, 0);
+
+  document.getElementById("total-sales").innerText = total;
 }
 
 window.onload = loadSales;
