@@ -163,7 +163,8 @@ function renderInvoice(){
     table.appendChild(tr);
   });
 
-  let delivery = parseFloat(document.getElementById("delivery")?.value) || 0;
+  let delivery = parseFloat(document.getElementById("delivery")?.value);
+  if(isNaN(delivery)) delivery = 0;
 
   let final = total + delivery;
   final = final - (final * discount / 100);
@@ -288,7 +289,7 @@ function saveSale(){
   alert("💗 Vente enregistrée (" + paymentMethod + ")");
 }
 
-/* ================= KEYBOARD FIX ================= */
+/* ================= KEYBOARD ================= */
 document.addEventListener("keydown", function(e){
 
   const display = document.getElementById("display");
