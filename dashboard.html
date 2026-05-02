@@ -1,56 +1,121 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Éclat de Coco Dashboard</title>
-<link rel="stylesheet" href="style.css">
-<link rel="manifest" href="manifest.json">
+
+<!-- PWA -->
+<link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#e91e63">
+
+<link rel="apple-touch-icon" href="./icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<!-- CSS -->
+<link rel="stylesheet" href="./style.css">
+
 </head>
+
 <body>
 
 <header>
-  <h1>Éclat de Coco</h1>
-  <nav class="main-nav">
-    <a href="pos.html">POS</a>
-    <a class="active" href="dashboard.html">Dashboard</a>
-    <a href="sales.html">Sales</a>
-    <a href="products.html">Products</a>
-    <a href="inventory.html">Inventory</a>
-    <a href="expenses.html">Expenses</a>
-    <a href="orders.html">Orders</a>
-    <a href="customers.html">Customers</a>
-    <a href="reports.html">Reports</a>
+  <h1>✨ Éclat de Coco</h1>
+
+  <nav class="top-nav">
+
+    <a href="./pos.html?v=1">POS</a>
+
+    <a href="./dashboard.html?v=1" class="active-nav">
+      Dashboard
+    </a>
+
+    <a href="./sales.html?v=1">Sales</a>
+
+    <a href="./products.html?v=1">Products</a>
+
+    <a href="./inventory.html?v=1">
+      Raw Materials
+    </a>
+
+    <a href="./expenses.html?v=1">Expenses</a>
+
+    <a href="./orders.html?v=1">Orders</a>
+
+    <a href="./customers.html?v=1">Customers</a>
+
+    <a href="./reports.html?v=1">Reports</a>
+
   </nav>
 </header>
 
+<!-- ================= DASHBOARD ================= -->
 <main class="dashboard-grid">
-  <div class="card">Profit semaine<br><span id="week-profit">0 FCFA</span></div>
-  <div class="card">Profit mois<br><span id="month-profit">0 FCFA</span></div>
-  <div class="card">Profit année<br><span id="year-profit">0 FCFA</span></div>
-  <div class="card">Top produits<br><span id="top-products">-</span></div>
-  <div class="card">Total ventes<br><span id="total-sales">0 FCFA</span></div>
-  <div class="card">Total dépenses<br><span id="total-expenses">0 FCFA</span></div>
 
-  <canvas id="salesChart" width="400" height="200"></canvas>
+  <div class="card">
+    Profit semaine<br>
+    <span id="week-profit">0 FCFA</span>
+  </div>
+
+  <div class="card">
+    Profit mois<br>
+    <span id="month-profit">0 FCFA</span>
+  </div>
+
+  <div class="card">
+    Profit année<br>
+    <span id="year-profit">0 FCFA</span>
+  </div>
+
+  <div class="card">
+    Top produits<br>
+    <span id="top-products">-</span>
+  </div>
+
+  <div class="card">
+    Total ventes<br>
+    <span id="total-sales">0 FCFA</span>
+  </div>
+
+  <div class="card">
+    Total dépenses<br>
+    <span id="total-expenses">0 FCFA</span>
+  </div>
+
 </main>
 
+<!-- CHART -->
+<div class="chart-container">
+  <canvas id="salesChart"></canvas>
+</div>
+
 <footer>
-<p>2025 | Éclat de Coco Official | All Right Reserved</p>
+  <p>
+    2026 | Éclat de Coco Official | All Rights Reserved
+  </p>
 </footer>
 
+<!-- CHART JS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="dashboard.js"></script>
 
+<!-- DASHBOARD JS -->
+<script src="./dashboard.js"></script>
+
+<!-- SERVICE WORKER -->
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(reg => console.log("SW registered: ", reg))
-      .catch(err => console.log("SW failed: ", err));
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+
+    navigator.serviceWorker.register("./service-worker.js")
+      .then(() => console.log("SW OK ✔"))
+      .catch(err => console.log("SW ERROR ❌", err));
+
   });
 }
 </script>
+
 </body>
 </html>
