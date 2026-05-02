@@ -118,28 +118,38 @@
 
   <h2 id="grand-total">0 FCFA</h2>
 
-  <!--  PAYMENT -->
-  <h4>Paiement</h4>
-  <button onclick="setPayment('cash')">Cash</button>
-  <button onclick="setPayment('orange')">Orange Money</button>
-  <button onclick="setPayment('muv')">wave</button>
+  <!-- PAYMENT -->
+<h4>Paiement</h4>
 
-  <!--  DISCOUNT -->
-  <h4>Remise</h4>
-  <button onclick="discount20()">-20%</button>
-  <button onclick="discount50()">-50%</button>
+<div class="payment-boxes">
 
-  <!--  MODE RAPIDE -->
-  <button onclick="toggleCheckoutMode()">Mode rapide</button>
+  <div class="pay-btn" onclick="selectPayment(this, 'cash')">
+    Cash
+  </div>
 
-  <!-- ACTIONS -->
-  <button onclick="saveSale()">💾 Sauvegarder</button>
-  <button onclick="window.print()">🖨 Imprimer</button>
+  <div class="pay-btn" onclick="selectPayment(this, 'orange')">
+    Orange Money
+  </div>
 
-  <p class="thanks">Merci d’avoir choisi Éclat de Coco 💗</p>
+  <div class="pay-btn" onclick="selectPayment(this, 'wave')">
+    Wave / MUV
+  </div>
 
 </div>
 
+<!-- DISCOUNT -->
+<h4>Remise</h4>
+<button onclick="discount20()">-20%</button>
+<button onclick="discount50()">-50%</button>
+
+<!-- MODE RAPIDE -->
+<button onclick="toggleCheckoutMode()">Mode rapide</button>
+
+<!-- ACTIONS -->
+<button onclick="saveSale()">💾 Sauvegarder</button>
+<button onclick="window.print()">🖨 Imprimer</button>
+
+<p class="thanks">Merci d’avoir choisi Éclat de Coco 💗</p>
 </div>
 
 <!-- JS -->
