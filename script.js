@@ -246,3 +246,17 @@ function printInvoice(){
 
   win.document.close();
 }
+document.addEventListener("keydown", function(e){
+
+  if(e.key === "Enter"){
+
+    const display = document.getElementById("display");
+
+    // si focus sur calculatrice
+    if(document.activeElement === display){
+      calculate();
+    }
+
+  }
+
+});
