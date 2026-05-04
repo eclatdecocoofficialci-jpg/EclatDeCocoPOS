@@ -329,6 +329,33 @@ document.addEventListener("DOMContentLoaded", function () {
     deliveryInput.addEventListener("input", updateTotal);
   }
 });
+function renderSales(){
+
+  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+
+  // TRI PAR DATE (récent -> ancien)
+  sales.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  let html = "";
+
+  sales.forEach(sale => {
+
+    html += `
+      <tr>
+        <td>${sale.id}</td>
+        <td>${sale.client.name || "-"}</td>
+        <td>${sale.client.phone || "-"}</td>
+        <td>${sale.date}</td>
+        <td>${sale.payment}</td>
+        <td style="color:#e91e63;font-weight:bold;">
+          ${sale.total}
+        </td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("sales-body").innerHTML = html;
+}
 /* ================= RESET SW ================= */
 function resetServiceWorker(){
 
