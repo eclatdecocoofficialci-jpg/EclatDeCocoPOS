@@ -20,6 +20,7 @@ function generateInvoiceNumber(){
 
 /* ================= INIT ================= */
 window.addEventListener("DOMContentLoaded", () => {
+
   const inv = document.getElementById("invoice-id");
   if(inv) inv.innerText = generateInvoiceNumber();
 
@@ -28,7 +29,7 @@ window.addEventListener("DOMContentLoaded", () => {
   renderInvoice();
 });
 
-/* ================= DELIVERY LIVE ================= */
+/* ================= LIVE DELIVERY UPDATE ================= */
 document.addEventListener("input", (e)=>{
   if(e.target.id === "delivery"){
     renderInvoice();
@@ -37,6 +38,7 @@ document.addEventListener("input", (e)=>{
 
 /* ================= CATEGORIES ================= */
 function renderCategories(){
+
   const box = document.getElementById("category-boxes");
   if(!box) return;
 
@@ -60,6 +62,7 @@ function renderCategories(){
 }
 
 function filterByCategory(cat){
+
   const list = document.getElementById("product-list");
   if(!list) return;
 
@@ -72,6 +75,7 @@ function filterByCategory(cat){
 
 /* ================= PRODUCTS ================= */
 function renderProducts(){
+
   const list = document.getElementById("product-list");
   if(!list) return;
 
@@ -80,6 +84,7 @@ function renderProducts(){
 }
 
 function renderProduct(p){
+
   const list = document.getElementById("product-list");
 
   let div = document.createElement("div");
@@ -96,26 +101,9 @@ function renderProduct(p){
   list.appendChild(div);
 }
 
-/* ================= SEARCH ================= */
-function searchProduct(){
-  const val = document.getElementById("search")?.value.toLowerCase();
-  const list = document.getElementById("product-list");
-  if(!list) return;
-
-  if(!val){
-    renderProducts();
-    return;
-  }
-
-  list.innerHTML = "";
-
-  products
-    .filter(p => p.name.toLowerCase().includes(val))
-    .forEach(renderProduct);
-}
-
 /* ================= CART ================= */
 function addToCart(name, price){
+
   let item = invoice.find(i => i.name === name);
 
   if(item){
@@ -134,6 +122,7 @@ function addToCart(name, price){
 
 /* ================= INVOICE ================= */
 function renderInvoice(){
+
   const table = document.getElementById("invoice-body");
   if(!table) return;
 
@@ -142,6 +131,7 @@ function renderInvoice(){
   let subtotal = 0;
 
   invoice.forEach((i, index) => {
+
     let t = i.qty * i.price;
     subtotal += t;
 
@@ -150,8 +140,8 @@ function renderInvoice(){
     tr.innerHTML = `
       <td>${i.name}</td>
       <td onclick="updateQty(${index})" style="cursor:pointer;color:#e91e63;font-weight:bold;">${i.qty}</td>
-      <td onclick="updatePrice(${index})" style="cursor:pointer;color:#7b1fa2;font-weight:bold;">${i.price}</td>
-      <td>${t}</td>
+      <td onclick="updatePrice(${index})" style="cursor:pointer;color:#7b1fa2;font-weight:bold;">${i.price} FCFA</td>
+      <td>${t} FCFA</td>
     `;
 
     table.appendChild(tr);
@@ -159,15 +149,13 @@ function renderInvoice(){
 
   let delivery = Number(document.getElementById("delivery")?.value || 0);
 
-  let subTotal = subtotal;
-  let total = subTotal + delivery;
-
+  let total = subtotal + delivery;
   total = total - (total * discount / 100);
 
-  document.getElementById("grand-total").innerText =
-    Math.round(total) + " FCFA";
+  total = Math.round(total);
 
-  // remise UI
+  document.getElementById("grand-total").innerText = total + " FCFA";
+
   const disc = document.getElementById("discount-value");
   if(disc) disc.innerText = discount + "%";
 }
@@ -195,6 +183,7 @@ function discount50(){ setDiscount(50); }
 
 /* ================= PAYMENT ================= */
 function selectPayment(el, method){
+
   paymentMethod = method;
 
   document.querySelectorAll(".pay-btn").forEach(b=>{
@@ -206,6 +195,7 @@ function selectPayment(el, method){
 
 /* ================= CALCULATOR ================= */
 function calculate(){
+
   const d = document.getElementById("display");
   if(!d) return;
 
@@ -226,25 +216,36 @@ function calculate(){
   }
 }
 
-/* ================= SAVE ================= */
+/* ================= SAVE SALE (CORRIGÉ POUR SALES.HTML) ================= */
 function saveSale(){
+
+  let delivery = Number(document.getElementById("delivery")?.value || 0);
+
+  let subtotal = invoice.reduce((sum, i) => sum + (i.qty * i.price), 0);
+  let total = subtotal + delivery;
+  total = total - (total * discount / 100);
 
   let sale = {
     id: document.getElementById("invoice-id")?.innerText,
-    date: document.getElementById("date")?.value,
+    date: document.getElementById("date")?.value || new Date().toISOString().split("T")[0],
     client:{
       name:document.getElementById("client-name")?.value,
       phone:document.getElementById("client-phone")?.value,
       address:document.getElementById("client-address")?.value
     },
     cart:invoice,
+    subtotal: subtotal,
     discount:discount + "%",
     paymentMethod:paymentMethod,
-    delivery:Number(document.getElementById("delivery")?.value || 0),
-    total:document.getElementById("grand-total")?.innerText
+    delivery:delivery,
+    total:total
   };
 
   sales.push(sale);
+
+  /* 🔥 IMPORTANT: TRI PAR DATE (pour sales.html) */
+  sales.sort((a,b)=> new Date(b.date) - new Date(a.date));
+
   localStorage.setItem("sales", JSON.stringify(sales));
 
   invoice = [];
@@ -260,9 +261,31 @@ function saveSale(){
   alert("💗 Vente enregistrée (" + paymentMethod + ")");
 }
 
-/* ================= PRINT (IMPORTANT FIX) ================= */
+/* ================= PRINT (FACTURE SEULEMENT) ================= */
 function printInvoice(){
-  window.print();
+
+  const area = document.getElementById("invoice-area");
+
+  const win = window.open("", "", "width=900,height=600");
+
+  win.document.write(`
+    <html>
+    <head>
+      <title>Facture</title>
+      <style>
+        body{font-family:Poppins;padding:20px;}
+        h2,h3{text-align:center;color:#e91e63;}
+        table{width:100%;border-collapse:collapse;}
+        th,td{border:1px solid #ddd;padding:8px;text-align:center;}
+      </style>
+    </head>
+    <body onload="window.print(); window.close();">
+      ${area.innerHTML}
+    </body>
+    </html>
+  `);
+
+  win.document.close();
 }
 
 /* ================= SW ================= */
