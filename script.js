@@ -273,8 +273,8 @@ function printInvoice(){
       <p><strong>Date:</strong> ${document.getElementById("date").value || "-"}</p>
 
       <p><strong>Client:</strong> ${document.getElementById("client-name").value || "-"}</p>
-      <p><strong>Téléphone:</strong> ${document.getElementById("client-phone").value || "-"}</p>
-
+ <p><strong>Téléphone:</strong> ${document.getElementById("client-phone").value || "-"}</p>
+<p><strong>Adresse:</strong> ${document.getElementById("client-address").value || "-"}</p>
       <table>
         <thead>
           <tr>
