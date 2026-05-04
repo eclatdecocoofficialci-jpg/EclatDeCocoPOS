@@ -81,6 +81,7 @@ function addToInvoice(name, price){
 }
 
 /* ================= INVOICE ================= */
+/* ================= INVOICE ================= */
 function renderInvoice(){
 
   document.getElementById("invoice-body").innerHTML =
@@ -93,23 +94,13 @@ function renderInvoice(){
 
           <td>${item.name}</td>
 
-          <!-- QUANTITE (hidden print) -->
-          <td class="no-print">
-            <input type="number"
-              min="1"
-              value="${item.qty}"
-              onchange="updateQty(${index}, this.value)">
-          </td>
-
-          <!-- QUANTITE (print version simple) -->
-          <td class="print-only">
-            ${item.qty}
-          </td>
+          <!-- QUANTITE SIMPLE (FACTURE CLEAN) -->
+          <td>${item.qty}</td>
 
           <td>${item.price}</td>
           <td>${total}</td>
 
-          <!-- DELETE BUTTON -->
+          <!-- ACTION (POS ONLY) -->
           <td class="no-print">
             <button onclick="removeItem(${index})"
               style="background:#e91e63;color:white;border:none;padding:5px;border-radius:5px;">
@@ -123,7 +114,6 @@ function renderInvoice(){
 
   updateTotal();
 }
-
 /* ================= UPDATE ================= */
 function updateQty(index, qty){
   invoice[index].qty = Number(qty);
@@ -187,26 +177,50 @@ function calculate(){
     alert("Erreur calcul");
   }
 }
-
-/* ================= PRINT ================= */
+/* ================= PRINT FACTURE CLEAN CLIENT ================= */
 function printInvoice(){
 
   const paymentLabels = {
-    cash:"Cash",
-    orange:"Orange Money",
-    wave:"Wave"
+    cash: "Cash",
+    orange: "Orange Money",
+    wave: "Wave"
   };
 
-  const selectedPayment = paymentLabels[paymentMethod];
+  const selectedPayment =
+    paymentLabels[paymentMethod] || paymentMethod;
 
-  const deliveryValue = Number(document.getElementById("delivery")?.value || 0);
+  const deliveryValue =
+    Number(document.getElementById("delivery")?.value || 0);
 
-  const invoiceBody = document.getElementById("invoice-body")?.innerHTML || "";
+  const clientName =
+    document.getElementById("client-name").value || "-";
+
+  const clientPhone =
+    document.getElementById("client-phone").value || "-";
+
+  const date =
+    document.getElementById("date").value || "-";
+
+  let rows = "";
+
+  invoice.forEach(item => {
+
+    const total = item.price * item.qty;
+
+    rows += `
+      <tr>
+        <td>${item.name}</td>
+        <td>${item.qty}</td>
+        <td>${item.price}</td>
+        <td>${total}</td>
+      </tr>
+    `;
+  });
 
   const win = window.open("", "", "width=700,height=900");
 
   if(!win){
-    alert("Active popups");
+    alert("Active les popups pour imprimer");
     return;
   }
 
@@ -214,24 +228,54 @@ function printInvoice(){
     <html>
     <head>
       <title>Facture</title>
+
       <style>
-        @page{ size:A5; margin:10mm; }
-        body{ font-family:Poppins,sans-serif; padding:10px; }
-        table{ width:100%; border-collapse:collapse; }
-        th,td{ border:1px solid #ddd; padding:8px; text-align:center; }
-        th{ background:#ffe6ef; }
+        @page { size:A5; margin:10mm; }
+
+        body {
+          font-family:Poppins,sans-serif;
+          margin:0;
+          padding:10px;
+          background:white;
+        }
+
+        h2 {
+          text-align:center;
+          color:#e91e63;
+        }
+
+        table {
+          width:100%;
+          border-collapse:collapse;
+          margin-top:10px;
+        }
+
+        th, td {
+          border:1px solid #ddd;
+          padding:8px;
+          text-align:center;
+        }
+
+        th {
+          background:#ffe6ef;
+        }
+
+        .info {
+          margin-bottom:10px;
+        }
       </style>
+
     </head>
 
     <body onload="window.print();window.close();">
 
-      <h2 style="text-align:center;color:#e91e63;">Éclat de Coco</h2>
+      <h2>Éclat de Coco</h2>
 
-      <p><strong>Client:</strong> ${document.getElementById("client-name").value || "-"}</p>
-      <p><strong>Téléphone:</strong> ${document.getElementById("client-phone").value || "-"}</p>
-      <p><strong>Date:</strong> ${document.getElementById("date").value || "-"}</p>
-
-      <p><strong>🚚 Delivery:</strong> ${deliveryValue} FCFA</p>
+      <div class="info">
+        <p><strong>Client:</strong> ${clientName}</p>
+        <p><strong>Téléphone:</strong> ${clientPhone}</p>
+        <p><strong>Date:</strong> ${date}</p>
+      </div>
 
       <table>
         <thead>
@@ -243,12 +287,15 @@ function printInvoice(){
           </tr>
         </thead>
 
-        <tbody>${invoiceBody}</tbody>
+        <tbody>
+          ${rows}
+        </tbody>
       </table>
 
+      <p><strong>Livraison:</strong> ${deliveryValue} FCFA</p>
       <p><strong>Paiement:</strong> ${selectedPayment}</p>
 
-      <h2 style="text-align:right;color:#e91e63;">
+      <h2 style="text-align:right;">
         Total: ${document.getElementById("grand-total").innerText}
       </h2>
 
