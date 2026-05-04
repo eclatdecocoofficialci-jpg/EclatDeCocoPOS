@@ -289,3 +289,17 @@ function printInvoice(){
 
   win.document.close();
 }
+function resetServiceWorker(){
+
+  navigator.serviceWorker.getRegistrations()
+  .then(function(registrations) {
+
+    for(let registration of registrations) {
+      registration.unregister();
+    }
+
+  });
+
+  alert("Cache cleared successfully ✔ Please refresh the page.");
+
+}
