@@ -1,4 +1,4 @@
-const CACHE_NAME = "eclat-de-coco-pos-v12";
+const CACHE_NAME = "eclat-de-coco-pos-v13";
 
 /* ================= FILES TO CACHE ================= */
 const urlsToCache = [
