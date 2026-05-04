@@ -48,22 +48,30 @@ self.addEventListener("fetch", event => {
 
   const request = event.request;
 
-  // 🔥 IMPORTANT: BYPASS CACHE POUR JS + CSS (FIX TON BUG)
+  // 🔥 JS / CSS toujours frais
   if (
     request.url.includes("script.js") ||
     request.url.includes("style.css")
   ) {
-    event.respondWith(fetch(request));
+    event.respondWith(fetch(request).catch(() => caches.match(request)));
     return;
   }
 
-  // HTML = toujours frais
+  // 🔥 NAVIGATION (HTML pages)
   if (request.mode === "navigate") {
-    event.respondWith(fetch(request));
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          return response;
+        })
+        .catch(() => {
+          return caches.match("/pos.html");
+        })
+    );
     return;
   }
 
-  // fallback cache normal
+  // 🔥 DEFAULT CACHE
   event.respondWith(
     caches.match(request).then(cached => {
       return cached || fetch(request);
