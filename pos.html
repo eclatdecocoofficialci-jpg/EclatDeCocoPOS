@@ -7,7 +7,6 @@
 
 <title>Éclat de Coco POS</title>
 
-<!-- PWA -->
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#e91e63">
 
@@ -15,7 +14,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-<!-- STYLE -->
 <link rel="stylesheet" href="./style.css">
 
 </head>
@@ -35,7 +33,6 @@
   <a href="./customers.html">Clients</a>
   <a href="./expenses.html">Expenses</a>
   <a href="./reports.html">Reports</a>
-
 </nav>
 
 <!-- MAIN -->
@@ -57,7 +54,7 @@
     <div id="product-list"></div>
 
     <h3>Calculatrice</h3>
-    <input id="display" type="text"  inputmode="numeric"  placeholder="0">
+    <input id="display" type="text" inputmode="numeric" placeholder="0">
 
     <div class="calc">
       <button onclick="press(7)">7</button>
@@ -83,100 +80,82 @@
 
   </div>
 
-<!-- RIGHT INVOICE -->
-<div class="panel right" id="invoice-area">
+  <!-- RIGHT INVOICE -->
+  <div class="panel right" id="invoice-area">
 
-  <div class="invoice-header">
-    <h2>Bienvenue à Éclat de Coco</h2>
-    <p>Abidjan - Côte d’Ivoire</p>
+    <div class="invoice-header">
+      <h2>Bienvenue à Éclat de Coco</h2>
+      <p>Abidjan - Côte d’Ivoire</p>
+    </div>
+
+    <h3>Facture N°: <span id="invoice-id"></span></h3>
+
+    <h4>Client(e)</h4>
+    <input id="client-name" placeholder="Nom">
+    <input id="client-phone" placeholder="Téléphone">
+    <input id="client-address" placeholder="Adresse">
+
+    <h4>Date</h4>
+    <input type="date" id="date">
+
+    <table>
+      <thead>
+        <tr>
+          <th>Produit</th>
+          <th>Qté</th>
+          <th>Prix</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="invoice-body"></tbody>
+    </table>
+
+    <h4>Livraison</h4>
+    <input id="delivery" type="number" placeholder="0">
+
+    <h4>Remise appliquée: <span id="discount-value">0%</span></h4>
+
+    <h2 id="grand-total">0 FCFA</h2>
+
+    <!-- PAYMENT -->
+    <h4>Paiement</h4>
+
+    <div class="payment-boxes">
+
+      <div class="pay-btn" onclick="selectPayment(this, 'cash')">
+        Cash
+      </div>
+
+      <div class="pay-btn" onclick="selectPayment(this, 'orange')">
+        Orange Money
+      </div>
+
+      <div class="pay-btn" onclick="selectPayment(this, 'wave')">
+        Wave
+      </div>
+
+    </div>
+
+    <!-- DISCOUNT -->
+    <h4>Remise</h4>
+    <button onclick="discount20()">-20%</button>
+    <button onclick="discount50()">-50%</button>
+
+    <!-- MODE RAPIDE -->
+    <button onclick="toggleCheckoutMode()">Mode rapide</button>
+
+    <!-- ACTIONS -->
+    <button onclick="saveSale()">💾 Sauvegarder</button>
+    <button onclick="window.print()">🖨 Imprimer</button>
+
+    <p class="thanks">Merci d’avoir choisi Éclat de Coco 💗</p>
+
   </div>
 
-  <h3>Facture N°: <span id="invoice-id"></span></h3>
-
-  <h4>Client(e)</h4>
-  <input id="client-name" placeholder="Nom">
-  <input id="client-phone" placeholder="Téléphone">
-  <input id="client-address" placeholder="Adresse">
-
-  <h4>Date</h4>
-  <input type="date" id="date">
-
-  <table>
-    <thead>
-      <tr>
-        <th>Produit</th>
-        <th>Qté</th>
-        <th>Prix</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody id="invoice-body"></tbody>
-  </table>
-
-  <h4>Livraison</h4>
-  <input id="delivery" type="number" placeholder="0">
-
-  <!-- REMISE AFFICHAGE (IMPORTANT) -->
-  <h4>Remise appliquée: <span id="discount-value">0%</span></h4>
-
-  <h2 id="grand-total">0 FCFA</h2>
-
-  <!-- PAYMENT -->
-  <h4>Paiement</h4>
-
-  <div class="payment-boxes">
-
-    <div class="pay-btn" onclick="selectPayment(this, 'cash')">
-      Cash
-    </div>
-
-    <div class="pay-btn" onclick="selectPayment(this, 'orange')">
-      Orange Money
-    </div>
-
-    <div class="pay-btn" onclick="selectPayment(this, 'wave')">
-      Wave
-    </div>
-
-  </div>
-
-  <!-- DISCOUNT -->
-  <h4>Remise</h4>
-  <button onclick="discount20()">-20%</button>
-  <button onclick="discount50()">-50%</button>
-
-  <!-- MODE RAPIDE -->
-  <button onclick="toggleCheckoutMode()">Mode rapide</button>
-
-  <!-- ACTIONS -->
-  <button onclick="saveSale()">💾 Sauvegarder</button>
-  <button onclick="window.print()">🖨 Imprimer</button>
-
-  <p class="thanks">Merci d’avoir choisi Éclat de Coco 💗</p>
-
 </div>
 
-</div>
-
-<!-- DISCOUNT -->
-<h4>Remise</h4>
-<button onclick="discount20()">-20%</button>
-<button onclick="discount50()">-50%</button>
-
-<!-- MODE RAPIDE -->
-<button onclick="toggleCheckoutMode()">Mode rapide</button>
-
-<!-- ACTIONS -->
-<button onclick="saveSale()">💾 Sauvegarder</button>
-<button onclick="window.print()">🖨 Imprimer</button>
-
-<p class="thanks">Merci d’avoir choisi Éclat de Coco 💗</p>
-</div>
-
-<!-- JS -->
 <script src="./script.js"></script>
 
-<!-- SERVICE WORKER -->
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
