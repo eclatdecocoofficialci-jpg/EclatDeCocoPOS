@@ -5,13 +5,10 @@ let products = JSON.parse(localStorage.getItem("products")) || [
 
 let invoice = [];
 let discount = 0;
-
 let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
 let paymentMethod = "cash";
 let checkoutMode = false;
-
-let currentCalcResult = 0;
 
 /* ================= INVOICE NUMBER ================= */
 function generateInvoiceNumber(){
@@ -23,7 +20,6 @@ function generateInvoiceNumber(){
 
 /* ================= INIT ================= */
 window.addEventListener("DOMContentLoaded", () => {
-
   const inv = document.getElementById("invoice-id");
   if(inv) inv.innerText = generateInvoiceNumber();
 
@@ -32,7 +28,7 @@ window.addEventListener("DOMContentLoaded", () => {
   renderInvoice();
 });
 
-/* ================= LIVE DELIVERY ================= */
+/* ================= DELIVERY LIVE ================= */
 document.addEventListener("input", (e)=>{
   if(e.target.id === "delivery"){
     renderInvoice();
@@ -100,9 +96,26 @@ function renderProduct(p){
   list.appendChild(div);
 }
 
+/* ================= SEARCH ================= */
+function searchProduct(){
+  const val = document.getElementById("search")?.value.toLowerCase();
+  const list = document.getElementById("product-list");
+  if(!list) return;
+
+  if(!val){
+    renderProducts();
+    return;
+  }
+
+  list.innerHTML = "";
+
+  products
+    .filter(p => p.name.toLowerCase().includes(val))
+    .forEach(renderProduct);
+}
+
 /* ================= CART ================= */
 function addToCart(name, price){
-
   let item = invoice.find(i => i.name === name);
 
   if(item){
@@ -121,7 +134,6 @@ function addToCart(name, price){
 
 /* ================= INVOICE ================= */
 function renderInvoice(){
-
   const table = document.getElementById("invoice-body");
   if(!table) return;
 
@@ -130,7 +142,6 @@ function renderInvoice(){
   let subtotal = 0;
 
   invoice.forEach((i, index) => {
-
     let t = i.qty * i.price;
     subtotal += t;
 
@@ -148,12 +159,15 @@ function renderInvoice(){
 
   let delivery = Number(document.getElementById("delivery")?.value || 0);
 
-  let sub = subtotal;
-  let total = sub + delivery;
+  let subTotal = subtotal;
+  let total = subTotal + delivery;
+
   total = total - (total * discount / 100);
 
-  document.getElementById("grand-total").innerText = Math.round(total) + " FCFA";
+  document.getElementById("grand-total").innerText =
+    Math.round(total) + " FCFA";
 
+  // remise UI
   const disc = document.getElementById("discount-value");
   if(disc) disc.innerText = discount + "%";
 }
@@ -161,13 +175,13 @@ function renderInvoice(){
 /* ================= EDIT ================= */
 function updateQty(i){
   let v = parseInt(prompt("Quantité"));
-  if(v>0) invoice[i].qty = v;
+  if(v > 0) invoice[i].qty = v;
   renderInvoice();
 }
 
 function updatePrice(i){
   let v = parseFloat(prompt("Prix"));
-  if(v>0) invoice[i].price = v;
+  if(v > 0) invoice[i].price = v;
   renderInvoice();
 }
 
@@ -182,25 +196,15 @@ function discount50(){ setDiscount(50); }
 /* ================= PAYMENT ================= */
 function selectPayment(el, method){
   paymentMethod = method;
-  document.querySelectorAll(".pay-btn").forEach(b=>b.classList.remove("active"));
+
+  document.querySelectorAll(".pay-btn").forEach(b=>{
+    b.classList.remove("active");
+  });
+
   el.classList.add("active");
 }
 
-/* ================= CALC ================= */
-function press(v){
-  const d = document.getElementById("display");
-  if(d) d.value += v;
-}
-
-function clearCalc(){
-  document.getElementById("display").value = "";
-}
-
-function backspace(){
-  const d = document.getElementById("display");
-  if(d) d.value = d.value.slice(0,-1);
-}
-
+/* ================= CALCULATOR ================= */
 function calculate(){
   const d = document.getElementById("display");
   if(!d) return;
@@ -234,8 +238,8 @@ function saveSale(){
       address:document.getElementById("client-address")?.value
     },
     cart:invoice,
-    discount:discount+"%",
-    paymentMethod,
+    discount:discount + "%",
+    paymentMethod:paymentMethod,
     delivery:Number(document.getElementById("delivery")?.value || 0),
     total:document.getElementById("grand-total")?.innerText
   };
@@ -247,36 +251,18 @@ function saveSale(){
   discount = 0;
 
   renderInvoice();
+
   document.getElementById("invoice-id").innerText = generateInvoiceNumber();
 
-  alert("Vente enregistrée");
+  const del = document.getElementById("delivery");
+  if(del) del.value = "";
+
+  alert("💗 Vente enregistrée (" + paymentMethod + ")");
 }
 
-/* ================= PRINT FIX (IMPORTANT) ================= */
+/* ================= PRINT (IMPORTANT FIX) ================= */
 function printInvoice(){
-
-  const area = document.getElementById("invoice-area");
-
-  const win = window.open("", "", "width=900,height=600");
-
-  win.document.write(`
-    <html>
-    <head>
-      <title>Facture</title>
-      <style>
-        body{font-family:Poppins;padding:20px;}
-        h2,h3{text-align:center;color:#e91e63;}
-        table{width:100%;border-collapse:collapse;}
-        th,td{border:1px solid #ddd;padding:8px;text-align:center;}
-      </style>
-    </head>
-    <body onload="window.print(); window.close();">
-      ${area.innerHTML}
-    </body>
-    </html>
-  `);
-
-  win.document.close();
+  window.print();
 }
 
 /* ================= SW ================= */
