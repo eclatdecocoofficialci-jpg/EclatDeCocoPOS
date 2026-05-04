@@ -361,6 +361,36 @@ document.addEventListener("DOMContentLoaded", function () {
     renderSales();
   }
 });
+function saveSale(){
+
+  if(invoice.length === 0){
+    alert("Aucun produit dans la facture");
+    return;
+  }
+
+  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+
+  const sale = {
+    id: generateInvoiceNumber(),
+    date: document.getElementById("date")?.value || new Date().toISOString().split("T")[0],
+    client: {
+      name: document.getElementById("client-name")?.value || "-",
+      phone: document.getElementById("client-phone")?.value || "-",
+      address: document.getElementById("client-address")?.value || "-"
+    },
+    cart: invoice,
+    discount: discount,
+    delivery: Number(document.getElementById("delivery")?.value || 0),
+    paymentMethod: paymentMethod,
+    total: document.getElementById("grand-total").innerText
+  };
+
+  sales.push(sale);
+
+  localStorage.setItem("sales", JSON.stringify(sales));
+
+  alert("Vente sauvegardée ✔");
+}
 /* ================= RESET SW ================= */
 function resetServiceWorker(){
 
