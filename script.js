@@ -181,9 +181,9 @@ function calculate(){
 function printInvoice(){
 
   const paymentLabels = {
-    cash: "Cash",
-    orange: "Orange Money",
-    wave: "Wave"
+    cash:"Cash",
+    orange:"Orange Money",
+    wave:"Wave"
   };
 
   const selectedPayment =
@@ -192,22 +192,10 @@ function printInvoice(){
   const deliveryValue =
     Number(document.getElementById("delivery")?.value || 0);
 
-  const clientName =
-    document.getElementById("client-name").value || "-";
-
-  const clientPhone =
-    document.getElementById("client-phone").value || "-";
-
-  const date =
-    document.getElementById("date").value || "-";
-
-  let rows = "";
-
-  invoice.forEach(item => {
-
+  const invoiceBody = invoice.map(item => {
     const total = item.price * item.qty;
 
-    rows += `
+    return `
       <tr>
         <td>${item.name}</td>
         <td>${item.qty}</td>
@@ -215,7 +203,9 @@ function printInvoice(){
         <td>${total}</td>
       </tr>
     `;
-  });
+  }).join("");
+
+  const invoiceNumber = generateInvoiceNumber();
 
   const win = window.open("", "", "width=700,height=900");
 
@@ -232,56 +222,58 @@ function printInvoice(){
       <style>
         @page { size:A5; margin:10mm; }
 
-        body {
+        body{
           font-family:Poppins,sans-serif;
           margin:0;
           padding:10px;
-          background:white;
         }
 
-        h2 {
-          text-align:center;
-          color:#e91e63;
-        }
-
-        table {
+        table{
           width:100%;
           border-collapse:collapse;
-          margin-top:10px;
         }
 
-        th, td {
+        th,td{
           border:1px solid #ddd;
           padding:8px;
           text-align:center;
         }
 
-        th {
+        th{
           background:#ffe6ef;
         }
 
-        .info {
-          margin-bottom:10px;
+        .title{
+          text-align:center;
+          color:#e91e63;
+          font-size:20px;
+          font-weight:bold;
+        }
+
+        .sub{
+          text-align:center;
+          font-size:13px;
+          color:#666;
+        }
+
+        .footer{
+          text-align:center;
+          margin-top:30px;
+          color:#e91e63;
         }
       </style>
-
     </head>
 
     <body onload="window.print();window.close();">
 
-      <h2 style="text-align:center;color:#e91e63;margin-bottom:5px;">
-  Éclat de Coco – Official Store
-</h2>
+      <div class="title">ÉCLAT DE COCO OFFICIAL STORE</div>
+      <div class="sub">Abidjan - Côte d'Ivoire</div>
 
-<p style="text-align:center;margin-top:0;color:#666;font-size:14px;">
-  Abidjan - Côte d’Ivoire
-</p>
+      <p><strong>Facture N°:</strong> ${invoiceNumber}</p>
+      <p><strong>Date:</strong> ${document.getElementById("date").value || "-"}</p>
 
-      <div class="info">
-        <p><strong>Client:</strong> ${clientName}</p>
-        <p><strong>Téléphone:</strong> ${clientPhone}</p>
-        <p><strong>Date:</strong> ${date}</p>
-      </div>
+      <p><strong>Client:</strong> ${document.getElementById("client-name").value || "-"}</p>
+      <p><strong>Téléphone:</strong> ${document.getElementById("client-phone").value || "-"}</p>
 
       <table>
         <thead>
@@ -294,16 +286,20 @@ function printInvoice(){
         </thead>
 
         <tbody>
-          ${rows}
+          ${invoiceBody}
         </tbody>
       </table>
 
       <p><strong>Livraison:</strong> ${deliveryValue} FCFA</p>
       <p><strong>Paiement:</strong> ${selectedPayment}</p>
 
-      <h2 style="text-align:right;">
-        Total: ${document.getElementById("grand-total").innerText}
+      <h2 style="text-align:right;color:#e91e63;">
+        TOTAL: ${document.getElementById("grand-total").innerText}
       </h2>
+
+      <div class="footer">
+        Merci de faire partie de l’univers Éclat de Coco 💗
+      </div>
 
     </body>
     </html>
@@ -311,7 +307,28 @@ function printInvoice(){
 
   win.document.close();
 }
+function generateInvoiceNumber(){
+  const year = new Date().getFullYear(); // 2026
 
+  let last = localStorage.getItem("invoiceNumber");
+
+  if(!last){
+    last = 1;
+  } else {
+    last = Number(last) + 1;
+  }
+
+  localStorage.setItem("invoiceNumber", last);
+
+  return year + String(last).padStart(3, "0");
+}
+document.addEventListener("DOMContentLoaded", function () {
+  const deliveryInput = document.getElementById("delivery");
+
+  if(deliveryInput){
+    deliveryInput.addEventListener("input", updateTotal);
+  }
+});
 /* ================= RESET SW ================= */
 function resetServiceWorker(){
 
