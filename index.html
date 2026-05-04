@@ -71,12 +71,26 @@ function enterApp(){
   const code = document.getElementById("code").value;
 
   if(code === "29121509"){
-    // IMPORTANT FIX (GitHub Pages + iPad safe)
+
+    // 🔥 SAVE LOGIN (IMPORTANT)
+    localStorage.setItem("eclat_logged", "true");
+
     window.location.href = "./pos.html?v=1";
+
   } else {
     alert("Wrong code ❌");
   }
 }
+
+/* ================= AUTO LOGIN ================= */
+window.onload = function(){
+
+  const logged = localStorage.getItem("eclat_logged");
+
+  if(logged === "true"){
+    window.location.href = "./pos.html?v=1";
+  }
+};
 </script>
 
 </body>
