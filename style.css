@@ -247,3 +247,90 @@ th{
     display: table-cell !important;
   }
 }
+body{
+  margin:0;
+  font-family:Poppins, sans-serif;
+  background:#fff0f5;
+}
+
+/* ================= HEADER ================= */
+header{
+  background:#e91e63;
+  color:white;
+  text-align:center;
+  padding:12px;
+}
+
+/* ================= PAGE ================= */
+main{
+  padding:10px;
+}
+
+/* ================= TOTAL BOX ================= */
+h3{
+  color:#e91e63;
+}
+
+/* ================= TABLE ================= */
+.sales-table{
+  width:100%;
+  border-collapse:collapse;
+  background:white;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* HEADER TABLE */
+.sales-table thead{
+  background:#e91e63;
+  color:white;
+}
+
+.sales-table th{
+  padding:12px;
+  font-size:13px;
+  text-align:center;
+}
+
+/* BODY */
+.sales-table td{
+  padding:10px;
+  text-align:center;
+  border-bottom:1px solid #ffe6ef;
+  font-size:13px;
+}
+
+/* LINES HOVER */
+.sales-table tr:hover{
+  background:#ffe6ef;
+}
+
+/* ================= BUTTONS ================= */
+button{
+  background:#f8bbd0;
+  border:none;
+  padding:6px 10px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+  transition:0.2s;
+}
+
+button:hover{
+  background:#e91e63;
+  color:white;
+}
+
+/* DELETE BUTTON SPECIAL */
+button:last-child{
+  background:#ff4d6d;
+  color:white;
+}
+
+/* ================= EMPTY STATE ================= */
+.sales-table td[colspan]{
+  padding:20px;
+  color:#999;
+  font-style:italic;
+}
