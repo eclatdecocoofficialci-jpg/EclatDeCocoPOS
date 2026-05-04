@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- PWA SUPPORT -->
+<!-- PWA -->
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#e91e63">
 
@@ -14,35 +14,107 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
 <style>
+
+/* ================= GLOBAL ================= */
 body{
   margin:0;
-  font-family:Poppins;
+  font-family:Poppins, sans-serif;
   height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
-  background:#fff0f5;
+  overflow:hidden;
+  position:relative;
 }
 
+/* ================= BACKGROUND NATURE COCO ================= */
+body::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:url("https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2") center/cover no-repeat;
+  filter:brightness(0.55) contrast(1.1);
+  z-index:-3;
+}
+
+/* ================= OVERLAY ROSE + GREEN ================= */
+body::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg, rgba(233,30,99,0.35), rgba(46,125,50,0.35));
+  z-index:-2;
+}
+
+/* ================= TITLE ================= */
+.title{
+  position:absolute;
+  top:50px;
+  width:100%;
+  text-align:center;
+  color:white;
+  font-size:18px;
+  font-weight:600;
+  text-shadow:0 5px 15px rgba(0,0,0,0.4);
+}
+
+/* ================= PETALS ANIMATION ================= */
+.petal{
+  position:absolute;
+  width:10px;
+  height:10px;
+  background:rgba(255,192,203,0.8);
+  border-radius:50%;
+  animation:fall linear infinite;
+  z-index:-1;
+}
+
+@keyframes fall{
+  0%{
+    transform:translateY(-10vh) translateX(0);
+    opacity:1;
+  }
+  100%{
+    transform:translateY(110vh) translateX(60px);
+    opacity:0;
+  }
+}
+
+/* ================= LOGIN CARD ================= */
 .card{
-  background:white;
+  background:rgba(255,255,255,0.12);
+  backdrop-filter:blur(15px);
+  -webkit-backdrop-filter:blur(15px);
   padding:30px;
   border-radius:20px;
   width:320px;
   text-align:center;
-  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+  border:1px solid rgba(255,255,255,0.25);
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+  animation:fadeIn 1s ease;
+  color:white;
 }
 
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+/* ================= INPUT ================= */
 input{
   width:100%;
   padding:12px;
   margin-top:15px;
   border-radius:10px;
-  border:2px solid #f8bbd0;
+  border:none;
   outline:none;
+  font-size:16px;
 }
 
+/* ================= BUTTON ================= */
 button{
   width:100%;
   margin-top:15px;
@@ -52,31 +124,46 @@ button{
   background:#e91e63;
   color:white;
   font-weight:bold;
+  cursor:pointer;
 }
+
+/* ================= SMALL TEXT ================= */
+.small{
+  font-size:12px;
+  margin-top:10px;
+  opacity:0.9;
+}
+
 </style>
 </head>
 
 <body>
 
+<!-- TITLE -->
+<div class="title">
+  Bienvenue dans l’univers Éclat de Coco
+</div>
+
+<!-- LOGIN BOX -->
 <div class="card">
   <h2>Éclat de Coco POS</h2>
 
   <input type="password" id="code" placeholder="Enter code">
 
   <button onclick="enterApp()">Enter</button>
+
+  <div class="small">Nature • Coco • Beauté 🌿</div>
 </div>
 
 <script>
+
+/* ================= LOGIN ================= */
 function enterApp(){
   const code = document.getElementById("code").value;
 
   if(code === "29121509"){
-
-    // 🔥 SAVE LOGIN (IMPORTANT)
     localStorage.setItem("eclat_logged", "true");
-
     window.location.href = "./pos.html?v=1";
-
   } else {
     alert("Wrong code ❌");
   }
@@ -90,7 +177,24 @@ window.onload = function(){
   if(logged === "true"){
     window.location.href = "./pos.html?v=1";
   }
+
+  createPetals();
 };
+
+/* ================= PETALS GENERATOR ================= */
+function createPetals(){
+  for(let i=0;i<18;i++){
+    let petal = document.createElement("div");
+    petal.classList.add("petal");
+
+    petal.style.left = Math.random()*100 + "vw";
+    petal.style.animationDuration = (4 + Math.random()*5) + "s";
+    petal.style.opacity = Math.random();
+
+    document.body.appendChild(petal);
+  }
+}
+
 </script>
 
 </body>
