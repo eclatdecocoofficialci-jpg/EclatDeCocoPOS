@@ -226,8 +226,7 @@ function printInvoice(){
     paymentLabels[paymentMethod] || paymentMethod;
 
   const deliveryValue =
-    document.getElementById("delivery")?.value || 0;
-
+    Number(document.getElementById("delivery")?.value || 0);
   const invoiceBody =
     document.getElementById("invoice-body")?.innerHTML || "";
 
@@ -256,7 +255,8 @@ function printInvoice(){
       <h2 style="text-align:center;color:#e91e63;">
         Éclat de Coco
       </h2>
-
+<p style="margin-top:10px;">
+<strong>🚚 Delivery:</strong> ${deliveryValue} FCFA</p>
       <p><strong>Client:</strong> ${document.getElementById("client-name").value || "-"}</p>
       <p><strong>Téléphone:</strong> ${document.getElementById("client-phone").value || "-"}</p>
       <p><strong>Date:</strong> ${document.getElementById("date").value || "-"}</p>
