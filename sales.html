@@ -153,7 +153,26 @@ function updateTotalSales(){
   document.getElementById("total-sales").innerText =
     Math.round(total) + " FCFA";
 }
+function renderSales(){
 
+  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+
+  sales.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  document.getElementById("sales-body").innerHTML =
+    sales.map(sale => `
+      <tr>
+        <td>${sale.id}</td>
+        <td>${sale.date}</td>
+        <td>${sale.client.name}</td>
+        <td>${sale.discount}%</td>
+        <td>${sale.paymentMethod}</td>
+        <td style="color:#e91e63;font-weight:bold;">
+          ${sale.total}
+        </td>
+      </tr>
+    `).join("");
+}
 window.onload = loadSales;
 </script>
 
