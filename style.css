@@ -1,288 +1,213 @@
-/* ================= DATA ================= */
-let products = [
-  {name:"Savon Rose", price:3000, stock:10, category:"Savon"},
-  {name:"Savon Coco", price:3500, stock:8, category:"Savon"},
-  {name:"Lotion Vanille", price:5000, stock:5, category:"Lotion"},
-  {name:"Beurre Karité", price:4000, stock:7, category:"Beurre"}
-];
+body{
+  margin:0;
+  font-family:Poppins, sans-serif;
+  background:#fff0f5;
+  overflow-x:hidden;
+}
 
-let invoice = [];
-let paymentMethod = "cash";
-let discount = 0;
+/* ================= HEADER ================= */
+header{
+  background:#e91e63;
+  color:white;
+  text-align:center;
+  padding:10px;
+}
 
-/* ================= INIT ================= */
-window.onload = function(){
-  loadCategories();
-  renderProducts(products);
+header h1{
+  margin:0;
+  font-size:18px;
+  font-weight:600;
+}
+
+/* ================= NAV ================= */
+.top-nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:10px;
+  background:white;
+}
+
+.top-nav a{
+  background:#f8bbd0;
+  padding:10px 12px;
+  border-radius:10px;
+  text-decoration:none;
+  color:black;
+  font-weight:500;
+}
+
+/* ================= POS LAYOUT (3 COLONNES) ================= */
+.pos-container{
+  display:flex;
+  flex-direction:row;
+  gap:10px;
+  padding:10px;
+  align-items:flex-start;
+  min-height:100vh;
+}
+
+/* LEFT */
+.left{
+  width:18%;
+  min-width:180px;
+}
+
+/* CENTER */
+.center{
+  width:52%;
+  min-width:320px;
+}
+
+/* RIGHT */
+.right{
+  width:30%;
+  min-width:280px;
+}
+
+/* ================= PANELS ================= */
+.panel{
+  background:white;
+  border-radius:12px;
+  padding:10px;
+  max-height:85vh;
+  overflow-y:auto;
+  box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* ================= PINK BOX (IMPORTANT JS COMPATIBLE) ================= */
+.pink-box{
+  background:linear-gradient(135deg,#f8bbd0,#ffe6ef);
+  padding:16px;
+  border-radius:14px;
+  text-align:center;
+  font-weight:600;
+  font-size:14px;
+  cursor:pointer;
+  transition:0.2s;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+
+.pink-box:hover{
+  transform:scale(1.05);
+  background:#f06292;
+  color:white;
 }
 
 /* ================= CATEGORIES ================= */
-function loadCategories(){
-
-  const categories = [...new Set(products.map(p => p.category))];
-
-  let html = "";
-
-  categories.forEach(cat=>{
-    html += `
-      <div class="pink-box" onclick="filterProducts('${cat}')">
-        ${cat}
-      </div>
-    `;
-  });
-
-  document.getElementById("category-boxes").innerHTML = html;
+#category-boxes{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
 
-/* ================= FILTER PRODUCTS ================= */
-function filterProducts(category){
-
-  const filtered = products.filter(p => p.category === category);
-
-  renderProducts(filtered);
+/* ================= PRODUCTS GRID ================= */
+#product-list{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
 }
 
-/* ================= SEARCH ================= */
-function searchProducts(value){
-
-  const filtered = products.filter(p =>
-    p.name.toLowerCase().includes(value.toLowerCase()) ||
-    p.category.toLowerCase().includes(value.toLowerCase())
-  );
-
-  renderProducts(filtered);
-}
-
-/* ================= RENDER PRODUCTS ================= */
-function renderProducts(list){
-
-  let html = "";
-
-  list.forEach(p=>{
-    html += `
-      <div class="pink-box"
-           onclick="addToInvoice('${p.name}', ${p.price})">
-
-        <strong>${p.name}</strong><br>
-        💰 ${p.price} FCFA<br>
-        📦 Stock: ${p.stock}
-
-      </div>
-    `;
-  });
-
-  document.getElementById("product-list").innerHTML = html;
-}
-
-/* ================= ADD TO INVOICE ================= */
-function addToInvoice(name, price){
-
-  const existing = invoice.find(i => i.name === name);
-
-  if(existing){
-    existing.qty += 1;
-  } else {
-    invoice.push({
-      name,
-      price,
-      qty:1
-    });
-  }
-
-  renderInvoice();
-}
-
-/* ================= RENDER INVOICE ================= */
-function renderInvoice(){
-
-  let html = "";
-
-  invoice.forEach((item, index)=>{
-
-    let total = item.price * item.qty;
-
-    html += `
-      <tr>
-        <td>${item.name}</td>
-
-        <td>
-          <input type="number"
-                 value="${item.qty}"
-                 min="1"
-                 onchange="updateQty(${index}, this.value)">
-        </td>
-
-        <td>${item.price}</td>
-
-        <td>${total}</td>
-
-        <td>
-          <button onclick="removeItem(${index})"
-                  style="background:red;color:white;border:none;padding:5px;border-radius:5px;">
-            ❌
-          </button>
-        </td>
-      </tr>
-    `;
-  });
-
-  document.getElementById("invoice-body").innerHTML = html;
-
-  updateTotal();
-}
-
-/* ================= UPDATE QTY ================= */
-function updateQty(index, qty){
-
-  invoice[index].qty = Number(qty);
-
-  renderInvoice();
-}
-
-/* ================= REMOVE ITEM ================= */
-function removeItem(index){
-
-  invoice.splice(index, 1);
-
-  renderInvoice();
-}
-
-/* ================= TOTAL ================= */
-function updateTotal(){
-
-  let total = 0;
-
-  invoice.forEach(item=>{
-    total += item.price * item.qty;
-  });
-
-  const delivery = Number(document.getElementById("delivery")?.value || 0);
-
-  total = total - (total * discount / 100);
-
-  total += delivery;
-
-  document.getElementById("grand-total").innerText =
-    total + " FCFA";
-
-  document.getElementById("discount-value").innerText =
-    discount + "%";
-}
-
-/* ================= PAYMENT ================= */
-function selectPayment(el, method){
-
-  paymentMethod = method;
-
-  document.querySelectorAll(".pay-btn").forEach(b=>{
-    b.classList.remove("active");
-  });
-
-  el.classList.add("active");
-}
-
-/* ================= DISCOUNT ================= */
-function discount20(){
-  discount = 20;
-  updateTotal();
-}
-
-function discount50(){
-  discount = 50;
-  updateTotal();
+/* ================= SEARCH INPUT ================= */
+input{
+  font-family:Poppins, sans-serif;
 }
 
 /* ================= CALCULATOR ================= */
-function press(val){
-  document.getElementById("display").value += val;
+#display{
+  width:100%;
+  height:60px;
+  border-radius:15px;
+  border:2px solid #f8bbd0;
+  font-size:26px;
+  text-align:right;
+  padding:10px;
+  font-weight:bold;
 }
 
-function clearCalc(){
-  document.getElementById("display").value = "";
+.calc{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
 }
 
-function calculate(){
-  try{
-    document.getElementById("display").value =
-      eval(document.getElementById("display").value);
-  } catch(e){
-    alert("Erreur calcul");
+.calc button{
+  height:60px;
+  border:none;
+  background:#f8bbd0;
+  border-radius:15px;
+  font-size:20px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.calc button:active{
+  transform:scale(0.96);
+}
+
+/* ================= FACTURE ================= */
+#invoice-body input{
+  width:60px;
+}
+
+#grand-total{
+  text-align:center;
+  color:#e91e63;
+  font-weight:bold;
+  background:#fff;
+  padding:10px;
+  border-radius:10px;
+}
+
+/* ================= PAYMENT ================= */
+.payment-boxes{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.pay-btn{
+  flex:1;
+  min-width:120px;
+  padding:15px;
+  text-align:center;
+  background:#f8bbd0;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:bold;
+  transition:0.2s;
+}
+
+.pay-btn.active{
+  background:#e91e63;
+  color:white;
+}
+
+/* ================= TABLE ================= */
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th, td{
+  border:1px solid #eee;
+  padding:8px;
+  text-align:center;
+}
+
+th{
+  background:#ffe6ef;
+  color:#333;
+}
+
+/* ================= MOBILE ================= */
+@media(max-width:900px){
+  .pos-container{
+    flex-direction:column;
   }
-}
 
-/* ================= PRINT INVOICE ================= */
-function printInvoice(){
-
-  const paymentLabels = {
-    cash:"Cash",
-    orange:"Orange Money",
-    wave:"Wave"
-  };
-
-  const selectedPayment =
-    paymentLabels[paymentMethod] || paymentMethod;
-
-  const deliveryValue =
-    document.getElementById("delivery")?.value || 0;
-
-  const invoiceBody =
-    document.getElementById("invoice-body")?.innerHTML || "";
-
-  const win = window.open("", "", "width=700,height=900");
-
-  if(!win){
-    alert("Active les popups pour imprimer");
-    return;
+  .left,.center,.right{
+    width:100%;
+    min-width:100%;
   }
-
-  win.document.write(`
-    <html>
-    <head>
-      <title>Facture</title>
-      <style>
-        @page { size:A5; margin:10mm; }
-        body { font-family:Poppins,sans-serif;margin:0;padding:10px; }
-        table { width:100%;border-collapse:collapse; }
-        th,td { border:1px solid #ddd;padding:8px;text-align:center; }
-        th { background:#ffe6ef; }
-      </style>
-    </head>
-
-    <body onload="window.print();window.close();">
-
-      <h2 style="text-align:center;color:#e91e63;">
-        Éclat de Coco
-      </h2>
-
-      <p><strong>Client:</strong> ${document.getElementById("client-name").value || "-"}</p>
-      <p><strong>Téléphone:</strong> ${document.getElementById("client-phone").value || "-"}</p>
-      <p><strong>Date:</strong> ${document.getElementById("date").value || "-"}</p>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Produit</th>
-            <th>Qté</th>
-            <th>Prix</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          ${invoiceBody}
-        </tbody>
-      </table>
-
-      <p><strong>Livraison:</strong> ${deliveryValue} FCFA</p>
-      <p><strong>Paiement:</strong> ${selectedPayment}</p>
-
-      <h2 style="text-align:right;color:#e91e63;">
-        Total: ${document.getElementById("grand-total").innerText}
-      </h2>
-
-    </body>
-    </html>
-  `);
-
-  win.document.close();
 }
