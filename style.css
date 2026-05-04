@@ -3,6 +3,7 @@ body{
   font-family:Poppins, sans-serif;
   background:#fff0f5;
   overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
 }
 
 /* ================= HEADER ================= */
@@ -37,7 +38,7 @@ header h1{
   font-weight:500;
 }
 
-/* ================= POS LAYOUT (3 COLONNES) ================= */
+/* ================= POS LAYOUT ================= */
 .pos-container{
   display:flex;
   flex-direction:row;
@@ -45,24 +46,7 @@ header h1{
   padding:10px;
   align-items:flex-start;
   min-height:100vh;
-}
-
-/* LEFT */
-.left{
-  width:18%;
-  min-width:180px;
-}
-
-/* CENTER */
-.center{
-  width:52%;
-  min-width:320px;
-}
-
-/* RIGHT */
-.right{
-  width:30%;
-  min-width:280px;
+  overflow:hidden;
 }
 
 /* ================= PANELS ================= */
@@ -70,12 +54,35 @@ header h1{
   background:white;
   border-radius:12px;
   padding:10px;
-  max-height:85vh;
+
+  /* FIX iPad + visibilité boutons */
+  max-height:calc(100vh - 120px);
   overflow-y:auto;
+
   box-shadow:0 5px 15px rgba(0,0,0,0.05);
+
+  display:flex;
+  flex-direction:column;
+  min-width:0;
 }
 
-/* ================= PINK BOX (IMPORTANT JS COMPATIBLE) ================= */
+/* ================= 3 COLONNES ================= */
+.left{
+  width:18%;
+  min-width:180px;
+}
+
+.center{
+  width:52%;
+  min-width:320px;
+}
+
+.right{
+  width:30%;
+  min-width:280px;
+}
+
+/* ================= PINK BOX ================= */
 .pink-box{
   background:linear-gradient(135deg,#f8bbd0,#ffe6ef);
   padding:16px;
@@ -101,14 +108,14 @@ header h1{
   gap:12px;
 }
 
-/* ================= PRODUCTS GRID ================= */
+/* ================= PRODUCTS ================= */
 #product-list{
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:10px;
 }
 
-/* ================= SEARCH INPUT ================= */
+/* ================= INPUT ================= */
 input{
   font-family:Poppins, sans-serif;
 }
@@ -181,6 +188,8 @@ input{
 .pay-btn.active{
   background:#e91e63;
   color:white;
+  transform:scale(1.05);
+  box-shadow:0 0 10px rgba(233,30,99,0.4);
 }
 
 /* ================= TABLE ================= */
@@ -200,6 +209,11 @@ th{
   color:#333;
 }
 
+/* ================= BUTTON VISIBILITY FIX ================= */
+.right button{
+  margin-top:8px;
+}
+
 /* ================= MOBILE ================= */
 @media(max-width:900px){
   .pos-container{
@@ -209,5 +223,9 @@ th{
   .left,.center,.right{
     width:100%;
     min-width:100%;
+  }
+
+  .panel{
+    max-height:none;
   }
 }
