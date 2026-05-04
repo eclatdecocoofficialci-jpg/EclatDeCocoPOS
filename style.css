@@ -1,281 +1,256 @@
-body{
-  margin:0;
-  font-family:Poppins, sans-serif;
-  background:#fff0f5;
+let products = JSON.parse(localStorage.getItem("products")) || [
+  {name:"Savon Rose", price:3000, category:"Savon", stock:10},
+  {name:"Lotion Vanille", price:5000, category:"Lotion", stock:8}
+];
 
-  /* FIX SCROLL GLOBAL */
-  overflow-x:hidden;
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
+let invoice = [];
+let discount = 0;
+let sales = JSON.parse(localStorage.getItem("sales")) || [];
+
+let paymentMethod = "cash";
+let checkoutMode = false;
+
+/* ================= INVOICE NUMBER ================= */
+function generateInvoiceNumber(){
+  let last = localStorage.getItem("invoiceNumber");
+  last = last ? parseInt(last) + 1 : 1;
+  localStorage.setItem("invoiceNumber", last);
+  return "2026" + String(last).padStart(3,"0");
 }
 
-/* ================= HEADER ================= */
-header{
-  background:#e91e63;
-  color:white;
-  text-align:center;
-  padding:10px;
-}
+/* ================= INIT ================= */
+window.addEventListener("DOMContentLoaded", () => {
 
-header h1{
-  margin:0;
-  font-size:18px;
-  font-weight:600;
-}
+  const inv = document.getElementById("invoice-id");
+  if(inv) inv.innerText = generateInvoiceNumber();
 
-/* ================= NAV ================= */
-.top-nav{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  padding:10px;
-  background:white;
-}
+  renderCategories();
+  renderProducts();
+  renderInvoice();
+});
 
-.top-nav a{
-  background:#f8bbd0;
-  padding:10px 12px;
-  border-radius:10px;
-  text-decoration:none;
-  color:black;
-  font-weight:500;
-}
-
-.top-nav a.active-nav{
-  background:#e91e63;
-  color:white;
-}
-
-/* ================= LAYOUT ================= */
-.pos-container{
-  display:flex;
-  gap:10px;
-  padding:10px;
-
-  /* FIX IMPORTANT iPad + scroll */
-  min-height:100vh;
-  height:auto;
-  align-items:flex-start;
-}
-
-/* ================= PANELS ================= */
-.panel{
-  background:white;
-  border-radius:12px;
-  padding:10px;
-
-  /* FIX SCROLL INTERNE */
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-
-  max-height:85vh;
-}
-
-/* columns */
-.left{width:18%;}
-.center{width:52%;}
-.right{width:30%;}
+/* ================= DELIVERY LIVE ================= */
+document.addEventListener("input", (e)=>{
+  if(e.target.id === "delivery"){
+    renderInvoice();
+  }
+});
 
 /* ================= CATEGORIES ================= */
-#category-boxes{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
+function renderCategories(){
+  const box = document.getElementById("category-boxes");
+  if(!box) return;
+
+  const cats = [...new Set(products.map(p => p.category))];
+
+  box.innerHTML = "";
+
+  let all = document.createElement("div");
+  all.className = "category";
+  all.innerText = "Tous";
+  all.onclick = renderProducts;
+  box.appendChild(all);
+
+  cats.forEach(cat => {
+    let div = document.createElement("div");
+    div.className = "category";
+    div.innerText = cat;
+    div.onclick = () => filterByCategory(cat);
+    box.appendChild(div);
+  });
 }
 
-.category{
-  background:linear-gradient(135deg,#f8bbd0,#ffe6ef);
-  padding:22px;
-  border-radius:14px;
-  text-align:center;
-  font-weight:600;
-  font-size:15px;
-  cursor:pointer;
-  transition:0.2s;
-  box-shadow:0 4px 10px rgba(0,0,0,0.08);
-}
+function filterByCategory(cat){
+  const list = document.getElementById("product-list");
+  if(!list) return;
 
-.category:hover{
-  transform:scale(1.05);
-  background:#f06292;
-  color:white;
+  list.innerHTML = "";
+
+  products
+    .filter(p => p.category === cat)
+    .forEach(renderProduct);
 }
 
 /* ================= PRODUCTS ================= */
-#product-list{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:8px;
+function renderProducts(){
+  const list = document.getElementById("product-list");
+  if(!list) return;
+
+  list.innerHTML = "";
+  products.forEach(renderProduct);
 }
 
-.product{
-  background:#ffe6ef;
-  padding:14px;
-  border-radius:10px;
-  cursor:pointer;
-  font-size:14px;
+function renderProduct(p){
+  const list = document.getElementById("product-list");
+
+  let div = document.createElement("div");
+  div.className = "product";
+
+  div.innerHTML = `
+    <strong>${p.name}</strong><br>
+    ${p.price} FCFA<br>
+    Stock: ${p.stock ?? 0}
+  `;
+
+  div.onclick = () => addToCart(p.name, p.price);
+
+  list.appendChild(div);
 }
 
-/* ================= CALCULATRICE ================= */
-#display{
-  width:100%;
-  height:60px;
-  border-radius:15px;
-  border:2px solid #f8bbd0;
-  font-size:28px;
-  padding:10px;
-  margin-bottom:12px;
-  text-align:right;
-  font-weight:bold;
-  outline:none;
+/* ================= CART ================= */
+function addToCart(name, price){
+
+  let item = invoice.find(i => i.name === name);
+
+  if(item){
+    item.qty++;
+  } else {
+    invoice.push({name, price, qty:1});
+  }
+
+  if(checkoutMode){
+    saveSale();
+    return;
+  }
+
+  renderInvoice();
 }
 
-.calc{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-top:10px;
+/* ================= INVOICE ================= */
+function renderInvoice(){
+
+  const table = document.getElementById("invoice-body");
+  if(!table) return;
+
+  table.innerHTML = "";
+
+  let subtotal = 0;
+
+  invoice.forEach((i, index) => {
+
+    let t = i.qty * i.price;
+    subtotal += t;
+
+    let tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${i.name}</td>
+      <td onclick="updateQty(${index})" style="cursor:pointer;color:#e91e63;font-weight:bold;">${i.qty}</td>
+      <td onclick="updatePrice(${index})" style="cursor:pointer;color:#7b1fa2;font-weight:bold;">${i.price}</td>
+      <td>${t}</td>
+    `;
+
+    table.appendChild(tr);
+  });
+
+  let delivery = parseFloat(document.getElementById("delivery")?.value);
+  if(isNaN(delivery)) delivery = 0;
+
+  let total = subtotal + delivery;
+  total = total - (total * discount / 100);
+
+  document.getElementById("grand-total").innerText = Math.round(total) + " FCFA";
+
+  const disc = document.getElementById("discount-value");
+  if(disc) disc.innerText = discount + "%";
 }
 
-.calc button{
-  height:65px;
-  border:none;
-  background:#f8bbd0;
-  border-radius:15px;
-  font-size:24px;
-  font-weight:bold;
-  cursor:pointer;
-  transition:0.2s;
+/* ================= EDIT ================= */
+function updateQty(i){
+  let v = parseInt(prompt("Quantité"));
+  if(v > 0) invoice[i].qty = v;
+  renderInvoice();
 }
 
-.calc button:active{
-  transform:scale(0.96);
+function updatePrice(i){
+  let v = parseFloat(prompt("Prix"));
+  if(v > 0) invoice[i].price = v;
+  renderInvoice();
 }
 
-/* ================= FACTURE ================= */
-.invoice-header{
-  text-align:center;
+/* ================= DISCOUNT ================= */
+function setDiscount(p){
+  discount = p;
+  renderInvoice();
 }
-
-#grand-total{
-  text-align:center;
-  background:#fff;
-  padding:10px;
-  border-radius:10px;
-  color:#e91e63;
-  font-weight:bold;
-}
-
-#discount-value{
-  color:#e91e63;
-  font-weight:bold;
-}
-
-.thanks{
-  text-align:center;
-  margin-top:15px;
-  font-size:14px;
-  color:#e91e63;
-  font-weight:600;
-}
+function discount20(){ setDiscount(20); }
+function discount50(){ setDiscount(50); }
 
 /* ================= PAYMENT ================= */
-.payment-boxes{
-  display:flex;
-  gap:10px;
-  margin-top:10px;
-  flex-wrap:wrap;
+function selectPayment(el, method){
+  paymentMethod = method;
+
+  document.querySelectorAll(".pay-btn").forEach(b=>{
+    b.classList.remove("active");
+  });
+
+  el.classList.add("active");
 }
 
-.pay-btn{
-  flex:1;
-  min-width:140px;
-  padding:18px;
-  text-align:center;
-  border-radius:14px;
+/* ================= SAVE ================= */
+function saveSale(){
 
-  background:#f8c1d9;
-  color:#6a0036;
-  font-weight:bold;
+  let sale = {
+    id: document.getElementById("invoice-id")?.innerText,
+    date: document.getElementById("date")?.value,
+    client:{
+      name:document.getElementById("client-name")?.value,
+      phone:document.getElementById("client-phone")?.value,
+      address:document.getElementById("client-address")?.value
+    },
+    cart:invoice,
+    discount:discount + "%",
+    paymentMethod,
+    delivery: parseFloat(document.getElementById("delivery")?.value) || 0,
+    total:document.getElementById("grand-total")?.innerText
+  };
 
-  cursor:pointer;
-  transition:0.2s;
-  user-select:none;
-  border:2px solid transparent;
+  sales.push(sale);
+  localStorage.setItem("sales", JSON.stringify(sales));
+
+  invoice = [];
+  discount = 0;
+
+  renderInvoice();
+  document.getElementById("invoice-id").innerText = generateInvoiceNumber();
+
+  const del = document.getElementById("delivery");
+  if(del) del.value = "";
+
+  alert("💗 Vente enregistrée");
 }
 
-.pay-btn:hover{
-  transform:scale(1.03);
-  background:#f4a9c8;
+/* ================= PRINT (FACTURE SEULE) ================= */
+function printInvoice(){
+
+  const area = document.getElementById("invoice-area");
+
+  const win = window.open("", "", "width=900,height=650");
+
+  win.document.write(`
+    <html>
+    <head>
+      <title>Facture</title>
+      <style>
+        body{font-family:Poppins,sans-serif;padding:20px;}
+        h2,h3{text-align:center;color:#e91e63;}
+        table{width:100%;border-collapse:collapse;margin-top:10px;}
+        th,td{border:1px solid #ddd;padding:8px;text-align:center;}
+      </style>
+    </head>
+
+    <body onload="window.print(); window.close();">
+      ${area.innerHTML}
+    </body>
+    </html>
+  `);
+
+  win.document.close();
 }
 
-.pay-btn.active{
-  background:#e91e63;
-  color:white;
-  border:2px solid #ffdde9;
-  transform:scale(1.05);
-}
-
-/* ================= TABLE ================= */
-.sales-table{
-  width:100%;
-  border-collapse:collapse;
-  background:white;
-  border-radius:10px;
-  overflow:hidden;
-}
-
-.sales-table th{
-  background:#e91e63;
-  color:white;
-  padding:10px;
-}
-
-.sales-table td{
-  padding:10px;
-  border-bottom:1px solid #eee;
-  text-align:center;
-}
-
-/* ================= MOBILE / IPAD ================= */
-@media(max-width:900px){
-  .pos-container{
-    flex-direction:column;
-  }
-
-  .left,.center,.right{
-    width:100%;
-    max-height:none;
-  }
-
-  .panel{
-    max-height:none;
-  }
-}
-
-/* ================= PRINT FIX (IMPORTANT) ================= */
-@media print {
-
-  body *{
-    visibility:hidden;
-  }
-
-  #invoice-area, #invoice-area *{
-    visibility:visible;
-  }
-
-  #invoice-area{
-    position:absolute;
-    left:0;
-    top:0;
-    width:100%;
-  }
-
-  .top-nav,
-  .payment-boxes,
-  .calc,
-  button,
-  input{
-    display:none !important;
-  }
+/* ================= SERVICE WORKER ================= */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js");
+  });
 }
