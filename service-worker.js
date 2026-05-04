@@ -1,4 +1,4 @@
-const CACHE_NAME = "eclat-de-coco-pos-v7";
+const CACHE_NAME = "eclat-de-coco-pos-v9";
 
 /* ================= FILES TO CACHE ================= */
 const urlsToCache = [
@@ -13,7 +13,9 @@ const urlsToCache = [
   "/products.html",
   "/style.css",
   "/manifest.json",
-  "/icon-192.png"
+  "/icon-192.png",
+
+  "/coco-bg.jpg"
 ];
 
 /* ================= INSTALL ================= */
