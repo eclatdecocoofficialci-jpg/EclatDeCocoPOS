@@ -356,6 +356,11 @@ function renderSales(){
 
   document.getElementById("sales-body").innerHTML = html;
 }
+document.addEventListener("DOMContentLoaded", function () {
+  if(document.getElementById("sales-body")){
+    renderSales();
+  }
+});
 /* ================= RESET SW ================= */
 function resetServiceWorker(){
 
