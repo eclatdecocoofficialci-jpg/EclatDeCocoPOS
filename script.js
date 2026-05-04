@@ -29,7 +29,7 @@ window.addEventListener("DOMContentLoaded", () => {
   renderInvoice();
 });
 
-/* ================= LIVE DELIVERY UPDATE ================= */
+/* ================= DELIVERY LIVE ================= */
 document.addEventListener("input", (e)=>{
   if(e.target.id === "delivery"){
     renderInvoice();
@@ -38,7 +38,6 @@ document.addEventListener("input", (e)=>{
 
 /* ================= CATEGORIES ================= */
 function renderCategories(){
-
   const box = document.getElementById("category-boxes");
   if(!box) return;
 
@@ -62,7 +61,6 @@ function renderCategories(){
 }
 
 function filterByCategory(cat){
-
   const list = document.getElementById("product-list");
   if(!list) return;
 
@@ -75,7 +73,6 @@ function filterByCategory(cat){
 
 /* ================= PRODUCTS ================= */
 function renderProducts(){
-
   const list = document.getElementById("product-list");
   if(!list) return;
 
@@ -84,7 +81,6 @@ function renderProducts(){
 }
 
 function renderProduct(p){
-
   const list = document.getElementById("product-list");
 
   let div = document.createElement("div");
@@ -140,8 +136,8 @@ function renderInvoice(){
     tr.innerHTML = `
       <td>${i.name}</td>
       <td onclick="updateQty(${index})" style="cursor:pointer;color:#e91e63;font-weight:bold;">${i.qty}</td>
-      <td onclick="updatePrice(${index})" style="cursor:pointer;color:#7b1fa2;font-weight:bold;">${i.price} FCFA</td>
-      <td>${t} FCFA</td>
+      <td onclick="updatePrice(${index})" style="cursor:pointer;color:#7b1fa2;font-weight:bold;">${i.price}</td>
+      <td>${t}</td>
     `;
 
     table.appendChild(tr);
@@ -152,9 +148,7 @@ function renderInvoice(){
   let total = subtotal + delivery;
   total = total - (total * discount / 100);
 
-  total = Math.round(total);
-
-  document.getElementById("grand-total").innerText = total + " FCFA";
+  document.getElementById("grand-total").innerText = Math.round(total) + " FCFA";
 
   const disc = document.getElementById("discount-value");
   if(disc) disc.innerText = discount + "%";
@@ -181,10 +175,12 @@ function setDiscount(p){
 function discount20(){ setDiscount(20); }
 function discount50(){ setDiscount(50); }
 
-/* ================= PAYMENT ================= */
+/* ================= PAYMENT (FIX IMPORTANT) ================= */
 function selectPayment(el, method){
 
   paymentMethod = method;
+
+  localStorage.setItem("selectedPayment", paymentMethod);
 
   document.querySelectorAll(".pay-btn").forEach(b=>{
     b.classList.remove("active");
@@ -216,7 +212,7 @@ function calculate(){
   }
 }
 
-/* ================= SAVE SALE (CORRIGÉ POUR SALES.HTML) ================= */
+/* ================= SAVE SALE (FINAL FIX SALES) ================= */
 function saveSale(){
 
   let delivery = Number(document.getElementById("delivery")?.value || 0);
@@ -236,14 +232,14 @@ function saveSale(){
     cart:invoice,
     subtotal: subtotal,
     discount:discount + "%",
-    paymentMethod:paymentMethod,
+    paymentMethod: localStorage.getItem("selectedPayment") || paymentMethod,
     delivery:delivery,
     total:total
   };
 
   sales.push(sale);
 
-  /* 🔥 IMPORTANT: TRI PAR DATE (pour sales.html) */
+  /* 🔥 TRI PAR DATE (important sales.html) */
   sales.sort((a,b)=> new Date(b.date) - new Date(a.date));
 
   localStorage.setItem("sales", JSON.stringify(sales));
@@ -258,29 +254,70 @@ function saveSale(){
   const del = document.getElementById("delivery");
   if(del) del.value = "";
 
-  alert("💗 Vente enregistrée (" + paymentMethod + ")");
+  alert("💗 Vente enregistrée (" + sale.paymentMethod + ")");
 }
 
-/* ================= PRINT (FACTURE SEULEMENT) ================= */
+/* ================= PRINT A5 FIX (IMPORTANT) ================= */
 function printInvoice(){
 
   const area = document.getElementById("invoice-area");
 
-  const win = window.open("", "", "width=900,height=600");
+  const win = window.open("", "", "width=600,height=800");
 
   win.document.write(`
     <html>
     <head>
       <title>Facture</title>
+
       <style>
-        body{font-family:Poppins;padding:20px;}
-        h2,h3{text-align:center;color:#e91e63;}
-        table{width:100%;border-collapse:collapse;}
-        th,td{border:1px solid #ddd;padding:8px;text-align:center;}
+        @page{
+          size:A5;
+          margin:10mm;
+        }
+
+        body{
+          font-family:Poppins,sans-serif;
+          padding:10px;
+        }
+
+        h2,h3{
+          text-align:center;
+          color:#e91e63;
+          margin:5px 0;
+        }
+
+        table{
+          width:100%;
+          border-collapse:collapse;
+          margin-top:10px;
+        }
+
+        th,td{
+          border:1px solid #ddd;
+          padding:6px;
+          text-align:center;
+          font-size:12px;
+        }
+
+        .footer{
+          position:fixed;
+          bottom:10px;
+          width:100%;
+          text-align:center;
+          font-size:12px;
+          color:#e91e63;
+        }
       </style>
     </head>
+
     <body onload="window.print(); window.close();">
+
       ${area.innerHTML}
+
+      <div class="footer">
+        Abidjan - Côte d’Ivoire
+      </div>
+
     </body>
     </html>
   `);
@@ -288,7 +325,7 @@ function printInvoice(){
   win.document.close();
 }
 
-/* ================= SW ================= */
+/* ================= SERVICE WORKER ================= */
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./service-worker.js");
