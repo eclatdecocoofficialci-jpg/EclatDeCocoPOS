@@ -1,13 +1,11 @@
 {
   "name": "Éclat de Coco POS",
-  "short_name": "EclatPOS",
+  "short_name": "Eclatdecoco",
   "description": "POS Éclat de Coco",
-
-  "start_url": "./pos.html",
-  "scope": "./",
-
-  "display": "standalone",
-  "orientation": "landscape-primary",
+"start_url": "./index.html",
+"scope": "./",
+"display": "standalone",
+"orientation": "landscape-primary",
 
   "background_color": "#fff5fb",
   "theme_color": "#e91e63",
