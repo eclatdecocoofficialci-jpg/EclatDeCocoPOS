@@ -3,7 +3,7 @@ body{
   font-family:Poppins, sans-serif;
   background:#fff0f5;
 
-  /* IMPORTANT FIX iPad scroll */
+  /* FIX SCROLL GLOBAL */
   overflow-x:hidden;
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
@@ -52,25 +52,26 @@ header h1{
   gap:10px;
   padding:10px;
 
-  /* IMPORTANT FIX iPad */
+  /* FIX IMPORTANT iPad + scroll */
   min-height:100vh;
   height:auto;
   align-items:flex-start;
 }
 
-/* PANELS */
+/* ================= PANELS ================= */
 .panel{
   background:white;
   border-radius:12px;
   padding:10px;
 
-  /* IMPORTANT SCROLL FIX */
+  /* FIX SCROLL INTERNE */
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
 
   max-height:85vh;
 }
 
+/* columns */
 .left{width:18%;}
 .center{width:52%;}
 .right{width:30%;}
@@ -165,13 +166,11 @@ header h1{
   font-weight:bold;
 }
 
-/* REMISE */
 #discount-value{
   color:#e91e63;
   font-weight:bold;
 }
 
-/* THANK YOU */
 .thanks{
   text-align:center;
   margin-top:15px;
@@ -188,7 +187,6 @@ header h1{
   flex-wrap:wrap;
 }
 
-/* BOX PLUS GRAND + STYLE CAISSE */
 .pay-btn{
   flex:1;
   min-width:140px;
@@ -203,7 +201,6 @@ header h1{
   cursor:pointer;
   transition:0.2s;
   user-select:none;
-
   border:2px solid transparent;
 }
 
@@ -219,7 +216,7 @@ header h1{
   transform:scale(1.05);
 }
 
-/* ================= SALES TABLE ================= */
+/* ================= TABLE ================= */
 .sales-table{
   width:100%;
   border-collapse:collapse;
@@ -240,53 +237,7 @@ header h1{
   text-align:center;
 }
 
-.sales-table button{
-  padding:6px 10px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-  margin:2px;
-}
-
-.sales-table .delete{
-  background:#ff4d6d;
-  color:white;
-}
-
-/* ================= DASHBOARD ================= */
-.dashboard-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:15px;
-  padding:15px;
-}
-
-.card{
-  background:white;
-  border-radius:18px;
-  padding:20px;
-  text-align:center;
-  font-weight:600;
-  box-shadow:0 5px 15px rgba(0,0,0,0.08);
-  font-size:18px;
-}
-
-.card span{
-  display:block;
-  margin-top:10px;
-  color:#e91e63;
-  font-size:22px;
-  font-weight:bold;
-}
-
-.chart-container{
-  background:white;
-  margin:15px;
-  padding:20px;
-  border-radius:20px;
-}
-
-/* ================= MOBILE / IPAD FIX ================= */
+/* ================= MOBILE / IPAD ================= */
 @media(max-width:900px){
   .pos-container{
     flex-direction:column;
@@ -299,5 +250,32 @@ header h1{
 
   .panel{
     max-height:none;
+  }
+}
+
+/* ================= PRINT FIX (IMPORTANT) ================= */
+@media print {
+
+  body *{
+    visibility:hidden;
+  }
+
+  #invoice-area, #invoice-area *{
+    visibility:visible;
+  }
+
+  #invoice-area{
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+  }
+
+  .top-nav,
+  .payment-boxes,
+  .calc,
+  button,
+  input{
+    display:none !important;
   }
 }
