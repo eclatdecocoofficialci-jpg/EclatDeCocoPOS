@@ -229,3 +229,21 @@ th{
     max-height:none;
   }
 }
+/* ================= PRINT CONTROL ================= */
+.no-print {
+  display: table-cell;
+}
+
+.print-only {
+  display: none;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: table-cell !important;
+  }
+}
