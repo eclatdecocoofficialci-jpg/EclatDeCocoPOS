@@ -17,7 +17,7 @@
 <main style="padding:10px;">
 
   <!-- TOTAL GLOBAL -->
-  <h3>Total des ventes: <span id="total-sales">0</span> FCFA</h3>
+  <h3>Total des ventes: <span id="total-sales">0 FCFA</span></h3>
 
   <table class="sales-table">
     <thead>
@@ -38,6 +38,7 @@
 </main>
 
 <script>
+
 function loadSales(){
 
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
@@ -51,17 +52,20 @@ function loadSales(){
     return;
   }
 
+  /* ================= TRI PAR DATE (IMPORTANT) ================= */
+  sales.sort((a, b) => new Date(b.date) - new Date(a.date));
+
   sales.forEach((s, index) => {
 
     let tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${s.id}</td>
+      <td>${s.id || "-"}</td>
       <td>${s.date || "-"}</td>
       <td>${s.client?.name || "-"}</td>
       <td>${s.discount || "0%"}</td>
       <td>${s.paymentMethod || "-"}</td>
-      <td>${s.total}</td>
+      <td>${Math.round(parseFloat(s.total) || 0)} FCFA</td>
       <td>
         <button onclick="viewInvoice(${index})">Voir</button>
         <button onclick="deleteSale(${index})">Supprimer</button>
@@ -74,10 +78,12 @@ function loadSales(){
   updateTotalSales();
 }
 
-/* ================= VIEW ================= */
+/* ================= VIEW INVOICE ================= */
 function viewInvoice(i){
 
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
+  sales.sort((a, b) => new Date(b.date) - new Date(a.date));
+
   let s = sales[i];
 
   let items = s.cart?.map(p =>
@@ -85,12 +91,14 @@ function viewInvoice(i){
   ).join("\n") || "";
 
   alert(
-    "FACTURE: " + s.id +
+    "FACTURE: " + (s.id || "-") +
+    "\nDATE: " + (s.date || "-") +
     "\nCLIENT: " + (s.client?.name || "-") +
     "\n\nPRODUITS:\n" + items +
     "\n\nREMISE: " + (s.discount || "0%") +
+    "\nLIVRAISON: " + (s.delivery || 0) + " FCFA" +
     "\nPAIEMENT: " + (s.paymentMethod || "-") +
-    "\nTOTAL: " + s.total
+    "\nTOTAL: " + Math.round(parseFloat(s.total) || 0) + " FCFA"
   );
 }
 
@@ -101,6 +109,7 @@ function deleteSale(i){
 
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
+  sales.sort((a, b) => new Date(b.date) - new Date(a.date));
   sales.splice(i, 1);
 
   localStorage.setItem("sales", JSON.stringify(sales));
@@ -117,10 +126,12 @@ function updateTotalSales(){
     return sum + (parseFloat(s.total) || 0);
   }, 0);
 
-  document.getElementById("total-sales").innerText = total;
+  document.getElementById("total-sales").innerText =
+    Math.round(total) + " FCFA";
 }
 
 window.onload = loadSales;
+
 </script>
 
 </body>
