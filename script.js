@@ -32,8 +32,8 @@ window.addEventListener("DOMContentLoaded", () => {
   renderInvoice();
 });
 
-/* ================= LIVE DELIVERY UPDATE ================= */
-document.addEventListener("input", function(e){
+/* ================= LIVE DELIVERY ================= */
+document.addEventListener("input", (e)=>{
   if(e.target.id === "delivery"){
     renderInvoice();
   }
@@ -41,7 +41,6 @@ document.addEventListener("input", function(e){
 
 /* ================= CATEGORIES ================= */
 function renderCategories(){
-
   const box = document.getElementById("category-boxes");
   if(!box) return;
 
@@ -65,7 +64,6 @@ function renderCategories(){
 }
 
 function filterByCategory(cat){
-
   const list = document.getElementById("product-list");
   if(!list) return;
 
@@ -78,7 +76,6 @@ function filterByCategory(cat){
 
 /* ================= PRODUCTS ================= */
 function renderProducts(){
-
   const list = document.getElementById("product-list");
   if(!list) return;
 
@@ -87,7 +84,6 @@ function renderProducts(){
 }
 
 function renderProduct(p){
-
   const list = document.getElementById("product-list");
 
   let div = document.createElement("div");
@@ -102,25 +98,6 @@ function renderProduct(p){
   div.onclick = () => addToCart(p.name, p.price);
 
   list.appendChild(div);
-}
-
-/* ================= SEARCH ================= */
-function searchProduct(){
-
-  const val = document.getElementById("search")?.value.toLowerCase();
-  const list = document.getElementById("product-list");
-  if(!list) return;
-
-  if(!val){
-    renderProducts();
-    return;
-  }
-
-  list.innerHTML = "";
-
-  products
-    .filter(p => p.name.toLowerCase().includes(val))
-    .forEach(renderProduct);
 }
 
 /* ================= CART ================= */
@@ -161,16 +138,9 @@ function renderInvoice(){
 
     tr.innerHTML = `
       <td>${i.name}</td>
-
-      <td onclick="updateQty(${index})" style="cursor:pointer;color:#e91e63;font-weight:bold;">
-        ${i.qty}
-      </td>
-
-      <td onclick="updatePrice(${index})" style="cursor:pointer;color:#7b1fa2;font-weight:bold;">
-        ${i.price} FCFA
-      </td>
-
-      <td>${t} FCFA</td>
+      <td onclick="updateQty(${index})" style="cursor:pointer;color:#e91e63;font-weight:bold;">${i.qty}</td>
+      <td onclick="updatePrice(${index})" style="cursor:pointer;color:#7b1fa2;font-weight:bold;">${i.price}</td>
+      <td>${t}</td>
     `;
 
     table.appendChild(tr);
@@ -178,40 +148,26 @@ function renderInvoice(){
 
   let delivery = Number(document.getElementById("delivery")?.value || 0);
 
-  let total = subtotal + delivery;
+  let sub = subtotal;
+  let total = sub + delivery;
   total = total - (total * discount / 100);
 
-  total = Math.round(total);
-
-  document.getElementById("grand-total").innerText = total + " FCFA";
+  document.getElementById("grand-total").innerText = Math.round(total) + " FCFA";
 
   const disc = document.getElementById("discount-value");
   if(disc) disc.innerText = discount + "%";
 }
 
-/* ================= EDIT QTY ================= */
-function updateQty(index){
-
-  let newQty = prompt("Nouvelle quantité:");
-  if(newQty === null) return;
-
-  newQty = parseInt(newQty);
-  if(isNaN(newQty) || newQty <= 0) return;
-
-  invoice[index].qty = newQty;
+/* ================= EDIT ================= */
+function updateQty(i){
+  let v = parseInt(prompt("Quantité"));
+  if(v>0) invoice[i].qty = v;
   renderInvoice();
 }
 
-/* ================= EDIT PRICE ================= */
-function updatePrice(index){
-
-  let newPrice = prompt("Nouveau prix:");
-  if(newPrice === null) return;
-
-  newPrice = parseFloat(newPrice);
-  if(isNaN(newPrice) || newPrice <= 0) return;
-
-  invoice[index].price = newPrice;
+function updatePrice(i){
+  let v = parseFloat(prompt("Prix"));
+  if(v>0) invoice[i].price = v;
   renderInvoice();
 }
 
@@ -220,86 +176,68 @@ function setDiscount(p){
   discount = p;
   renderInvoice();
 }
-
 function discount20(){ setDiscount(20); }
 function discount50(){ setDiscount(50); }
 
 /* ================= PAYMENT ================= */
 function selectPayment(el, method){
-
   paymentMethod = method;
-
-  document.querySelectorAll(".pay-btn").forEach(b => {
-    b.classList.remove("active");
-  });
-
+  document.querySelectorAll(".pay-btn").forEach(b=>b.classList.remove("active"));
   el.classList.add("active");
 }
 
-/* ================= MODE RAPIDE ================= */
-function toggleCheckoutMode(){
-  checkoutMode = !checkoutMode;
-  alert(checkoutMode ? "⚡ Mode rapide activé" : "Mode normal");
-}
-
-/* ================= CALCULATRICE ================= */
+/* ================= CALC ================= */
 function press(v){
   const d = document.getElementById("display");
   if(d) d.value += v;
 }
 
 function clearCalc(){
-  const d = document.getElementById("display");
-  if(d) d.value = "";
-  currentCalcResult = 0;
+  document.getElementById("display").value = "";
 }
 
 function backspace(){
   const d = document.getElementById("display");
-  if(d) d.value = d.value.slice(0, -1);
+  if(d) d.value = d.value.slice(0,-1);
 }
 
 function calculate(){
-
   const d = document.getElementById("display");
   if(!d) return;
 
-  try {
-    currentCalcResult = Function("return " + d.value)();
-
-    d.value = currentCalcResult;
+  try{
+    let res = Function("return " + d.value)();
 
     invoice.push({
-      name: "Calculatrice",
-      price: Number(currentCalcResult),
-      qty: 1
+      name:"Calculatrice",
+      price:Number(res),
+      qty:1
     });
 
+    d.value = res;
     renderInvoice();
 
-  } catch(e){
+  }catch(e){
     alert("Erreur calcul");
   }
 }
 
-/* ================= SAVE SALE ================= */
+/* ================= SAVE ================= */
 function saveSale(){
-
-  let total = document.getElementById("grand-total")?.innerText || "0";
 
   let sale = {
     id: document.getElementById("invoice-id")?.innerText,
     date: document.getElementById("date")?.value,
-    client: {
-      name: document.getElementById("client-name")?.value,
-      phone: document.getElementById("client-phone")?.value,
-      address: document.getElementById("client-address")?.value
+    client:{
+      name:document.getElementById("client-name")?.value,
+      phone:document.getElementById("client-phone")?.value,
+      address:document.getElementById("client-address")?.value
     },
-    cart: invoice,
-    discount: discount + "%",
-    paymentMethod: paymentMethod,
-    delivery: Number(document.getElementById("delivery")?.value || 0),
-    total: total
+    cart:invoice,
+    discount:discount+"%",
+    paymentMethod,
+    delivery:Number(document.getElementById("delivery")?.value || 0),
+    total:document.getElementById("grand-total")?.innerText
   };
 
   sales.push(sale);
@@ -309,33 +247,39 @@ function saveSale(){
   discount = 0;
 
   renderInvoice();
-
   document.getElementById("invoice-id").innerText = generateInvoiceNumber();
 
-  const del = document.getElementById("delivery");
-  if(del) del.value = "";
-
-  alert("💗 Vente enregistrée (" + paymentMethod + ")");
+  alert("Vente enregistrée");
 }
 
-/* ================= KEYBOARD FIX ================= */
-document.addEventListener("keydown", function(e){
+/* ================= PRINT FIX (IMPORTANT) ================= */
+function printInvoice(){
 
-  const display = document.getElementById("display");
+  const area = document.getElementById("invoice-area");
 
-  if(e.key === "Enter" && document.activeElement === display){
-    calculate();
-  }
+  const win = window.open("", "", "width=900,height=600");
 
-  if(e.key === "Backspace" && document.activeElement === display){
-    backspace();
-  }
-});
+  win.document.write(`
+    <html>
+    <head>
+      <title>Facture</title>
+      <style>
+        body{font-family:Poppins;padding:20px;}
+        h2,h3{text-align:center;color:#e91e63;}
+        table{width:100%;border-collapse:collapse;}
+        th,td{border:1px solid #ddd;padding:8px;text-align:center;}
+      </style>
+    </head>
+    <body onload="window.print(); window.close();">
+      ${area.innerHTML}
+    </body>
+    </html>
+  `);
 
-/* ================= IPAD TOUCH FIX ================= */
-document.addEventListener("touchstart", function(){}, {passive:true});
+  win.document.close();
+}
 
-/* ================= SERVICE WORKER ================= */
+/* ================= SW ================= */
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./service-worker.js");
