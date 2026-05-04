@@ -46,19 +46,21 @@ header h1{
   color:white;
 }
 
-/* ================= ⭐ POS LAYOUT FIX (IMPORTANT) ================= */
+/* ================= ⭐ POS FIX GLOBAL ================= */
 .pos-container{
-  display:flex !important;
+  display:flex;
   flex-direction:row;
+  flex-wrap:nowrap;
   gap:10px;
   padding:10px;
 
   min-height:100vh;
-  height:auto;
   align-items:flex-start;
+
+  overflow:hidden; /* évite cassure iPad */
 }
 
-/* PANELS */
+/* ================= PANELS ================= */
 .panel{
   background:white;
   border-radius:12px;
@@ -69,19 +71,24 @@ header h1{
 
   max-height:85vh;
   box-shadow:0 5px 15px rgba(0,0,0,0.05);
+
+  min-width:0; /* 🔥 FIX IMPORTANT FLEX */
 }
 
-/* 3 COLONNES FIXES */
+/* ================= 3 COLONNES STABLES ================= */
 .left{
   width:18%;
+  min-width:180px;
 }
 
 .center{
   width:52%;
+  min-width:320px;
 }
 
 .right{
   width:30%;
+  min-width:280px;
 }
 
 /* ================= CATEGORIES ================= */
@@ -226,22 +233,26 @@ header h1{
   background:#e91e63;
   color:white;
   padding:10px;
+  font-size:13px;
 }
 
 .sales-table td{
   padding:10px;
   border-bottom:1px solid #eee;
   text-align:center;
+  font-size:13px;
 }
 
-/* ================= MOBILE FIX ================= */
+/* ================= MOBILE ================= */
 @media(max-width:900px){
   .pos-container{
     flex-direction:column;
+    overflow:auto;
   }
 
   .left,.center,.right{
     width:100%;
+    min-width:100%;
     max-height:none;
   }
 
