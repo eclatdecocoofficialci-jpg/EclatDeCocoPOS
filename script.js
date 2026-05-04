@@ -143,12 +143,12 @@ function renderInvoice(){
 
   table.innerHTML = "";
 
-  let total = 0;
+  let subtotal = 0;
 
   invoice.forEach((i, index) => {
 
     let t = i.qty * i.price;
-    total += t;
+    subtotal += t;
 
     let tr = document.createElement("tr");
 
@@ -169,17 +169,23 @@ function renderInvoice(){
     table.appendChild(tr);
   });
 
-  let delivery = parseFloat(document.getElementById("delivery")?.value);
-  if(isNaN(delivery)) delivery = 0;
+  let delivery = Number(document.getElementById("delivery")?.value || 0);
 
-  let final = total + delivery;
-  final = final - (final * discount / 100);
+  let total = subtotal + delivery;
+  total = total - (total * discount / 100);
 
-  document.getElementById("grand-total").innerText = final + " FCFA";
+  document.getElementById("grand-total").innerText = total + " FCFA";
 
-  // 🔥 AFFICHAGE REMISE LIVE
+  // UI REMISE
   const disc = document.getElementById("discount-value");
   if(disc) disc.innerText = discount + "%";
+
+  // UI DELIVERY (optionnel si ajouté dans HTML)
+  const del = document.getElementById("delivery-total");
+  if(del) del.innerText = delivery + " FCFA";
+
+  const sub = document.getElementById("subtotal");
+  if(sub) sub.innerText = subtotal + " FCFA";
 }
 
 /* ================= EDIT QTY ================= */
@@ -218,11 +224,6 @@ function discount20(){ setDiscount(20); }
 function discount50(){ setDiscount(50); }
 
 /* ================= PAYMENT ================= */
-function setPayment(method){
-  paymentMethod = method;
-}
-
-/* ================= PAYMENT UI (SELECT STYLE) ================= */
 function selectPayment(el, method){
 
   paymentMethod = method;
@@ -296,6 +297,7 @@ function saveSale(){
     cart: invoice,
     discount: discount + "%",
     paymentMethod: paymentMethod,
+    delivery: Number(document.getElementById("delivery")?.value || 0),
     total: total
   };
 
@@ -308,6 +310,10 @@ function saveSale(){
   renderInvoice();
 
   document.getElementById("invoice-id").innerText = generateInvoiceNumber();
+
+  // reset delivery
+  const del = document.getElementById("delivery");
+  if(del) del.value = "";
 
   alert("💗 Vente enregistrée (" + paymentMethod + ")");
 }
@@ -326,7 +332,10 @@ document.addEventListener("keydown", function(e){
   }
 });
 
-/* ================= SW ================= */
+/* ================= TOUCH FIX (iPad) ================= */
+document.addEventListener("touchstart", function(){}, {passive:true});
+
+/* ================= SERVICE WORKER ================= */
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./service-worker.js");
