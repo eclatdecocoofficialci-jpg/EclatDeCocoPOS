@@ -32,6 +32,13 @@ window.addEventListener("DOMContentLoaded", () => {
   renderInvoice();
 });
 
+/* ================= LIVE DELIVERY UPDATE ================= */
+document.addEventListener("input", function(e){
+  if(e.target.id === "delivery"){
+    renderInvoice();
+  }
+});
+
 /* ================= CATEGORIES ================= */
 function renderCategories(){
 
@@ -174,18 +181,12 @@ function renderInvoice(){
   let total = subtotal + delivery;
   total = total - (total * discount / 100);
 
+  total = Math.round(total);
+
   document.getElementById("grand-total").innerText = total + " FCFA";
 
-  // UI REMISE
   const disc = document.getElementById("discount-value");
   if(disc) disc.innerText = discount + "%";
-
-  // UI DELIVERY (optionnel si ajouté dans HTML)
-  const del = document.getElementById("delivery-total");
-  if(del) del.innerText = delivery + " FCFA";
-
-  const sub = document.getElementById("subtotal");
-  if(sub) sub.innerText = subtotal + " FCFA";
 }
 
 /* ================= EDIT QTY ================= */
@@ -311,7 +312,6 @@ function saveSale(){
 
   document.getElementById("invoice-id").innerText = generateInvoiceNumber();
 
-  // reset delivery
   const del = document.getElementById("delivery");
   if(del) del.value = "";
 
@@ -332,7 +332,7 @@ document.addEventListener("keydown", function(e){
   }
 });
 
-/* ================= TOUCH FIX (iPad) ================= */
+/* ================= IPAD TOUCH FIX ================= */
 document.addEventListener("touchstart", function(){}, {passive:true});
 
 /* ================= SERVICE WORKER ================= */
