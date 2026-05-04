@@ -24,6 +24,7 @@
   <h1>✨ Éclat de Coco POS</h1>
 </header>
 
+<!-- NAV -->
 <nav class="top-nav">
   <a href="./dashboard.html">Dashboard</a>
   <a href="./pos.html">POS</a>
@@ -38,23 +39,17 @@
 <!-- MAIN -->
 <div class="pos-container">
 
-  <!-- LEFT : CATEGORIES -->
+  <!-- LEFT -->
   <div class="panel left">
-
     <h3>Catégories</h3>
-
     <div id="category-boxes"></div>
-
   </div>
 
-  <!-- CENTER : PRODUITS + SEARCH + CALC -->
+  <!-- CENTER -->
   <div class="panel center">
 
     <h3>🔎 Recherche produit</h3>
-
-    <input id="search"
-           placeholder="Nom ou barcode..."
-           oninput="searchProducts(this.value)">
+    <input id="search" placeholder="Nom ou barcode...">
 
     <h3>Produits</h3>
     <div id="product-list"></div>
@@ -86,8 +81,8 @@
 
   </div>
 
-  <!-- RIGHT : FACTURE -->
-  <div class="panel right" id="invoice-area">
+  <!-- RIGHT -->
+  <div class="panel right">
 
     <div class="invoice-header">
       <h2>Bienvenue à Éclat de Coco</h2>
@@ -104,9 +99,8 @@
     <h4>Date</h4>
     <input type="date" id="date">
 
-    <!-- FACTURE TABLE -->
+    <!-- FACTURE -->
     <table>
-
       <thead>
         <tr>
           <th>Produit</th>
@@ -118,49 +112,30 @@
       </thead>
 
       <tbody id="invoice-body"></tbody>
-
     </table>
 
     <h4>Livraison</h4>
     <input id="delivery" type="number" placeholder="0">
 
-    <h4>Remise appliquée: <span id="discount-value">0%</span></h4>
+    <h4>Remise: <span id="discount-value">0%</span></h4>
 
     <h2 id="grand-total">0 FCFA</h2>
 
     <!-- PAYMENT -->
     <h4>Paiement</h4>
-
     <div class="payment-boxes">
 
-      <div class="pay-btn" onclick="selectPayment(this, 'cash')">
-        Cash
-      </div>
-
-      <div class="pay-btn" onclick="selectPayment(this, 'orange')">
-        Orange Money
-      </div>
-
-      <div class="pay-btn" onclick="selectPayment(this, 'wave')">
-        Wave
-      </div>
+      <div class="pay-btn" onclick="selectPayment(this, 'cash')">Cash</div>
+      <div class="pay-btn" onclick="selectPayment(this, 'orange')">Orange Money</div>
+      <div class="pay-btn" onclick="selectPayment(this, 'wave')">Wave</div>
 
     </div>
 
-    <!-- DISCOUNT -->
-    <h4>Remise</h4>
-    <button onclick="discount20()">-20%</button>
-    <button onclick="discount50()">-50%</button>
-
-    <!-- MODE RAPIDE -->
-    <button onclick="toggleCheckoutMode()">Mode rapide</button>
-
-    <!-- ACTIONS -->
+    <!-- ACTION -->
     <button onclick="saveSale()">💾 Sauvegarder</button>
     <button onclick="printInvoice()">🖨 Imprimer</button>
 
-    <!-- QR -->
-    <div id="qr-code" style="margin-top:15px; text-align:center;"></div>
+    <div id="qr-code"></div>
 
     <p class="thanks">Merci d’avoir choisi Éclat de Coco 💗</p>
 
@@ -168,28 +143,65 @@
 
 </div>
 
+<!-- JS LIB -->
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+<!-- MAIN SCRIPT -->
 <script src="./script.js"></script>
 
+<!-- INIT SAFE SCRIPT -->
 <script>
+
+function initPOS(){
+
+  // 🔐 LOGIN CHECK
+  const logged = localStorage.getItem("eclat_logged");
+
+  if(logged !== "true"){
+    window.location.href = "./index.html";
+    return;
+  }
+
+  // 🧾 invoice id
+  if(typeof generateInvoiceNumber === "function"){
+    document.getElementById("invoice-id").innerText =
+      generateInvoiceNumber();
+  }
+
+  // 📦 load data safely
+  if(typeof loadCategories === "function") loadCategories();
+  if(typeof renderProducts === "function") renderProducts(products);
+  if(typeof renderInvoice === "function") renderInvoice();
+  if(typeof updateTotal === "function") updateTotal();
+
+  // 🔎 search
+  const search = document.getElementById("search");
+  if(search){
+    search.addEventListener("input", e => {
+      if(typeof searchProducts === "function"){
+        searchProducts(e.target.value);
+      }
+    });
+  }
+
+  // 📅 date auto
+  const date = document.getElementById("date");
+  if(date){
+    date.value = new Date().toISOString().split("T")[0];
+  }
+}
+
+/* ================= SERVICE WORKER ================= */
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./service-worker.js");
   });
 }
-  window.onload = function(){
 
-  const logged = localStorage.getItem("eclat_logged");
+/* ================= START ================= */
+window.addEventListener("load", initPOS);
 
-  if(logged !== "true"){
-    window.location.href = "./index.html";
-  }
-
-};
 </script>
-<button onclick="resetServiceWorker()" 
-style="padding:12px;background:#e91e63;color:white;border:none;border-radius:10px;font-weight:bold;">
-Reset POS Cache
-</button>
+
 </body>
 </html>
