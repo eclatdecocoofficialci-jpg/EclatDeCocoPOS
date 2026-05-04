@@ -1,3 +1,4 @@
+/* ================= GLOBAL ================= */
 body{
   margin:0;
   font-family:Poppins, sans-serif;
@@ -11,7 +12,7 @@ header{
   background:#e91e63;
   color:white;
   text-align:center;
-  padding:10px;
+  padding:12px;
 }
 
 header h1{
@@ -41,12 +42,10 @@ header h1{
 /* ================= POS LAYOUT ================= */
 .pos-container{
   display:flex;
-  flex-direction:row;
   gap:10px;
   padding:10px;
   align-items:flex-start;
   min-height:100vh;
-  overflow:hidden;
 }
 
 /* ================= PANELS ================= */
@@ -54,33 +53,17 @@ header h1{
   background:white;
   border-radius:12px;
   padding:10px;
-
-  /* FIX iPad + visibilité boutons */
   max-height:calc(100vh - 120px);
   overflow-y:auto;
-
   box-shadow:0 5px 15px rgba(0,0,0,0.05);
-
   display:flex;
   flex-direction:column;
-  min-width:0;
 }
 
 /* ================= 3 COLONNES ================= */
-.left{
-  width:18%;
-  min-width:180px;
-}
-
-.center{
-  width:52%;
-  min-width:320px;
-}
-
-.right{
-  width:30%;
-  min-width:280px;
-}
+.left{ width:18%; min-width:180px; }
+.center{ width:52%; min-width:320px; }
+.right{ width:30%; min-width:280px; }
 
 /* ================= PINK BOX ================= */
 .pink-box{
@@ -117,7 +100,11 @@ header h1{
 
 /* ================= INPUT ================= */
 input{
-  font-family:Poppins, sans-serif;
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:2px solid #f8bbd0;
+  outline:none;
 }
 
 /* ================= CALCULATOR ================= */
@@ -148,22 +135,12 @@ input{
   cursor:pointer;
 }
 
-.calc button:active{
-  transform:scale(0.96);
-}
-
 /* ================= FACTURE ================= */
-#invoice-body input{
-  width:60px;
-}
-
 #grand-total{
   text-align:center;
   color:#e91e63;
   font-weight:bold;
-  background:#fff;
   padding:10px;
-  border-radius:10px;
 }
 
 /* ================= PAYMENT ================= */
@@ -182,14 +159,11 @@ input{
   border-radius:12px;
   cursor:pointer;
   font-weight:bold;
-  transition:0.2s;
 }
 
 .pay-btn.active{
   background:#e91e63;
   color:white;
-  transform:scale(1.05);
-  box-shadow:0 0 10px rgba(233,30,99,0.4);
 }
 
 /* ================= TABLE ================= */
@@ -206,12 +180,52 @@ th, td{
 
 th{
   background:#ffe6ef;
-  color:#333;
 }
 
-/* ================= BUTTON VISIBILITY FIX ================= */
-.right button{
-  margin-top:8px;
+/* ================= SALES PAGE ================= */
+.sales-table{
+  width:100%;
+  border-collapse:collapse;
+  background:white;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+.sales-table thead{
+  background:#e91e63;
+  color:white;
+}
+
+.sales-table td{
+  padding:10px;
+  border-bottom:1px solid #ffe6ef;
+}
+
+.sales-table tr:hover{
+  background:#ffe6ef;
+}
+
+/* ================= BUTTONS ================= */
+button{
+  background:#f8bbd0;
+  border:none;
+  padding:8px 10px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+button:hover{
+  background:#e91e63;
+  color:white;
+}
+
+/* ================= PRINT ================= */
+@media print {
+  .no-print{
+    display:none !important;
+  }
 }
 
 /* ================= MOBILE ================= */
@@ -222,120 +236,9 @@ th{
 
   .left,.center,.right{
     width:100%;
-    min-width:100%;
   }
 
   .panel{
     max-height:none;
-  }
-}
-/* ================= PRINT CONTROL ================= */
-.no-print {
-  display: table-cell;
-}
-
-.print-only {
-  display: none;
-}
-
-@media print {
-  .no-print {
-    display: none !important;
-  }
-
-  .print-only {
-    display: table-cell !important;
-  }
-}
-body{
-  margin:0;
-  font-family:Poppins, sans-serif;
-  background:#fff0f5;
-}
-
-/* ================= HEADER ================= */
-header{
-  background:#e91e63;
-  color:white;
-  text-align:center;
-  padding:12px;
-}
-
-/* ================= PAGE ================= */
-main{
-  padding:10px;
-}
-
-/* ================= TOTAL BOX ================= */
-h3{
-  color:#e91e63;
-}
-
-/* ================= TABLE ================= */
-.sales-table{
-  width:100%;
-  border-collapse:collapse;
-  background:white;
-  border-radius:12px;
-  overflow:hidden;
-  box-shadow:0 5px 15px rgba(0,0,0,0.05);
-}
-
-/* HEADER TABLE */
-.sales-table thead{
-  background:#e91e63;
-  color:white;
-}
-
-.sales-table th{
-  padding:12px;
-  font-size:13px;
-  text-align:center;
-}
-
-/* BODY */
-.sales-table td{
-  padding:10px;
-  text-align:center;
-  border-bottom:1px solid #ffe6ef;
-  font-size:13px;
-}
-
-/* LINES HOVER */
-.sales-table tr:hover{
-  background:#ffe6ef;
-}
-
-/* ================= BUTTONS ================= */
-button{
-  background:#f8bbd0;
-  border:none;
-  padding:6px 10px;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:bold;
-  transition:0.2s;
-}
-
-button:hover{
-  background:#e91e63;
-  color:white;
-}
-
-/* DELETE BUTTON SPECIAL */
-button:last-child{
-  background:#ff4d6d;
-  color:white;
-}
-
-/* ================= EMPTY STATE ================= */
-.sales-table td[colspan]{
-  padding:20px;
-  color:#999;
-  font-style:italic;
-}
-@media print {
-  .no-print {
-    display:none !important;
   }
 }
