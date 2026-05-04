@@ -202,9 +202,16 @@ function enterApp(){
 
   const code = document.getElementById("code").value;
 
+  console.log("entered code:", code);
+
   if(code === "29121509"){
-    window.location.href = "./pos.html?v=1";
+
+    localStorage.setItem("eclat_logged", "true");
+
+    window.location.href = "pos.html";
+
   } else {
+
     alert("Wrong code ❌");
   }
 }
