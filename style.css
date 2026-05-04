@@ -334,3 +334,8 @@ button:last-child{
   color:#999;
   font-style:italic;
 }
+@media print {
+  .no-print {
+    display:none !important;
+  }
+}
