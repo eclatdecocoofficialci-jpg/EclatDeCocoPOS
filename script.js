@@ -80,7 +80,7 @@ function addToInvoice(name, price){
   renderInvoice();
 }
 
-/* ================= INVOICE ================= */
+
 /* ================= INVOICE ================= */
 function renderInvoice(){
 
@@ -269,7 +269,13 @@ function printInvoice(){
 
     <body onload="window.print();window.close();">
 
-      <h2>Éclat de Coco</h2>
+      <h2 style="text-align:center;color:#e91e63;margin-bottom:5px;">
+  Éclat de Coco – Official Store
+</h2>
+
+<p style="text-align:center;margin-top:0;color:#666;font-size:14px;">
+  Abidjan - Côte d’Ivoire
+</p>
 
       <div class="info">
         <p><strong>Client:</strong> ${clientName}</p>
