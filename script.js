@@ -303,3 +303,14 @@ function resetServiceWorker(){
   alert("Cache cleared successfully ✔ Please refresh the page.");
 
 }
+document.addEventListener("DOMContentLoaded", function () {
+
+  const deliveryInput = document.getElementById("delivery");
+
+  if (deliveryInput) {
+    deliveryInput.addEventListener("input", function () {
+      updateTotal();
+    });
+  }
+
+});
