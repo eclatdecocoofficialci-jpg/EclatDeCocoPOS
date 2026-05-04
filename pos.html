@@ -38,17 +38,23 @@
 <!-- MAIN -->
 <div class="pos-container">
 
-  <!-- LEFT -->
+  <!-- LEFT : CATEGORIES -->
   <div class="panel left">
+
     <h3>Catégories</h3>
+
     <div id="category-boxes"></div>
+
   </div>
 
-  <!-- CENTER -->
+  <!-- CENTER : PRODUITS + SEARCH + CALC -->
   <div class="panel center">
 
     <h3>🔎 Recherche produit</h3>
-    <input id="search" placeholder="Nom ou barcode...">
+
+    <input id="search"
+           placeholder="Nom ou barcode..."
+           oninput="searchProducts(this.value)">
 
     <h3>Produits</h3>
     <div id="product-list"></div>
@@ -80,7 +86,7 @@
 
   </div>
 
-  <!-- RIGHT INVOICE -->
+  <!-- RIGHT : FACTURE -->
   <div class="panel right" id="invoice-area">
 
     <div class="invoice-header">
@@ -98,16 +104,21 @@
     <h4>Date</h4>
     <input type="date" id="date">
 
+    <!-- FACTURE TABLE -->
     <table>
+
       <thead>
         <tr>
           <th>Produit</th>
           <th>Qté</th>
           <th>Prix</th>
           <th>Total</th>
+          <th>Action</th>
         </tr>
       </thead>
+
       <tbody id="invoice-body"></tbody>
+
     </table>
 
     <h4>Livraison</h4>
@@ -148,7 +159,7 @@
     <button onclick="saveSale()">💾 Sauvegarder</button>
     <button onclick="printInvoice()">🖨 Imprimer</button>
 
-    <!-- 🔥 QR CODE SECTION (AJOUTÉ) -->
+    <!-- QR -->
     <div id="qr-code" style="margin-top:15px; text-align:center;"></div>
 
     <p class="thanks">Merci d’avoir choisi Éclat de Coco 💗</p>
