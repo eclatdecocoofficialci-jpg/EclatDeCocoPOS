@@ -9,7 +9,7 @@ let invoice = [];
 let paymentMethod = "cash";
 let discount = 0;
 
-/* ================= INIT PROPRE ================= */
+/* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded", function(){
 
   loadCategories();
@@ -17,9 +17,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
   const searchInput = document.getElementById("search");
   if(searchInput){
-    searchInput.addEventListener("input", e => {
-      searchProducts(e.target.value);
-    });
+    searchInput.addEventListener("input", e => searchProducts(e.target.value));
   }
 
   const deliveryInput = document.getElementById("delivery");
@@ -34,12 +32,14 @@ document.addEventListener("DOMContentLoaded", function(){
 
 /* ================= CATEGORIES ================= */
 function loadCategories(){
+  const box = document.getElementById("category-boxes");
+  if(!box) return;
+
   const categories = [...new Set(products.map(p => p.category))];
 
-  document.getElementById("category-boxes").innerHTML =
-    categories.map(cat =>
-      `<div class="pink-box" onclick="filterProducts('${cat}')">${cat}</div>`
-    ).join("");
+  box.innerHTML = categories.map(cat =>
+    `<div class="pink-box" onclick="filterProducts('${cat}')">${cat}</div>`
+  ).join("");
 }
 
 /* ================= FILTER ================= */
@@ -60,23 +60,25 @@ function searchProducts(value){
 /* ================= PRODUCTS ================= */
 function renderProducts(list){
 
-  document.getElementById("product-list").innerHTML =
-    list.map(p =>
-      `<div class="pink-box" onclick="addToInvoice('${p.name}', ${p.price})">
-        <strong>${p.name}</strong><br>
-        💰 ${p.price} FCFA<br>
-        📦 Stock: ${p.stock}
-      </div>`
-    ).join("");
+  const box = document.getElementById("product-list");
+  if(!box) return;
+
+  box.innerHTML = list.map(p =>
+    `<div class="pink-box" onclick="addToInvoice('${p.name}', ${p.price})">
+      <strong>${p.name}</strong><br>
+      💰 ${p.price} FCFA<br>
+      📦 Stock: ${p.stock}
+    </div>`
+  ).join("");
 }
 
-/* ================= ADD TO FACTURE ================= */
+/* ================= ADD ================= */
 function addToInvoice(name, price){
 
   const item = invoice.find(i => i.name === name);
 
   if(item){
-    item.qty++;
+    item.qty += 1;
   } else {
     invoice.push({name, price, qty:1});
   }
@@ -84,29 +86,30 @@ function addToInvoice(name, price){
   renderInvoice();
 }
 
-/* ================= FACTURE ================= */
+/* ================= INVOICE ================= */
 function renderInvoice(){
 
-  document.getElementById("invoice-body").innerHTML =
-    invoice.map((item, index) => {
+  const body = document.getElementById("invoice-body");
+  if(!body) return;
 
-      const total = item.price * item.qty;
+  body.innerHTML = invoice.map((item, index) => {
+    const total = item.price * item.qty;
 
-      return `
-        <tr>
-          <td>${item.name}</td>
-          <td>${item.qty}</td>
-          <td>${item.price}</td>
-          <td>${total}</td>
-          <td>
-            <button onclick="removeItem(${index})"
-              style="background:#e91e63;color:white;border:none;padding:5px;border-radius:5px;">
-              ❌
-            </button>
-          </td>
-        </tr>
-      `;
-    }).join("");
+    return `
+      <tr>
+        <td>${item.name}</td>
+        <td>${item.qty}</td>
+        <td>${item.price}</td>
+        <td>${total}</td>
+        <td>
+          <button onclick="removeItem(${index})"
+            style="background:#e91e63;color:white;border:none;padding:5px;border-radius:5px;">
+            ❌
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join("");
 
   updateTotal();
 }
@@ -131,16 +134,15 @@ function updateTotal(){
   total = total - (total * discount / 100);
   total += delivery;
 
-  document.getElementById("grand-total").innerText =
-    Math.round(total) + " FCFA";
+  const grand = document.getElementById("grand-total");
+  const discountBox = document.getElementById("discount-value");
 
-  document.getElementById("discount-value").innerText =
-    discount + "%";
+  if(grand) grand.innerText = Math.round(total) + " FCFA";
+  if(discountBox) discountBox.innerText = discount + "%";
 }
 
 /* ================= PAYMENT ================= */
 function selectPayment(el, method){
-
   paymentMethod = method;
 
   document.querySelectorAll(".pay-btn").forEach(b =>
@@ -172,7 +174,7 @@ function calculate(){
   }
 }
 
-/* ================= SAVE SALE (FIX FINAL) ================= */
+/* ================= SAVE SALE ================= */
 function saveSale(){
 
   if(invoice.length === 0){
@@ -190,17 +192,16 @@ function saveSale(){
       phone: document.getElementById("client-phone")?.value || "-",
       address: document.getElementById("client-address")?.value || "-"
     },
-    cart: JSON.parse(JSON.stringify(invoice)),
+    cart: structuredClone(invoice),
     discount: discount,
     delivery: Number(document.getElementById("delivery")?.value || 0),
     paymentMethod: paymentMethod,
-    total: document.getElementById("grand-total").innerText
+    total: document.getElementById("grand-total")?.innerText || "0 FCFA"
   };
 
   sales.push(sale);
   localStorage.setItem("sales", JSON.stringify(sales));
 
-  // RESET FACTURE
   invoice = [];
   renderInvoice();
   updateTotal();
@@ -208,32 +209,28 @@ function saveSale(){
   alert("Vente sauvegardée ✔");
 }
 
-/* ================= RENDER SALES ================= */
+/* ================= SALES ================= */
 function renderSales(){
 
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
   sales.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  let html = "";
+  const body = document.getElementById("sales-body");
+  if(!body) return;
 
-  sales.forEach(sale => {
-
-    html += `
-      <tr>
-        <td>${sale.id}</td>
-        <td>${sale.client.name}</td>
-        <td>${sale.client.phone}</td>
-        <td>${sale.date}</td>
-        <td>${sale.paymentMethod}</td>
-        <td style="color:#e91e63;font-weight:bold;">
-          ${sale.total}
-        </td>
-      </tr>
-    `;
-  });
-
-  document.getElementById("sales-body").innerHTML = html;
+  body.innerHTML = sales.map(sale => `
+    <tr>
+      <td>${sale.id}</td>
+      <td>${sale.client.name}</td>
+      <td>${sale.client.phone}</td>
+      <td>${sale.date}</td>
+      <td>${sale.paymentMethod}</td>
+      <td style="color:#e91e63;font-weight:bold;">
+        ${sale.total}
+      </td>
+    </tr>
+  `).join("");
 }
 
 /* ================= INVOICE NUMBER ================= */
@@ -243,18 +240,14 @@ function generateInvoiceNumber(){
 
   let last = localStorage.getItem("invoiceNumber");
 
-  if(!last){
-    last = 1;
-  } else {
-    last = Number(last) + 1;
-  }
+  last = last ? Number(last) + 1 : 1;
 
   localStorage.setItem("invoiceNumber", last);
 
   return year + String(last).padStart(3, "0");
 }
 
-/* ================= RESET CACHE ================= */
+/* ================= RESET SW ================= */
 function resetServiceWorker(){
 
   navigator.serviceWorker.getRegistrations()
