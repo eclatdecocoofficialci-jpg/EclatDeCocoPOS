@@ -11,11 +11,22 @@ let discount = 0;
 
 /* ================= INIT ================= */
 window.onload = function(){
+
   loadCategories();
-}
+  renderProducts(products);
+
+  // SEARCH LIVE
+  const searchInput = document.getElementById("search");
+  if(searchInput){
+    searchInput.addEventListener("input", function(){
+      searchProducts(this.value);
+    });
+  }
+};
 
 /* ================= CATEGORIES ================= */
 function loadCategories(){
+
   const categories = [...new Set(products.map(p => p.category))];
 
   let html = "";
@@ -31,7 +42,7 @@ function loadCategories(){
   document.getElementById("category-boxes").innerHTML = html;
 }
 
-/* ================= PRODUITS ================= */
+/* ================= FILTER ================= */
 function filterProducts(category){
 
   const filtered = products.filter(p => p.category === category);
@@ -50,13 +61,15 @@ function searchProducts(value){
   renderProducts(filtered);
 }
 
+/* ================= PRODUCTS ================= */
 function renderProducts(list){
 
   let html = "";
 
   list.forEach(p=>{
     html += `
-      <div class="pink-box" onclick="addToInvoice('${p.name}', ${p.price})">
+      <div class="pink-box"
+           onclick="addToInvoice('${p.name}', ${p.price})">
 
         <strong>${p.name}</strong><br>
         💰 ${p.price} FCFA<br>
@@ -69,7 +82,7 @@ function renderProducts(list){
   document.getElementById("product-list").innerHTML = html;
 }
 
-/* ================= INVOICE ================= */
+/* ================= ADD TO INVOICE ================= */
 function addToInvoice(name, price){
 
   const existing = invoice.find(i => i.name === name);
@@ -87,7 +100,7 @@ function addToInvoice(name, price){
   renderInvoice();
 }
 
-/* ================= RENDER FACTURE ================= */
+/* ================= INVOICE ================= */
 function renderInvoice(){
 
   let html = "";
@@ -108,12 +121,11 @@ function renderInvoice(){
         </td>
 
         <td>${item.price}</td>
-
         <td>${total}</td>
 
         <td>
           <button onclick="removeItem(${index})"
-                  style="background:red;color:white;border:none;padding:5px;border-radius:5px;">
+            style="background:#e91e63;color:white;border:none;padding:5px;border-radius:5px;">
             ❌
           </button>
         </td>
@@ -128,17 +140,13 @@ function renderInvoice(){
 
 /* ================= UPDATE QTY ================= */
 function updateQty(index, qty){
-
   invoice[index].qty = Number(qty);
-
   renderInvoice();
 }
 
 /* ================= REMOVE ITEM ================= */
 function removeItem(index){
-
   invoice.splice(index, 1);
-
   renderInvoice();
 }
 
@@ -151,10 +159,8 @@ function updateTotal(){
     total += item.price * item.qty;
   });
 
-  // livraison
   const delivery = Number(document.getElementById("delivery")?.value || 0);
 
-  // remise
   total = total - (total * discount / 100);
 
   total += delivery;
@@ -172,10 +178,10 @@ function selectPayment(el, method){
   paymentMethod = method;
 
   document.querySelectorAll(".pay-btn").forEach(btn=>{
-    btn.style.opacity = "0.5";
+    btn.classList.remove("active");
   });
 
-  el.style.opacity = "1";
+  el.classList.add("active");
 }
 
 /* ================= DISCOUNT ================= */
@@ -189,7 +195,7 @@ function discount50(){
   updateTotal();
 }
 
-/* ================= CALCULATRICE ================= */
+/* ================= CALCULATOR ================= */
 function press(val){
   document.getElementById("display").value += val;
 }
@@ -207,7 +213,7 @@ function calculate(){
   }
 }
 
-/* ================= PRINT FACTURE ================= */
+/* ================= PRINT INVOICE ================= */
 function printInvoice(){
 
   const paymentLabels = {
@@ -228,7 +234,7 @@ function printInvoice(){
   const win = window.open("", "", "width=700,height=900");
 
   if(!win){
-    alert("Active les popups");
+    alert("Active les popups pour imprimer");
     return;
   }
 
@@ -240,7 +246,7 @@ function printInvoice(){
         @page{ size:A5; margin:10mm; }
         body{ font-family:Poppins,sans-serif;margin:0;padding:10px; }
         table{ width:100%;border-collapse:collapse; }
-        th,td{ border:1px solid #ddd;padding:8px; }
+        th,td{ border:1px solid #ddd;padding:8px;text-align:center; }
         th{ background:#ffe6ef; }
       </style>
     </head>
