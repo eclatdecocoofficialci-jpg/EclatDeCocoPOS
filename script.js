@@ -15,86 +15,66 @@ window.onload = function(){
   loadCategories();
   renderProducts(products);
 
-  // SEARCH LIVE
   const searchInput = document.getElementById("search");
   if(searchInput){
-    searchInput.addEventListener("input", function(){
-      searchProducts(this.value);
+    searchInput.addEventListener("input", e => {
+      searchProducts(e.target.value);
     });
+  }
+
+  const deliveryInput = document.getElementById("delivery");
+  if(deliveryInput){
+    deliveryInput.addEventListener("input", updateTotal);
   }
 };
 
 /* ================= CATEGORIES ================= */
 function loadCategories(){
-
   const categories = [...new Set(products.map(p => p.category))];
 
-  let html = "";
-
-  categories.forEach(cat=>{
-    html += `
-      <div class="pink-box" onclick="filterProducts('${cat}')">
-        ${cat}
-      </div>
-    `;
-  });
-
-  document.getElementById("category-boxes").innerHTML = html;
+  document.getElementById("category-boxes").innerHTML =
+    categories.map(cat =>
+      `<div class="pink-box" onclick="filterProducts('${cat}')">${cat}</div>`
+    ).join("");
 }
 
 /* ================= FILTER ================= */
 function filterProducts(category){
-
-  const filtered = products.filter(p => p.category === category);
-
-  renderProducts(filtered);
+  renderProducts(products.filter(p => p.category === category));
 }
 
 /* ================= SEARCH ================= */
 function searchProducts(value){
+  const v = value.toLowerCase();
 
-  const filtered = products.filter(p =>
-    p.name.toLowerCase().includes(value.toLowerCase()) ||
-    p.category.toLowerCase().includes(value.toLowerCase())
-  );
-
-  renderProducts(filtered);
+  renderProducts(products.filter(p =>
+    p.name.toLowerCase().includes(v) ||
+    p.category.toLowerCase().includes(v)
+  ));
 }
 
 /* ================= PRODUCTS ================= */
 function renderProducts(list){
 
-  let html = "";
-
-  list.forEach(p=>{
-    html += `
-      <div class="pink-box"
-           onclick="addToInvoice('${p.name}', ${p.price})">
-
+  document.getElementById("product-list").innerHTML =
+    list.map(p =>
+      `<div class="pink-box" onclick="addToInvoice('${p.name}', ${p.price})">
         <strong>${p.name}</strong><br>
         💰 ${p.price} FCFA<br>
         📦 Stock: ${p.stock}
-
-      </div>
-    `;
-  });
-
-  document.getElementById("product-list").innerHTML = html;
+      </div>`
+    ).join("");
 }
 
-/* ================= ADD TO INVOICE ================= */
+/* ================= ADD ================= */
 function addToInvoice(name, price){
 
-  const existing = invoice.find(i => i.name === name);
+  const item = invoice.find(i => i.name === name);
 
-  if(existing){
-    existing.qty += 1;
+  if(item){
+    item.qty++;
   } else {
-    invoice.push({
-      name,
-      price,
-      qty:1
-    });
+    invoice.push({name, price, qty:1});
   }
 
   renderInvoice();
@@ -103,48 +83,43 @@ function addToInvoice(name, price){
 /* ================= INVOICE ================= */
 function renderInvoice(){
 
-  let html = "";
+  document.getElementById("invoice-body").innerHTML =
+    invoice.map((item, index) => {
+      const total = item.price * item.qty;
 
-  invoice.forEach((item, index)=>{
+      return `
+        <tr>
+          <td>${item.name}</td>
 
-    const total = item.price * item.qty;
+          <td>
+            <input type="number" min="1"
+              value="${item.qty}"
+              onchange="updateQty(${index}, this.value)">
+          </td>
 
-    html += `
-      <tr>
-        <td>${item.name}</td>
+          <td>${item.price}</td>
+          <td>${total}</td>
 
-        <td>
-          <input type="number"
-                 value="${item.qty}"
-                 min="1"
-                 onchange="updateQty(${index}, this.value)">
-        </td>
-
-        <td>${item.price}</td>
-        <td>${total}</td>
-
-        <td>
-          <button onclick="removeItem(${index})"
-            style="background:#e91e63;color:white;border:none;padding:5px;border-radius:5px;">
-            ❌
-          </button>
-        </td>
-      </tr>
-    `;
-  });
-
-  document.getElementById("invoice-body").innerHTML = html;
+          <td>
+            <button onclick="removeItem(${index})"
+              style="background:#e91e63;color:white;border:none;padding:5px;border-radius:5px;">
+              ❌
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join("");
 
   updateTotal();
 }
 
-/* ================= UPDATE QTY ================= */
+/* ================= UPDATE ================= */
 function updateQty(index, qty){
   invoice[index].qty = Number(qty);
   renderInvoice();
 }
 
-/* ================= REMOVE ITEM ================= */
+/* ================= REMOVE ================= */
 function removeItem(index){
   invoice.splice(index, 1);
   renderInvoice();
@@ -155,21 +130,17 @@ function updateTotal(){
 
   let total = 0;
 
-  invoice.forEach(item=>{
-    total += item.price * item.qty;
+  invoice.forEach(i => {
+    total += i.price * i.qty;
   });
 
   const delivery = Number(document.getElementById("delivery")?.value || 0);
 
   total = total - (total * discount / 100);
-
   total += delivery;
 
-  document.getElementById("grand-total").innerText =
-    total + " FCFA";
-
-  document.getElementById("discount-value").innerText =
-    discount + "%";
+  document.getElementById("grand-total").innerText = total + " FCFA";
+  document.getElementById("discount-value").innerText = discount + "%";
 }
 
 /* ================= PAYMENT ================= */
@@ -177,27 +148,20 @@ function selectPayment(el, method){
 
   paymentMethod = method;
 
-  document.querySelectorAll(".pay-btn").forEach(btn=>{
-    btn.classList.remove("active");
-  });
+  document.querySelectorAll(".pay-btn").forEach(b =>
+    b.classList.remove("active")
+  );
 
   el.classList.add("active");
 }
 
 /* ================= DISCOUNT ================= */
-function discount20(){
-  discount = 20;
-  updateTotal();
-}
+function discount20(){ discount = 20; updateTotal(); }
+function discount50(){ discount = 50; updateTotal(); }
 
-function discount50(){
-  discount = 50;
-  updateTotal();
-}
-
-/* ================= CALCULATOR ================= */
-function press(val){
-  document.getElementById("display").value += val;
+/* ================= CALC ================= */
+function press(v){
+  document.getElementById("display").value += v;
 }
 
 function clearCalc(){
@@ -208,12 +172,12 @@ function calculate(){
   try{
     document.getElementById("display").value =
       eval(document.getElementById("display").value);
-  } catch(e){
+  } catch {
     alert("Erreur calcul");
   }
 }
 
-/* ================= PRINT INVOICE ================= */
+/* ================= PRINT ================= */
 function printInvoice(){
 
   const paymentLabels = {
@@ -222,18 +186,16 @@ function printInvoice(){
     wave:"Wave"
   };
 
-  const selectedPayment =
-    paymentLabels[paymentMethod] || paymentMethod;
+  const selectedPayment = paymentLabels[paymentMethod];
 
-  const deliveryValue =
-    Number(document.getElementById("delivery")?.value || 0);
-  const invoiceBody =
-    document.getElementById("invoice-body")?.innerHTML || "";
+  const deliveryValue = Number(document.getElementById("delivery")?.value || 0);
+
+  const invoiceBody = document.getElementById("invoice-body")?.innerHTML || "";
 
   const win = window.open("", "", "width=700,height=900");
 
   if(!win){
-    alert("Active les popups pour imprimer");
+    alert("Active popups");
     return;
   }
 
@@ -243,23 +205,22 @@ function printInvoice(){
       <title>Facture</title>
       <style>
         @page{ size:A5; margin:10mm; }
-        body{ font-family:Poppins,sans-serif;margin:0;padding:10px; }
-        table{ width:100%;border-collapse:collapse; }
-        th,td{ border:1px solid #ddd;padding:8px;text-align:center; }
+        body{ font-family:Poppins,sans-serif; padding:10px; }
+        table{ width:100%; border-collapse:collapse; }
+        th,td{ border:1px solid #ddd; padding:8px; text-align:center; }
         th{ background:#ffe6ef; }
       </style>
     </head>
 
     <body onload="window.print();window.close();">
 
-      <h2 style="text-align:center;color:#e91e63;">
-        Éclat de Coco
-      </h2>
-<p style="margin-top:10px;">
-<strong>🚚 Delivery:</strong> ${deliveryValue} FCFA</p>
+      <h2 style="text-align:center;color:#e91e63;">Éclat de Coco</h2>
+
       <p><strong>Client:</strong> ${document.getElementById("client-name").value || "-"}</p>
       <p><strong>Téléphone:</strong> ${document.getElementById("client-phone").value || "-"}</p>
       <p><strong>Date:</strong> ${document.getElementById("date").value || "-"}</p>
+
+      <p><strong>🚚 Delivery:</strong> ${deliveryValue} FCFA</p>
 
       <table>
         <thead>
@@ -271,12 +232,9 @@ function printInvoice(){
           </tr>
         </thead>
 
-        <tbody>
-          ${invoiceBody}
-        </tbody>
+        <tbody>${invoiceBody}</tbody>
       </table>
 
-      <p><strong>Livraison:</strong> ${deliveryValue} FCFA</p>
       <p><strong>Paiement:</strong> ${selectedPayment}</p>
 
       <h2 style="text-align:right;color:#e91e63;">
@@ -289,28 +247,12 @@ function printInvoice(){
 
   win.document.close();
 }
+
+/* ================= RESET SW ================= */
 function resetServiceWorker(){
 
   navigator.serviceWorker.getRegistrations()
-  .then(function(registrations) {
+  .then(regs => regs.forEach(r => r.unregister()));
 
-    for(let registration of registrations) {
-      registration.unregister();
-    }
-
-  });
-
-  alert("Cache cleared successfully ✔ Please refresh the page.");
-
+  alert("Cache cleared ✔ Refresh page");
 }
-document.addEventListener("DOMContentLoaded", function () {
-
-  const deliveryInput = document.getElementById("delivery");
-
-  if (deliveryInput) {
-    deliveryInput.addEventListener("input", function () {
-      updateTotal();
-    });
-  }
-
-});
