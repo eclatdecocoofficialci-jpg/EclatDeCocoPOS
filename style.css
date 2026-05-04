@@ -1,9 +1,12 @@
 body{
   margin:0;
-  font-family:Poppins;
+  font-family:Poppins, sans-serif;
   background:#fff0f5;
+
+  /* IMPORTANT FIX iPad scroll */
   overflow-x:hidden;
   overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
 }
 
 /* ================= HEADER ================= */
@@ -11,7 +14,7 @@ header{
   background:#e91e63;
   color:white;
   text-align:center;
-  padding:8px 10px;
+  padding:10px;
 }
 
 header h1{
@@ -46,10 +49,13 @@ header h1{
 /* ================= LAYOUT ================= */
 .pos-container{
   display:flex;
-  height:auto;
-  min-height:90vh;
   gap:10px;
   padding:10px;
+
+  /* IMPORTANT FIX iPad */
+  min-height:100vh;
+  height:auto;
+  align-items:flex-start;
 }
 
 /* PANELS */
@@ -57,8 +63,12 @@ header h1{
   background:white;
   border-radius:12px;
   padding:10px;
-  overflow:auto;
+
+  /* IMPORTANT SCROLL FIX */
+  overflow-y:auto;
   -webkit-overflow-scrolling:touch;
+
+  max-height:85vh;
 }
 
 .left{width:18%;}
@@ -111,7 +121,6 @@ header h1{
   height:60px;
   border-radius:15px;
   border:2px solid #f8bbd0;
-  background:white;
   font-size:28px;
   padding:10px;
   margin-bottom:12px;
@@ -179,18 +188,22 @@ header h1{
   flex-wrap:wrap;
 }
 
+/* BOX PLUS GRAND + STYLE CAISSE */
 .pay-btn{
   flex:1;
   min-width:140px;
   padding:18px;
   text-align:center;
-  border-radius:12px;
+  border-radius:14px;
+
   background:#f8c1d9;
   color:#6a0036;
   font-weight:bold;
+
   cursor:pointer;
   transition:0.2s;
   user-select:none;
+
   border:2px solid transparent;
 }
 
@@ -273,15 +286,18 @@ header h1{
   border-radius:20px;
 }
 
-/* ================= IPAD FIX ================= */
-@media(min-width:900px){
-  body{
-    overflow-x:hidden;
-    overflow-y:auto;
+/* ================= MOBILE / IPAD FIX ================= */
+@media(max-width:900px){
+  .pos-container{
+    flex-direction:column;
   }
 
-  .pos-container{
-    height:auto;
-    min-height:95vh;
+  .left,.center,.right{
+    width:100%;
+    max-height:none;
+  }
+
+  .panel{
+    max-height:none;
   }
 }
