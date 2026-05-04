@@ -37,13 +37,20 @@
 
 </main>
 
+
+
 <script>
 
+function getSales(){
+  return JSON.parse(localStorage.getItem("sales")) || [];
+}
+
+/* ================= LOAD SALES ================= */
 function loadSales(){
 
-  let sales = JSON.parse(localStorage.getItem("sales")) || [];
-  let tbody = document.getElementById("sales-body");
+  let sales = getSales();
 
+  let tbody = document.getElementById("sales-body");
   tbody.innerHTML = "";
 
   if(sales.length === 0){
@@ -52,10 +59,14 @@ function loadSales(){
     return;
   }
 
-  /* ================= TRI PAR DATE (IMPORTANT) ================= */
-  sales.sort((a, b) => new Date(b.date) - new Date(a.date));
+  /* 🔥 TRI PAR DATE (SAFE) */
+  sales.sort((a, b) => {
+    return new Date(b.date || 0) - new Date(a.date || 0);
+  });
 
   sales.forEach((s, index) => {
+
+    let total = parseFloat(s.total) || 0;
 
     let tr = document.createElement("tr");
 
@@ -65,7 +76,7 @@ function loadSales(){
       <td>${s.client?.name || "-"}</td>
       <td>${s.discount || "0%"}</td>
       <td>${s.paymentMethod || "-"}</td>
-      <td>${Math.round(parseFloat(s.total) || 0)} FCFA</td>
+      <td>${Math.round(total)} FCFA</td>
       <td>
         <button onclick="viewInvoice(${index})">Voir</button>
         <button onclick="deleteSale(${index})">Supprimer</button>
@@ -81,10 +92,16 @@ function loadSales(){
 /* ================= VIEW INVOICE ================= */
 function viewInvoice(i){
 
-  let sales = JSON.parse(localStorage.getItem("sales")) || [];
-  sales.sort((a, b) => new Date(b.date) - new Date(a.date));
+  let sales = getSales();
+
+  sales.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
   let s = sales[i];
+
+  if(!s){
+    alert("Facture introuvable");
+    return;
+  }
 
   let items = s.cart?.map(p =>
     `${p.name} x${p.qty} = ${p.price * p.qty} FCFA`
@@ -107,9 +124,11 @@ function deleteSale(i){
 
   if(!confirm("Supprimer cette vente ?")) return;
 
-  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+  let sales = getSales();
 
-  sales.sort((a, b) => new Date(b.date) - new Date(a.date));
+  // IMPORTANT: tri avant suppression pour cohérence index
+  sales.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+
   sales.splice(i, 1);
 
   localStorage.setItem("sales", JSON.stringify(sales));
@@ -120,7 +139,7 @@ function deleteSale(i){
 /* ================= TOTAL GLOBAL ================= */
 function updateTotalSales(){
 
-  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+  let sales = getSales();
 
   let total = sales.reduce((sum, s) => {
     return sum + (parseFloat(s.total) || 0);
@@ -133,6 +152,7 @@ function updateTotalSales(){
 window.onload = loadSales;
 
 </script>
+
 
 </body>
 </html>
