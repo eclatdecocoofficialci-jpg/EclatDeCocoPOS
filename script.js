@@ -85,27 +85,38 @@ function renderInvoice(){
 
   document.getElementById("invoice-body").innerHTML =
     invoice.map((item, index) => {
+
       const total = item.price * item.qty;
 
       return `
         <tr>
+
           <td>${item.name}</td>
 
-          <td>
-            <input type="number" min="1"
+          <!-- QUANTITE (hidden print) -->
+          <td class="no-print">
+            <input type="number"
+              min="1"
               value="${item.qty}"
               onchange="updateQty(${index}, this.value)">
+          </td>
+
+          <!-- QUANTITE (print version simple) -->
+          <td class="print-only">
+            ${item.qty}
           </td>
 
           <td>${item.price}</td>
           <td>${total}</td>
 
-          <td>
+          <!-- DELETE BUTTON -->
+          <td class="no-print">
             <button onclick="removeItem(${index})"
               style="background:#e91e63;color:white;border:none;padding:5px;border-radius:5px;">
               ❌
             </button>
           </td>
+
         </tr>
       `;
     }).join("");
