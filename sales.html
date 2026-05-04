@@ -17,7 +17,10 @@
 <main style="padding:10px;">
 
   <!-- TOTAL GLOBAL -->
-  <h3>Total des ventes: <span id="total-sales">0 FCFA</span></h3>
+  <h3>
+    Total des ventes:
+    <span id="total-sales">0 FCFA</span>
+  </h3>
 
   <table class="sales-table">
     <thead>
@@ -37,10 +40,7 @@
 
 </main>
 
-
-
 <script>
-
 function getSales(){
   return JSON.parse(localStorage.getItem("sales")) || [];
 }
@@ -54,19 +54,25 @@ function loadSales(){
   tbody.innerHTML = "";
 
   if(sales.length === 0){
-    tbody.innerHTML = `<tr><td colspan="7">Aucune vente</td></tr>`;
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7">Aucune vente enregistrée</td>
+      </tr>
+    `;
     updateTotalSales();
     return;
   }
 
-  /* 🔥 TRI PAR DATE (SAFE) */
-  sales.sort((a, b) => {
-    return new Date(b.date || 0) - new Date(a.date || 0);
-  });
+  /* TRI PAR DATE (récent → ancien) */
+  sales.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
   sales.forEach((s, index) => {
 
-    let total = parseFloat(s.total) || 0;
+    let total = Number(
+      (s.total || "0")
+      .toString()
+      .replace("FCFA","")
+    );
 
     let tr = document.createElement("tr");
 
@@ -74,7 +80,7 @@ function loadSales(){
       <td>${s.id || "-"}</td>
       <td>${s.date || "-"}</td>
       <td>${s.client?.name || "-"}</td>
-      <td>${s.discount || "0%"}</td>
+      <td>${s.discount ? s.discount + "%" : "0%"}</td>
       <td>${s.paymentMethod || "-"}</td>
       <td>${Math.round(total)} FCFA</td>
       <td>
@@ -103,9 +109,9 @@ function viewInvoice(i){
     return;
   }
 
-  let items = s.cart?.map(p =>
+  let items = (s.cart || []).map(p =>
     `${p.name} x${p.qty} = ${p.price * p.qty} FCFA`
-  ).join("\n") || "";
+  ).join("\n");
 
   alert(
     "FACTURE: " + (s.id || "-") +
@@ -115,7 +121,7 @@ function viewInvoice(i){
     "\n\nREMISE: " + (s.discount || "0%") +
     "\nLIVRAISON: " + (s.delivery || 0) + " FCFA" +
     "\nPAIEMENT: " + (s.paymentMethod || "-") +
-    "\nTOTAL: " + Math.round(parseFloat(s.total) || 0) + " FCFA"
+    "\nTOTAL: " + Math.round(Number(s.total || 0)) + " FCFA"
   );
 }
 
@@ -126,7 +132,6 @@ function deleteSale(i){
 
   let sales = getSales();
 
-  // IMPORTANT: tri avant suppression pour cohérence index
   sales.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
   sales.splice(i, 1);
@@ -142,7 +147,7 @@ function updateTotalSales(){
   let sales = getSales();
 
   let total = sales.reduce((sum, s) => {
-    return sum + (parseFloat(s.total) || 0);
+    return sum + Number((s.total || "0").toString().replace("FCFA",""));
   }, 0);
 
   document.getElementById("total-sales").innerText =
@@ -150,9 +155,7 @@ function updateTotalSales(){
 }
 
 window.onload = loadSales;
-
 </script>
-
 
 </body>
 </html>
