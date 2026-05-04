@@ -6,7 +6,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- PWA -->
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#e91e63">
 
@@ -30,17 +29,19 @@ body{
   position:relative;
 }
 
-/* ================= BACKGROUND NATURE COCO ================= */
-body::before{
-  content:"";
+/* ================= VIDEO BACKGROUND ================= */
+#bg-video{
   position:absolute;
-  inset:0;
-  background:url("https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2") center/cover no-repeat;
-  filter:brightness(0.55) contrast(1.1);
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
   z-index:-3;
+  filter:brightness(0.55) contrast(1.1);
 }
 
-/* ================= OVERLAY ROSE + GREEN ================= */
+/* ================= OVERLAY ================= */
 body::after{
   content:"";
   position:absolute;
@@ -61,7 +62,7 @@ body::after{
   text-shadow:0 5px 15px rgba(0,0,0,0.4);
 }
 
-/* ================= PETALS ANIMATION ================= */
+/* ================= PETALS ================= */
 .petal{
   position:absolute;
   width:10px;
@@ -73,34 +74,22 @@ body::after{
 }
 
 @keyframes fall{
-  0%{
-    transform:translateY(-10vh) translateX(0);
-    opacity:1;
-  }
-  100%{
-    transform:translateY(110vh) translateX(60px);
-    opacity:0;
-  }
+  0%{transform:translateY(-10vh); opacity:1;}
+  100%{transform:translateY(110vh); opacity:0;}
 }
 
-/* ================= LOGIN CARD ================= */
+/* ================= CARD ================= */
 .card{
   background:rgba(255,255,255,0.12);
   backdrop-filter:blur(15px);
-  -webkit-backdrop-filter:blur(15px);
   padding:30px;
   border-radius:20px;
   width:320px;
   text-align:center;
   border:1px solid rgba(255,255,255,0.25);
   box-shadow:0 10px 30px rgba(0,0,0,0.3);
-  animation:fadeIn 1s ease;
   color:white;
-}
-
-@keyframes fadeIn{
-  from{opacity:0; transform:translateY(20px);}
-  to{opacity:1; transform:translateY(0);}
+  z-index:2;
 }
 
 /* ================= INPUT ================= */
@@ -111,7 +100,6 @@ input{
   border-radius:10px;
   border:none;
   outline:none;
-  font-size:16px;
 }
 
 /* ================= BUTTON ================= */
@@ -124,10 +112,9 @@ button{
   background:#e91e63;
   color:white;
   font-weight:bold;
-  cursor:pointer;
 }
 
-/* ================= SMALL TEXT ================= */
+/* ================= TEXT ================= */
 .small{
   font-size:12px;
   margin-top:10px;
@@ -139,12 +126,17 @@ button{
 
 <body>
 
+<!-- 🎥 BACKGROUND VIDEO -->
+<video autoplay muted loop playsinline id="bg-video">
+  <source src="./images/coco-bg.mp4" type="video/mp4">
+</video>
+
 <!-- TITLE -->
 <div class="title">
   Bienvenue dans l’univers Éclat de Coco
 </div>
 
-<!-- LOGIN BOX -->
+<!-- LOGIN -->
 <div class="card">
   <h2>Éclat de Coco POS</h2>
 
@@ -157,7 +149,6 @@ button{
 
 <script>
 
-/* ================= LOGIN ================= */
 function enterApp(){
   const code = document.getElementById("code").value;
 
@@ -169,29 +160,24 @@ function enterApp(){
   }
 }
 
-/* ================= AUTO LOGIN ================= */
+/* AUTO LOGIN */
 window.onload = function(){
 
-  const logged = localStorage.getItem("eclat_logged");
-
-  if(logged === "true"){
+  if(localStorage.getItem("eclat_logged") === "true"){
     window.location.href = "./pos.html?v=1";
   }
 
   createPetals();
 };
 
-/* ================= PETALS GENERATOR ================= */
+/* PETALS */
 function createPetals(){
   for(let i=0;i<18;i++){
-    let petal = document.createElement("div");
-    petal.classList.add("petal");
-
-    petal.style.left = Math.random()*100 + "vw";
-    petal.style.animationDuration = (4 + Math.random()*5) + "s";
-    petal.style.opacity = Math.random();
-
-    document.body.appendChild(petal);
+    let p = document.createElement("div");
+    p.className = "petal";
+    p.style.left = Math.random()*100 + "vw";
+    p.style.animationDuration = (4 + Math.random()*5) + "s";
+    document.body.appendChild(p);
   }
 }
 
