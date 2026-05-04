@@ -242,15 +242,11 @@ function enterApp(){
 /* ================= AUTO LOGIN ================= */
 window.onload = function(){
 
-  if(
-    localStorage.getItem("eclat_logged")
-    === "true"
-  ){
-    window.location.href =
-      "./pos.html?v=1";
-  }
-
-  createPetals();
+  if(localStorage.getItem("eclat_logged") === "true"){
+  setTimeout(() => {
+    window.location.href = "./pos.html?v=1";
+  }, 300);
+}
 };
 
 /* ================= PETALS ================= */
