@@ -255,3 +255,124 @@ function resetServiceWorker(){
 
   alert("Cache cleared ✔");
 }
+function printInvoice(){
+
+  if(!invoice || invoice.length === 0){
+    alert("Aucun produit dans la facture");
+    return;
+  }
+
+  const paymentLabels = {
+    cash: "Cash",
+    orange: "Orange Money",
+    wave: "Wave"
+  };
+
+  const selectedPayment = paymentLabels[paymentMethod] || paymentMethod;
+
+  const deliveryValue = Number(document.getElementById("delivery")?.value || 0);
+
+  const invoiceNumber = generateInvoiceNumber();
+
+  const invoiceBody = invoice.map(item => {
+    const total = item.price * item.qty;
+
+    return `
+      <tr>
+        <td>${item.name}</td>
+        <td>${item.qty}</td>
+        <td>${item.price}</td>
+        <td>${total}</td>
+      </tr>
+    `;
+  }).join("");
+
+  const win = window.open("", "_blank");
+
+  if(!win){
+    alert("Active les popups pour imprimer");
+    return;
+  }
+
+  win.document.write(`
+    <html>
+    <head>
+      <title>Facture</title>
+
+      <style>
+        body{
+          font-family: Arial;
+          padding: 15px;
+        }
+
+        h2{
+          text-align:center;
+          color:#e91e63;
+        }
+
+        table{
+          width:100%;
+          border-collapse:collapse;
+        }
+
+        th,td{
+          border:1px solid #ddd;
+          padding:8px;
+          text-align:center;
+        }
+
+        th{
+          background:#ffe6ef;
+        }
+
+        .info{
+          text-align:center;
+          font-size:12px;
+          margin-bottom:10px;
+        }
+
+        .total{
+          text-align:right;
+          font-weight:bold;
+          color:#e91e63;
+        }
+      </style>
+    </head>
+
+    <body onload="window.print(); window.onafterprint=function(){window.close();}">
+
+      <h2>ÉCLAT DE COCO</h2>
+
+      <div class="info">
+        Facture N°: ${invoiceNumber}<br>
+        Date: ${new Date().toLocaleDateString()}<br>
+        Client: ${document.getElementById("client-name")?.value || "-"}<br>
+        Téléphone: ${document.getElementById("client-phone")?.value || "-"}<br>
+        Adresse: ${document.getElementById("client-address")?.value || "-"}
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th>Qté</th>
+            <th>Prix</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${invoiceBody}
+        </tbody>
+      </table>
+
+      <p class="total">Livraison: ${deliveryValue} FCFA</p>
+      <p class="total">Paiement: ${selectedPayment}</p>
+
+      <h3 class="total">TOTAL: ${document.getElementById("grand-total")?.innerText || "0 FCFA"}</h3>
+
+    </body>
+    </html>
+  `);
+
+  win.document.close();
+}
