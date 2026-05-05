@@ -85,9 +85,9 @@ header h1{
 }
 
 /* ================= 3 COLONNES ================= */
-.left{ width:18%; min-width:180px; overflow-y:auto; }
+.left{ width:18%; min-width:180px; }
 .center{ width:52%; min-width:320px; }
-.right{ width:30%; min-width:280px; overflow-x:hidden; }
+.right{ width:30%; min-width:280px; }
 
 /* ================= PINK BOX ================= */
 .pink-box{
@@ -170,19 +170,27 @@ input{
 /* ================= PAYMENT ================= */
 .payment-boxes{
   display:flex;
-  gap:10px;
+  gap:12px;
   flex-wrap:wrap;
+  margin:10px 0;
 }
 
 .pay-btn{
   flex:1;
-  min-width:120px;
-  padding:15px;
+  min-width:100px;
+  padding:14px;
   text-align:center;
   background:#f8bbd0;
   border-radius:12px;
   cursor:pointer;
   font-weight:bold;
+  font-size:14px;
+  transition:0.2s;
+  box-shadow:0 2px 6px rgba(0,0,0,0.08);
+}
+
+.pay-btn:hover{
+  transform:scale(1.03);
 }
 
 .pay-btn.active{
@@ -206,12 +214,12 @@ th{
   background:#ffe6ef;
 }
 
-/* ================= BUTTONS ================= */
+/* ================= BUTTONS (FIX CLEAN) ================= */
 button{
   background:#f8bbd0;
   border:none;
-  padding:8px 10px;
-  border-radius:8px;
+  padding:10px 12px;
+  border-radius:10px;
   cursor:pointer;
   font-weight:bold;
   transition:0.2s;
@@ -220,6 +228,16 @@ button{
 button:hover{
   background:#e91e63;
   color:white;
+}
+
+/* Boutons SAVE + PRINT plus pro */
+.right > button{
+  width:100%;
+  padding:14px;
+  font-size:15px;
+  font-weight:bold;
+  border-radius:12px;
+  margin-top:10px;
 }
 
 /* ================= FOOTER ================= */
