@@ -102,8 +102,7 @@ function renderInvoice(){
         <td>${item.price}</td>
         <td>${total}</td>
         <td>
-          <button onclick="removeItem(${index})"
-            style="background:#e91e63;color:white;border:none;padding:5px;border-radius:5px;">
+          <button onclick="removeItem(${index})">
             ❌
           </button>
         </td>
@@ -131,7 +130,9 @@ function updateTotal(){
 
   const delivery = Number(document.getElementById("delivery")?.value || 0);
 
-  total = total - (total * discount / 100);
+  const discountAmount = total * (discount / 100);
+  total = total - discountAmount;
+
   total += delivery;
 
   const grand = document.getElementById("grand-total");
@@ -152,10 +153,6 @@ function selectPayment(el, method){
   el.classList.add("active");
 }
 
-/* ================= DISCOUNT ================= */
-function discount20(){ discount = 20; updateTotal(); }
-function discount50(){ discount = 50; updateTotal(); }
-
 /* ================= CALC ================= */
 function press(v){
   document.getElementById("display").value += v;
@@ -174,7 +171,25 @@ function calculate(){
   }
 }
 
-/* ================= SAVE SALE ================= */
+/* ================= DISCOUNT FROM CALC ================= */
+function applyDiscountFromCalc(){
+
+  const value = Number(document.getElementById("display").value);
+
+  if(isNaN(value) || value < 0 || value > 100){
+    alert("Remise invalide (0 à 100%)");
+    return;
+  }
+
+  discount = value;
+
+  document.getElementById("discount-value").innerText = discount + "%";
+
+  updateTotal();
+  clearCalc();
+}
+
+/* ================= SAVE ================= */
 function saveSale(){
 
   if(invoice.length === 0){
@@ -192,7 +207,10 @@ function saveSale(){
       phone: document.getElementById("client-phone")?.value || "-",
       address: document.getElementById("client-address")?.value || "-"
     },
-    cart: structuredClone(invoice),
+
+    // FIX SAFE
+    cart: JSON.parse(JSON.stringify(invoice)),
+
     discount: discount,
     delivery: Number(document.getElementById("delivery")?.value || 0),
     paymentMethod: paymentMethod,
@@ -209,30 +227,6 @@ function saveSale(){
   alert("Vente sauvegardée ✔");
 }
 
-/* ================= SALES ================= */
-function renderSales(){
-
-  let sales = JSON.parse(localStorage.getItem("sales")) || [];
-
-  sales.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-  const body = document.getElementById("sales-body");
-  if(!body) return;
-
-  body.innerHTML = sales.map(sale => `
-    <tr>
-      <td>${sale.id}</td>
-      <td>${sale.client.name}</td>
-      <td>${sale.client.phone}</td>
-      <td>${sale.date}</td>
-      <td>${sale.paymentMethod}</td>
-      <td style="color:#e91e63;font-weight:bold;">
-        ${sale.total}
-      </td>
-    </tr>
-  `).join("");
-}
-
 /* ================= INVOICE NUMBER ================= */
 function generateInvoiceNumber(){
 
@@ -247,18 +241,10 @@ function generateInvoiceNumber(){
   return year + String(last).padStart(3, "0");
 }
 
-/* ================= RESET SW ================= */
-function resetServiceWorker(){
-  navigator.serviceWorker.getRegistrations()
-  .then(regs => regs.forEach(r => r.unregister()));
-
-  alert("Cache cleared ✔");
-}
-
-/* ================= PRINT FIX (SAFARI OK) ================= */
+/* ================= PRINT ================= */
 function printInvoice(){
 
-  if(!invoice || invoice.length === 0){
+  if(invoice.length === 0){
     alert("Aucun produit dans la facture");
     return;
   }
@@ -292,66 +278,46 @@ function printInvoice(){
   const win = window.open("", "_blank");
 
   if(!win){
-    alert("Active les popups dans Safari");
+    alert("Active les popups");
     return;
   }
-
-  win.document.open();
 
   win.document.write(`
     <html>
     <head>
-      <title>Facture</title>
       <style>
         body{font-family:Arial;padding:20px;}
         h2{text-align:center;color:#e91e63;}
-        table{width:100%;border-collapse:collapse;margin-top:10px;}
+        table{width:100%;border-collapse:collapse;}
         th,td{border:1px solid #ddd;padding:8px;text-align:center;}
         th{background:#ffe6ef;}
-        .info{text-align:center;font-size:12px;margin-bottom:10px;}
-        .total{text-align:right;font-weight:bold;color:#e91e63;}
+        .total{text-align:right;color:#e91e63;font-weight:bold;}
       </style>
     </head>
 
-    <body onload="window.print(); window.onafterprint=function(){window.close();}">
+    <body onload="window.print();window.close();">
 
       <h2>ÉCLAT DE COCO OFFICIAL</h2>
+      <p style="text-align:center;">Abidjan - Côte d’Ivoire</p>
 
-      <p style="text-align:center; font-size:12px; margin-top:-8px;">
-        Abidjan - Côte d’Ivoire
-      </p>
-
-      <div class="info">
+      <div style="text-align:center;font-size:12px;">
         Facture N°: ${invoiceNumber}<br>
-        Date: ${new Date().toLocaleDateString()}<br>
-        Client: ${document.getElementById("client-name")?.value || "-"}<br>
-        Téléphone: ${document.getElementById("client-phone")?.value || "-"}<br>
-        Adresse: ${document.getElementById("client-address")?.value || "-"}
+        Date: ${new Date().toLocaleDateString()}
       </div>
 
       <table>
-        <thead>
-          <tr>
-            <th>Produit</th>
-            <th>Qté</th>
-            <th>Prix</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          ${invoiceBody}
-        </tbody>
+        <tbody>${invoiceBody}</tbody>
       </table>
 
       <p class="total">Livraison: ${deliveryValue} FCFA</p>
+      <p class="total">Remise: ${discount}%</p>
       <p class="total">Paiement: ${selectedPayment}</p>
 
       <h3 class="total">
         TOTAL: ${document.getElementById("grand-total")?.innerText || "0 FCFA"}
       </h3>
 
-      <div style="margin-top:40px; text-align:center; font-size:12px; color:#e91e63;">
+      <div style="text-align:center;margin-top:30px;color:#e91e63;">
         Merci de faire partie de l’univers Éclat de Coco 💗
       </div>
 
@@ -361,20 +327,22 @@ function printInvoice(){
 
   win.document.close();
 }
-function applyDiscountFromCalc(){
-  const value = Number(document.getElementById("display").value);
 
-  if(isNaN(value) || value < 0 || value > 100){
-    alert("Remise invalide (0 à 100%)");
-    return;
-  }
+/* ================= SALES ================= */
+function renderSales(){
 
-  discount = value;
+  let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
-  const box = document.getElementById("discount-value");
-  if(box) box.innerText = discount + "%";
+  const body = document.getElementById("sales-body");
+  if(!body) return;
 
-  updateTotal();
-
-  clearCalc();
+  body.innerHTML = sales.map(sale => `
+    <tr>
+      <td>${sale.id}</td>
+      <td>${sale.client.name}</td>
+      <td>${sale.date}</td>
+      <td>${sale.paymentMethod}</td>
+      <td>${sale.total}</td>
+    </tr>
+  `).join("");
 }
