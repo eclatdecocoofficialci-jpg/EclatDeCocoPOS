@@ -20,6 +20,7 @@
 
 <body>
 
+<!-- HEADER -->
 <header>
   <h1>✨ Éclat de Coco POS</h1>
 </header>
@@ -55,7 +56,7 @@
     <div id="product-list"></div>
 
     <h3>Calculatrice</h3>
-    <input id="display" type="text" inputmode="numeric" placeholder="0">
+    <input id="display" type="text" placeholder="0">
 
     <div class="calc">
       <button onclick="press(7)">7</button>
@@ -110,7 +111,6 @@
           <th>Action</th>
         </tr>
       </thead>
-
       <tbody id="invoice-body"></tbody>
     </table>
 
@@ -131,7 +131,7 @@
 
     </div>
 
-    <!-- ACTION -->
+    <!-- ACTIONS -->
     <button onclick="saveSale()">💾 Sauvegarder</button>
     <button onclick="printInvoice()">🖨 Imprimer</button>
 
@@ -143,18 +143,14 @@
 
 </div>
 
-<!-- JS LIB -->
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-
-<!-- MAIN SCRIPT -->
+<!-- SCRIPT -->
 <script src="./script.js"></script>
 
-<!-- INIT SAFE SCRIPT -->
 <script>
 
+/* ================= LOGIN CHECK ================= */
 function initPOS(){
 
-  // 🔐 LOGIN CHECK
   const logged = localStorage.getItem("eclat_logged");
 
   if(logged !== "true"){
@@ -162,19 +158,19 @@ function initPOS(){
     return;
   }
 
-  // 🧾 invoice id
+  // invoice number
   if(typeof generateInvoiceNumber === "function"){
     document.getElementById("invoice-id").innerText =
       generateInvoiceNumber();
   }
 
-  // 📦 load data safely
+  // init functions
   if(typeof loadCategories === "function") loadCategories();
   if(typeof renderProducts === "function") renderProducts(products);
   if(typeof renderInvoice === "function") renderInvoice();
   if(typeof updateTotal === "function") updateTotal();
 
-  // 🔎 search
+  // search
   const search = document.getElementById("search");
   if(search){
     search.addEventListener("input", e => {
@@ -184,7 +180,7 @@ function initPOS(){
     });
   }
 
-  // 📅 date auto
+  // date
   const date = document.getElementById("date");
   if(date){
     date.value = new Date().toISOString().split("T")[0];
@@ -202,17 +198,11 @@ if ("serviceWorker" in navigator) {
 window.addEventListener("load", initPOS);
 
 </script>
-<div class="main-content">
 
-  <!-- tout ton contenu ici -->
-  
-</div>
-
+<!-- FOOTER -->
 <footer class="site-footer">
-  <div class="footer-inner">
-    <p>© 2025 Éclat de Coco Official</p>
-    <p class="sub">All rights reserved • Natural beauty inspired by Côte d’Ivoire 🌿🥥</p>
-  </div>
+  © 2025 Éclat de Coco Official • All rights reserved 🌿🥥
 </footer>
+
 </body>
 </html>
