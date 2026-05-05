@@ -1,23 +1,30 @@
-/* ================= GLOBAL ================= */
-html, body {
+/* ================= RESET GLOBAL ================= */
+*{
   margin:0;
   padding:0;
-  height:100%;
-  font-family:Poppins, sans-serif;
-  background:#fff0f5;
+  box-sizing:border-box;
 }
 
-/* ================= PAGE STRUCTURE ================= */
+html, body{
+  height:100%;
+  font-family:Poppins, sans-serif;
+}
+
+/* ================= BODY STRUCTURE ================= */
 body{
+  background:#fff0f5;
   display:flex;
   flex-direction:column;
   min-height:100vh;
   overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
 }
 
-/* ================= MAIN CONTENT ================= */
+/* ================= MAIN CONTENT (IMPORTANT FOOTER FIX) ================= */
 .main-content{
   flex:1;
+  display:flex;
+  flex-direction:column;
 }
 
 /* ================= HEADER ================= */
@@ -58,6 +65,7 @@ header h1{
   gap:10px;
   padding:10px;
   align-items:flex-start;
+  flex:1;
 }
 
 /* ================= PANELS ================= */
@@ -65,14 +73,14 @@ header h1{
   background:white;
   border-radius:12px;
   padding:10px;
-  max-height:calc(100vh - 120px);
+  max-height:calc(100vh - 140px);
   overflow-y:auto;
   box-shadow:0 5px 15px rgba(0,0,0,0.05);
   display:flex;
   flex-direction:column;
 }
 
-/* ================= COLUMNS ================= */
+/* ================= 3 COLONNES ================= */
 .left{ width:18%; min-width:180px; }
 .center{ width:52%; min-width:320px; }
 .right{ width:30%; min-width:280px; }
@@ -94,6 +102,20 @@ header h1{
   transform:scale(1.05);
   background:#f06292;
   color:white;
+}
+
+/* ================= CATEGORIES ================= */
+#category-boxes{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* ================= PRODUCTS ================= */
+#product-list{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
 }
 
 /* ================= INPUT ================= */
@@ -131,6 +153,14 @@ input{
   font-size:20px;
   font-weight:bold;
   cursor:pointer;
+}
+
+/* ================= FACTURE ================= */
+#grand-total{
+  text-align:center;
+  color:#e91e63;
+  font-weight:bold;
+  padding:10px;
 }
 
 /* ================= PAYMENT ================= */
@@ -180,6 +210,7 @@ button{
   border-radius:8px;
   cursor:pointer;
   font-weight:bold;
+  transition:0.2s;
 }
 
 button:hover{
@@ -187,25 +218,10 @@ button:hover{
   color:white;
 }
 
-/* ================= MOBILE ================= */
-@media(max-width:900px){
-  .pos-container{
-    flex-direction:column;
-  }
-
-  .left,.center,.right{
-    width:100%;
-  }
-
-  .panel{
-    max-height:none;
-  }
-}
-
-/* ================= FOOTER FIX ================= */
+/* ================= FOOTER (IMPORTANT FIX) ================= */
 .site-footer{
   margin-top:auto;
-  padding:18px 10px;
+  padding:20px 10px;
   text-align:center;
   background:linear-gradient(135deg,#fff0f5,#ffe6ef);
   border-top:1px solid rgba(233,30,99,0.2);
@@ -222,4 +238,26 @@ button:hover{
   font-size:12px;
   color:#777;
   font-weight:400;
+}
+
+/* ================= PRINT ================= */
+@media print{
+  .no-print{
+    display:none !important;
+  }
+}
+
+/* ================= MOBILE ================= */
+@media(max-width:900px){
+  .pos-container{
+    flex-direction:column;
+  }
+
+  .left,.center,.right{
+    width:100%;
+  }
+
+  .panel{
+    max-height:none;
+  }
 }
