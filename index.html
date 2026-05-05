@@ -121,7 +121,7 @@ button {
   opacity: 0.9;
 }
 
-/* ================= FOOTER (FIX BOTTOM PROPRE) ================= */
+/* ================= FOOTER ================= */
 .site-footer {
   position: absolute;
   bottom: 12px;
@@ -175,16 +175,8 @@ function enterApp(){
   }
 }
 
-/* ================= AUTO LOGIN FIX ================= */
-window.addEventListener("load", function(){
-
-  const logged = localStorage.getItem("eclat_logged");
-
-  if(logged === "true"){
-    window.location.href = "./pos.html";
-  }
-
-});
+/* ================= IMPORTANT ================= */
+/* ❌ AUTO LOGIN SUPPRIMÉ = PLUS DE REDIRECTION AUTOMATIQUE */
 
 </script>
 
