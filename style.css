@@ -1,10 +1,23 @@
 /* ================= GLOBAL ================= */
-body{
+html, body {
   margin:0;
+  padding:0;
+  height:100%;
   font-family:Poppins, sans-serif;
   background:#fff0f5;
+}
+
+/* ================= PAGE STRUCTURE ================= */
+body{
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
   overflow-x:hidden;
-  -webkit-overflow-scrolling:touch;
+}
+
+/* ================= MAIN CONTENT ================= */
+.main-content{
+  flex:1;
 }
 
 /* ================= HEADER ================= */
@@ -45,7 +58,6 @@ header h1{
   gap:10px;
   padding:10px;
   align-items:flex-start;
-  min-height:100vh;
 }
 
 /* ================= PANELS ================= */
@@ -60,7 +72,7 @@ header h1{
   flex-direction:column;
 }
 
-/* ================= 3 COLONNES ================= */
+/* ================= COLUMNS ================= */
 .left{ width:18%; min-width:180px; }
 .center{ width:52%; min-width:320px; }
 .right{ width:30%; min-width:280px; }
@@ -82,20 +94,6 @@ header h1{
   transform:scale(1.05);
   background:#f06292;
   color:white;
-}
-
-/* ================= CATEGORIES ================= */
-#category-boxes{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-
-/* ================= PRODUCTS ================= */
-#product-list{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
 }
 
 /* ================= INPUT ================= */
@@ -133,14 +131,6 @@ input{
   font-size:20px;
   font-weight:bold;
   cursor:pointer;
-}
-
-/* ================= FACTURE ================= */
-#grand-total{
-  text-align:center;
-  color:#e91e63;
-  font-weight:bold;
-  padding:10px;
 }
 
 /* ================= PAYMENT ================= */
@@ -182,30 +172,6 @@ th{
   background:#ffe6ef;
 }
 
-/* ================= SALES PAGE ================= */
-.sales-table{
-  width:100%;
-  border-collapse:collapse;
-  background:white;
-  border-radius:12px;
-  overflow:hidden;
-  box-shadow:0 5px 15px rgba(0,0,0,0.05);
-}
-
-.sales-table thead{
-  background:#e91e63;
-  color:white;
-}
-
-.sales-table td{
-  padding:10px;
-  border-bottom:1px solid #ffe6ef;
-}
-
-.sales-table tr:hover{
-  background:#ffe6ef;
-}
-
 /* ================= BUTTONS ================= */
 button{
   background:#f8bbd0;
@@ -219,13 +185,6 @@ button{
 button:hover{
   background:#e91e63;
   color:white;
-}
-
-/* ================= PRINT ================= */
-@media print {
-  .no-print{
-    display:none !important;
-  }
 }
 
 /* ================= MOBILE ================= */
@@ -242,13 +201,14 @@ button:hover{
     max-height:none;
   }
 }
+
+/* ================= FOOTER FIX ================= */
 .site-footer{
-  margin-top:40px;
-  padding:20px 10px;
+  margin-top:auto;
+  padding:18px 10px;
   text-align:center;
   background:linear-gradient(135deg,#fff0f5,#ffe6ef);
   border-top:1px solid rgba(233,30,99,0.2);
-  font-family:Poppins, sans-serif;
 }
 
 .site-footer p{
@@ -262,27 +222,4 @@ button:hover{
   font-size:12px;
   color:#777;
   font-weight:400;
-  letter-spacing:0.3px;
-}
-html, body{
-  height:100%;
-}
-
-body{
-  display:flex;
-  flex-direction:column;
-}
-
-/* ton contenu principal doit pousser le footer */
-.main-content{
-  flex:1;
-}
-
-/* FOOTER FIX EN BAS */
-.site-footer{
-  margin-top:auto;
-  padding:20px 10px;
-  text-align:center;
-  background:linear-gradient(135deg,#fff0f5,#ffe6ef);
-  border-top:1px solid rgba(233,30,99,0.2);
 }
