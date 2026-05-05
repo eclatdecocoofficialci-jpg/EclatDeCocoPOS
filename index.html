@@ -17,119 +17,125 @@
 
 <style>
 
-/* ================= FULLSCREEN ================= */
+/* ================= FULLSCREEN FIX ================= */
 html, body {
-  margin:0;
-  padding:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  font-family:Poppins, sans-serif;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: Poppins, sans-serif;
 }
 
 /* ================= LAYOUT ================= */
-body{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  position:relative;
+body {
+  position: relative;
 }
 
 /* ================= BACKGROUND ================= */
-body::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:url("./coco-bg.jpg") center/cover no-repeat;
-  filter:brightness(0.55);
-  z-index:-3;
-  animation:bgMove 18s ease-in-out infinite alternate;
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("./coco-bg.jpg") center/cover no-repeat;
+  filter: brightness(0.55);
+  z-index: -3;
+  animation: bgMove 18s ease-in-out infinite alternate;
 }
 
-@keyframes bgMove{
-  0%{ transform:scale(1) translateX(0); }
-  100%{ transform:scale(1.08) translateX(-20px); }
+@keyframes bgMove {
+  0% { transform: scale(1) translateX(0); }
+  100% { transform: scale(1.08) translateX(-20px); }
 }
 
 /* ================= OVERLAY ================= */
-body::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(135deg, rgba(233,30,99,0.30), rgba(46,125,50,0.25));
-  z-index:-2;
+body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(233,30,99,0.30), rgba(46,125,50,0.25));
+  z-index: -2;
+}
+
+/* ================= CENTER LOGIN ================= */
+.center {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 /* ================= TITLE ================= */
-.title{
-  position:absolute;
-  top:40px;
-  width:100%;
-  text-align:center;
-  color:white;
-  font-size:20px;
-  font-weight:600;
-  text-shadow:0 5px 15px rgba(0,0,0,0.4);
+.title {
+  position: absolute;
+  top: 40px;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  text-shadow: 0 5px 15px rgba(0,0,0,0.4);
 }
 
 /* ================= CARD ================= */
-.card{
-  background:rgba(255,255,255,0.12);
-  backdrop-filter:blur(15px);
-  -webkit-backdrop-filter:blur(15px);
+.card {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
 
-  padding:30px;
-  border-radius:20px;
-  width:320px;
-  text-align:center;
+  padding: 30px;
+  border-radius: 20px;
+  width: 320px;
+  text-align: center;
 
-  border:1px solid rgba(255,255,255,0.25);
-  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.25);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 
-  color:white;
-  z-index:2;
+  color: white;
+  z-index: 2;
 }
 
 /* ================= INPUT ================= */
-input{
-  width:100%;
-  padding:12px;
-  margin-top:15px;
-  border-radius:10px;
-  border:none;
-  outline:none;
-  font-size:16px;
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 16px;
 }
 
 /* ================= BUTTON ================= */
-button{
-  width:100%;
-  margin-top:15px;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:#e91e63;
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
+button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #e91e63;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 /* ================= SMALL TEXT ================= */
-.small{
-  font-size:12px;
-  margin-top:10px;
-  opacity:0.9;
+.small {
+  font-size: 12px;
+  margin-top: 10px;
+  opacity: 0.9;
 }
 
-/* ================= FOOTER ================= */
-.site-footer{
-  position:absolute;
-  bottom:10px;
-  width:100%;
-  text-align:center;
-  color:white;
-  font-size:11px;
-  opacity:0.8;
+/* ================= FOOTER FIX BOTTOM ================= */
+.site-footer {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-size: 11px;
+  opacity: 0.8;
 }
 
 </style>
@@ -141,20 +147,26 @@ button{
   Bienvenue dans l’univers Éclat de Coco
 </div>
 
-<div class="card">
+<!-- LOGIN CENTER -->
+<div class="center">
 
-  <h2>Éclat de Coco POS</h2>
+  <div class="card">
 
-  <input type="password" id="code" placeholder="Enter code">
+    <h2>Éclat de Coco POS</h2>
 
-  <button onclick="enterApp()">Enter</button>
+    <input type="password" id="code" placeholder="Enter code">
 
-  <div class="small">
-    Nature • Coco • Beauté 🌿
+    <button onclick="enterApp()">Enter</button>
+
+    <div class="small">
+      Nature • Coco • Beauté 🌿
+    </div>
+
   </div>
 
 </div>
 
+<!-- FOOTER -->
 <footer class="site-footer">
   © 2025 Éclat de Coco Official • All rights reserved
 </footer>
@@ -174,8 +186,9 @@ function enterApp(){
   }
 }
 
-/* ================= AUTO CHECK ================= */
+/* ================= AUTO LOGIN ================= */
 window.onload = function(){
+
   const logged = localStorage.getItem("eclat_logged");
 
   if(logged === "true"){
