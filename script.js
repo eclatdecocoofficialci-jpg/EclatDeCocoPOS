@@ -272,7 +272,9 @@ function printInvoice(){
 
   const deliveryValue = Number(document.getElementById("delivery")?.value || 0);
 
-  const invoiceNumber = generateInvoiceNumber();
+  // 🔥 IMPORTANT: on utilise le vrai ID affiché (pas regen)
+  const invoiceNumber =
+    document.getElementById("invoice-id")?.innerText || generateInvoiceNumber();
 
   const invoiceBody = invoice.map(item => {
     const total = item.price * item.qty;
@@ -294,6 +296,8 @@ function printInvoice(){
     return;
   }
 
+  win.document.open();
+
   win.document.write(`
     <html>
     <head>
@@ -302,7 +306,7 @@ function printInvoice(){
       <style>
         body{
           font-family: Arial;
-          padding: 15px;
+          padding: 20px;
         }
 
         h2{
@@ -313,6 +317,7 @@ function printInvoice(){
         table{
           width:100%;
           border-collapse:collapse;
+          margin-top:10px;
         }
 
         th,td{
@@ -339,7 +344,7 @@ function printInvoice(){
       </style>
     </head>
 
-    <body onload="window.print(); window.onafterprint=function(){window.close();}">
+    <body>
 
       <h2>ÉCLAT DE COCO</h2>
 
@@ -360,6 +365,7 @@ function printInvoice(){
             <th>Total</th>
           </tr>
         </thead>
+
         <tbody>
           ${invoiceBody}
         </tbody>
@@ -368,9 +374,25 @@ function printInvoice(){
       <p class="total">Livraison: ${deliveryValue} FCFA</p>
       <p class="total">Paiement: ${selectedPayment}</p>
 
-      <h3 class="total">TOTAL: ${document.getElementById("grand-total")?.innerText || "0 FCFA"}</h3>
+      <h3 class="total">
+        TOTAL: ${document.getElementById("grand-total")?.innerText || "0 FCFA"}
+      </h3>
+
+      <script>
+        window.onload = function(){
+          setTimeout(() => {
+            window.print();
+            window.close();
+          }, 300);
+        }
+      </script>
 
     </body>
+    </html>
+  `);
+
+  win.document.close();
+}
     </html>
   `);
 
