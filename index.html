@@ -17,18 +17,18 @@
 
 <style>
 
-/* ================= FULLSCREEN FIX ================= */
+/* ================= FULLSCREEN ================= */
 html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Poppins, sans-serif;
 }
 
-/* ================= GLOBAL ================= */
+/* ================= LAYOUT ================= */
 body{
-  font-family: Poppins, sans-serif;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -40,12 +40,9 @@ body::before{
   content:"";
   position:absolute;
   inset:0;
-
   background:url("./coco-bg.jpg") center/cover no-repeat;
-
   filter:brightness(0.55);
   z-index:-3;
-
   animation:bgMove 18s ease-in-out infinite alternate;
 }
 
@@ -59,50 +56,23 @@ body::after{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(
-    135deg,
-    rgba(233,30,99,0.30),
-    rgba(46,125,50,0.25)
-  );
+  background:linear-gradient(135deg, rgba(233,30,99,0.30), rgba(46,125,50,0.25));
   z-index:-2;
 }
 
 /* ================= TITLE ================= */
 .title{
   position:absolute;
-  top:50px;
+  top:40px;
   width:100%;
   text-align:center;
   color:white;
   font-size:20px;
   font-weight:600;
   text-shadow:0 5px 15px rgba(0,0,0,0.4);
-  padding:0 20px;
 }
 
-/* ================= PETALS ================= */
-.petal{
-  position:absolute;
-  width:10px;
-  height:10px;
-  background:rgba(255,192,203,0.8);
-  border-radius:50%;
-  animation:fall linear infinite;
-  z-index:-1;
-}
-
-@keyframes fall{
-  0%{
-    transform:translateY(-10vh);
-    opacity:1;
-  }
-  100%{
-    transform:translateY(110vh) translateX(40px);
-    opacity:0;
-  }
-}
-
-/* ================= LOGIN CARD ================= */
+/* ================= CARD ================= */
 .card{
   background:rgba(255,255,255,0.12);
   backdrop-filter:blur(15px);
@@ -111,7 +81,6 @@ body::after{
   padding:30px;
   border-radius:20px;
   width:320px;
-
   text-align:center;
 
   border:1px solid rgba(255,255,255,0.25);
@@ -119,19 +88,6 @@ body::after{
 
   color:white;
   z-index:2;
-
-  animation:fadeIn 1s ease;
-}
-
-@keyframes fadeIn{
-  from{
-    opacity:0;
-    transform:translateY(20px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
 }
 
 /* ================= INPUT ================= */
@@ -156,11 +112,6 @@ button{
   color:white;
   font-weight:bold;
   cursor:pointer;
-  transition:0.2s;
-}
-
-button:hover{
-  transform:scale(1.02);
 }
 
 /* ================= SMALL TEXT ================= */
@@ -170,17 +121,26 @@ button:hover{
   opacity:0.9;
 }
 
+/* ================= FOOTER ================= */
+.site-footer{
+  position:absolute;
+  bottom:10px;
+  width:100%;
+  text-align:center;
+  color:white;
+  font-size:11px;
+  opacity:0.8;
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- TITLE -->
 <div class="title">
   Bienvenue dans l’univers Éclat de Coco
 </div>
 
-<!-- LOGIN CARD -->
 <div class="card">
 
   <h2>Éclat de Coco POS</h2>
@@ -195,6 +155,10 @@ button:hover{
 
 </div>
 
+<footer class="site-footer">
+  © 2025 Éclat de Coco Official • All rights reserved
+</footer>
+
 <script>
 
 /* ================= LOGIN ================= */
@@ -202,51 +166,24 @@ function enterApp(){
 
   const code = document.getElementById("code").value;
 
-  console.log("entered code:", code);
-
   if(code === "29121509"){
-
     localStorage.setItem("eclat_logged", "true");
-
-    window.location.href = "pos.html";
-
+    window.location.href = "./pos.html";
   } else {
-
     alert("Wrong code ❌");
   }
 }
 
-/* ================= PETALS ================= */
+/* ================= AUTO CHECK ================= */
 window.onload = function(){
-  createPetals();
+  const logged = localStorage.getItem("eclat_logged");
+
+  if(logged === "true"){
+    window.location.href = "./pos.html";
+  }
 };
 
-function createPetals(){
-  for(let i=0;i<18;i++){
-
-    let p = document.createElement("div");
-    p.className = "petal";
-
-    p.style.left = Math.random()*100 + "vw";
-    p.style.animationDuration = (4 + Math.random()*5) + "s";
-    p.style.opacity = Math.random();
-
-    document.body.appendChild(p);
-  }
-}
-
 </script>
-<div class="main-content">
 
-  <!-- tout ton contenu ici -->
-  
-</div>
-
-<footer class="site-footer">
-  <div class="footer-inner">
-    <p>© 2025 Éclat de Coco Official</p>
-    <p class="sub">All rights reserved • Natural beauty inspired by Côte d’Ivoire 🌿🥥</p>
-  </div>
-</footer>
 </body>
 </html>
