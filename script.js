@@ -361,3 +361,20 @@ function printInvoice(){
 
   win.document.close();
 }
+function applyDiscountFromCalc(){
+  const value = Number(document.getElementById("display").value);
+
+  if(isNaN(value) || value < 0 || value > 100){
+    alert("Remise invalide (0 à 100%)");
+    return;
+  }
+
+  discount = value;
+
+  const box = document.getElementById("discount-value");
+  if(box) box.innerText = discount + "%";
+
+  updateTotal();
+
+  clearCalc();
+}
