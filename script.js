@@ -249,12 +249,13 @@ function generateInvoiceNumber(){
 
 /* ================= RESET SW ================= */
 function resetServiceWorker(){
-
   navigator.serviceWorker.getRegistrations()
   .then(regs => regs.forEach(r => r.unregister()));
 
   alert("Cache cleared ✔");
 }
+
+/* ================= PRINT FIX (SAFARI OK) ================= */
 function printInvoice(){
 
   if(!invoice || invoice.length === 0){
@@ -272,7 +273,6 @@ function printInvoice(){
 
   const deliveryValue = Number(document.getElementById("delivery")?.value || 0);
 
-  // 🔥 IMPORTANT: on utilise le vrai ID affiché (pas regen)
   const invoiceNumber =
     document.getElementById("invoice-id")?.innerText || generateInvoiceNumber();
 
@@ -292,59 +292,26 @@ function printInvoice(){
   const win = window.open("", "_blank");
 
   if(!win){
-    alert("Active les popups pour imprimer");
+    alert("Active les popups dans Safari");
     return;
   }
-
-  win.document.open();
 
   win.document.write(`
     <html>
     <head>
       <title>Facture</title>
-
       <style>
-        body{
-          font-family: Arial;
-          padding: 20px;
-        }
-
-        h2{
-          text-align:center;
-          color:#e91e63;
-        }
-
-        table{
-          width:100%;
-          border-collapse:collapse;
-          margin-top:10px;
-        }
-
-        th,td{
-          border:1px solid #ddd;
-          padding:8px;
-          text-align:center;
-        }
-
-        th{
-          background:#ffe6ef;
-        }
-
-        .info{
-          text-align:center;
-          font-size:12px;
-          margin-bottom:10px;
-        }
-
-        .total{
-          text-align:right;
-          font-weight:bold;
-          color:#e91e63;
-        }
+        body{font-family:Arial;padding:20px;}
+        h2{text-align:center;color:#e91e63;}
+        table{width:100%;border-collapse:collapse;margin-top:10px;}
+        th,td{border:1px solid #ddd;padding:8px;text-align:center;}
+        th{background:#ffe6ef;}
+        .info{text-align:center;font-size:12px;margin-bottom:10px;}
+        .total{text-align:right;font-weight:bold;color:#e91e63;}
       </style>
     </head>
 
-    <body>
+    <body onload="window.print(); window.onafterprint=function(){window.close();}">
 
       <h2>ÉCLAT DE COCO</h2>
 
@@ -365,34 +332,15 @@ function printInvoice(){
             <th>Total</th>
           </tr>
         </thead>
-
-        <tbody>
-          ${invoiceBody}
-        </tbody>
+        <tbody>${invoiceBody}</tbody>
       </table>
 
       <p class="total">Livraison: ${deliveryValue} FCFA</p>
       <p class="total">Paiement: ${selectedPayment}</p>
 
-      <h3 class="total">
-        TOTAL: ${document.getElementById("grand-total")?.innerText || "0 FCFA"}
-      </h3>
-
-      <script>
-        window.onload = function(){
-          setTimeout(() => {
-            window.print();
-            window.close();
-          }, 300);
-        }
-      </script>
+      <h3 class="total">TOTAL: ${document.getElementById("grand-total")?.innerText || "0 FCFA"}</h3>
 
     </body>
-    </html>
-  `);
-
-  win.document.close();
-}
     </html>
   `);
 
