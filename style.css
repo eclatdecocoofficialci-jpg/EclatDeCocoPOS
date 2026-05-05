@@ -17,10 +17,9 @@ body{
   flex-direction:column;
   min-height:100vh;
   overflow-x:hidden;
-  -webkit-overflow-scrolling:touch;
 }
 
-/* ================= MAIN CONTENT (IMPORTANT FOOTER FIX) ================= */
+/* ================= MAIN WRAPPER (IMPORTANT FOOTER FIX) ================= */
 .main-content{
   flex:1;
   display:flex;
@@ -210,7 +209,6 @@ button{
   border-radius:8px;
   cursor:pointer;
   font-weight:bold;
-  transition:0.2s;
 }
 
 button:hover{
@@ -218,33 +216,13 @@ button:hover{
   color:white;
 }
 
-/* ================= FOOTER (IMPORTANT FIX) ================= */
+/* ================= FOOTER FIX ================= */
 .site-footer{
   margin-top:auto;
   padding:20px 10px;
   text-align:center;
   background:linear-gradient(135deg,#fff0f5,#ffe6ef);
   border-top:1px solid rgba(233,30,99,0.2);
-}
-
-.site-footer p{
-  margin:5px 0;
-  color:#e91e63;
-  font-weight:600;
-  font-size:14px;
-}
-
-.site-footer .sub{
-  font-size:12px;
-  color:#777;
-  font-weight:400;
-}
-
-/* ================= PRINT ================= */
-@media print{
-  .no-print{
-    display:none !important;
-  }
 }
 
 /* ================= MOBILE ================= */
