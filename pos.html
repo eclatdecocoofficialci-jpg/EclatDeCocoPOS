@@ -16,26 +16,6 @@
 
 <link rel="stylesheet" href="./style.css?v=999">
 
-<style>
-/* 🔥 FIX FOOTER + PAGE STRUCTURE */
-html, body{
-  height:100%;
-  margin:0;
-}
-
-body{
-  display:flex;
-  flex-direction:column;
-}
-
-/* permet au contenu de pousser le footer */
-.pos-wrapper{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-}
-</style>
-
 </head>
 
 <body>
@@ -53,14 +33,11 @@ body{
   <a href="./products.html">Produits</a>
   <a href="./inventory.html">Inventory</a>
   <a href="./customers.html">Clients</a>
-  <a href="./expenses.html">Expenses</a>
-  <a href="./reports.html">Reports</a>
 </nav>
 
-<!-- WRAPPER IMPORTANT (FIX FOOTER) -->
-<div class="pos-wrapper">
+<!-- MAIN WRAPPER -->
+<div class="main-content">
 
-  <!-- MAIN -->
   <div class="pos-container">
 
     <!-- LEFT -->
@@ -108,19 +85,12 @@ body{
     <!-- RIGHT -->
     <div class="panel right">
 
-      <div class="invoice-header">
-        <h2>Bienvenue à Éclat de Coco</h2>
-        <p>Abidjan - Côte d’Ivoire</p>
-      </div>
-
       <h3>Facture N°: <span id="invoice-id"></span></h3>
 
-      <h4>Client(e)</h4>
       <input id="client-name" placeholder="Nom">
       <input id="client-phone" placeholder="Téléphone">
       <input id="client-address" placeholder="Adresse">
 
-      <h4>Date</h4>
       <input type="date" id="date">
 
       <table>
@@ -136,14 +106,12 @@ body{
         <tbody id="invoice-body"></tbody>
       </table>
 
-      <h4>Livraison</h4>
-      <input id="delivery" type="number" placeholder="0">
+      <input id="delivery" type="number" placeholder="Livraison">
 
       <h4>Remise: <span id="discount-value">0%</span></h4>
 
       <h2 id="grand-total">0 FCFA</h2>
 
-      <h4>Paiement</h4>
       <div class="payment-boxes">
         <div class="pay-btn" onclick="selectPayment(this, 'cash')">Cash</div>
         <div class="pay-btn" onclick="selectPayment(this, 'orange')">Orange Money</div>
@@ -153,67 +121,17 @@ body{
       <button onclick="saveSale()">💾 Sauvegarder</button>
       <button onclick="printInvoice()">🖨 Imprimer</button>
 
-      <div id="qr-code"></div>
-
-      <p class="thanks">Merci d’avoir choisi Éclat de Coco 💗</p>
-
     </div>
 
   </div>
 
 </div>
 
-<!-- SCRIPT -->
-<script src="./script.js"></script>
-
-<script>
-function initPOS(){
-
-  const logged = localStorage.getItem("eclat_logged");
-
-  if(logged !== "true"){
-    window.location.href = "./index.html";
-    return;
-  }
-
-  if(typeof generateInvoiceNumber === "function"){
-    document.getElementById("invoice-id").innerText =
-      generateInvoiceNumber();
-  }
-
-  if(typeof loadCategories === "function") loadCategories();
-  if(typeof renderProducts === "function") renderProducts(products);
-  if(typeof renderInvoice === "function") renderInvoice();
-  if(typeof updateTotal === "function") updateTotal();
-
-  const search = document.getElementById("search");
-  if(search){
-    search.addEventListener("input", e => {
-      if(typeof searchProducts === "function"){
-        searchProducts(e.target.value);
-      }
-    });
-  }
-
-  const date = document.getElementById("date");
-  if(date){
-    date.value = new Date().toISOString().split("T")[0];
-  }
-}
-
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js");
-  });
-}
-
-window.addEventListener("load", initPOS);
-</script>
-
-<!-- FOOTER FIX -->
 <footer class="site-footer">
-  © 2025 Éclat de Coco Official • All rights reserved 🌿🥥
+  © 2025 Éclat de Coco Official
 </footer>
+
+<script src="./script.js"></script>
 
 </body>
 </html>
