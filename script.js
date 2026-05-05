@@ -296,6 +296,8 @@ function printInvoice(){
     return;
   }
 
+  win.document.open();
+
   win.document.write(`
     <html>
     <head>
@@ -313,10 +315,12 @@ function printInvoice(){
 
     <body onload="window.print(); window.onafterprint=function(){window.close();}">
 
-      <h2>Éclat de Coco Official</h2>
-<p style="text-align:center; margin-top:-10px; font-size:12px;">
- Abidjan - Côte d’Ivoire
-</p>
+      <h2>ÉCLAT DE COCO OFFICIAL</h2>
+
+      <p style="text-align:center; font-size:12px; margin-top:-8px;">
+        Abidjan - Côte d’Ivoire
+      </p>
+
       <div class="info">
         Facture N°: ${invoiceNumber}<br>
         Date: ${new Date().toLocaleDateString()}<br>
@@ -334,16 +338,23 @@ function printInvoice(){
             <th>Total</th>
           </tr>
         </thead>
-        <tbody>${invoiceBody}</tbody>
+
+        <tbody>
+          ${invoiceBody}
+        </tbody>
       </table>
 
       <p class="total">Livraison: ${deliveryValue} FCFA</p>
       <p class="total">Paiement: ${selectedPayment}</p>
 
-      <h3 class="total">TOTAL: ${document.getElementById("grand-total")?.innerText || "0 FCFA"}</h3>
-<div style="margin-top:40px; text-align:center; font-size:12px; color:#e91e63;">
-  Merci de faire partie de l’univers Éclat de Coco 💗
-</div>
+      <h3 class="total">
+        TOTAL: ${document.getElementById("grand-total")?.innerText || "0 FCFA"}
+      </h3>
+
+      <div style="margin-top:40px; text-align:center; font-size:12px; color:#e91e63;">
+        Merci de faire partie de l’univers Éclat de Coco 💗
+      </div>
+
     </body>
     </html>
   `);
