@@ -16,6 +16,26 @@
 
 <link rel="stylesheet" href="./style.css?v=999">
 
+<style>
+/* 🔥 FIX FOOTER + PAGE STRUCTURE */
+html, body{
+  height:100%;
+  margin:0;
+}
+
+body{
+  display:flex;
+  flex-direction:column;
+}
+
+/* permet au contenu de pousser le footer */
+.pos-wrapper{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+</style>
+
 </head>
 
 <body>
@@ -37,107 +57,107 @@
   <a href="./reports.html">Reports</a>
 </nav>
 
-<!-- MAIN -->
-<div class="pos-container">
+<!-- WRAPPER IMPORTANT (FIX FOOTER) -->
+<div class="pos-wrapper">
 
-  <!-- LEFT -->
-  <div class="panel left">
-    <h3>Catégories</h3>
-    <div id="category-boxes"></div>
-  </div>
+  <!-- MAIN -->
+  <div class="pos-container">
 
-  <!-- CENTER -->
-  <div class="panel center">
-
-    <h3>🔎 Recherche produit</h3>
-    <input id="search" placeholder="Nom ou barcode...">
-
-    <h3>Produits</h3>
-    <div id="product-list"></div>
-
-    <h3>Calculatrice</h3>
-    <input id="display" type="text" placeholder="0">
-
-    <div class="calc">
-      <button onclick="press(7)">7</button>
-      <button onclick="press(8)">8</button>
-      <button onclick="press(9)">9</button>
-      <button onclick="press('+')">+</button>
-
-      <button onclick="press(4)">4</button>
-      <button onclick="press(5)">5</button>
-      <button onclick="press(6)">6</button>
-      <button onclick="press('-')">-</button>
-
-      <button onclick="press(1)">1</button>
-      <button onclick="press(2)">2</button>
-      <button onclick="press(3)">3</button>
-      <button onclick="press('*')">×</button>
-
-      <button onclick="press(0)">0</button>
-      <button onclick="clearCalc()">C</button>
-      <button onclick="calculate()">=</button>
-      <button onclick="press('/')">÷</button>
+    <!-- LEFT -->
+    <div class="panel left">
+      <h3>Catégories</h3>
+      <div id="category-boxes"></div>
     </div>
 
-  </div>
+    <!-- CENTER -->
+    <div class="panel center">
 
-  <!-- RIGHT -->
-  <div class="panel right">
+      <h3>🔎 Recherche produit</h3>
+      <input id="search" placeholder="Nom ou barcode...">
 
-    <div class="invoice-header">
-      <h2>Bienvenue à Éclat de Coco</h2>
-      <p>Abidjan - Côte d’Ivoire</p>
-    </div>
+      <h3>Produits</h3>
+      <div id="product-list"></div>
 
-    <h3>Facture N°: <span id="invoice-id"></span></h3>
+      <h3>Calculatrice</h3>
+      <input id="display" type="text" placeholder="0">
 
-    <h4>Client(e)</h4>
-    <input id="client-name" placeholder="Nom">
-    <input id="client-phone" placeholder="Téléphone">
-    <input id="client-address" placeholder="Adresse">
+      <div class="calc">
+        <button onclick="press(7)">7</button>
+        <button onclick="press(8)">8</button>
+        <button onclick="press(9)">9</button>
+        <button onclick="press('+')">+</button>
 
-    <h4>Date</h4>
-    <input type="date" id="date">
+        <button onclick="press(4)">4</button>
+        <button onclick="press(5)">5</button>
+        <button onclick="press(6)">6</button>
+        <button onclick="press('-')">-</button>
 
-    <!-- FACTURE -->
-    <table>
-      <thead>
-        <tr>
-          <th>Produit</th>
-          <th>Qté</th>
-          <th>Prix</th>
-          <th>Total</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="invoice-body"></tbody>
-    </table>
+        <button onclick="press(1)">1</button>
+        <button onclick="press(2)">2</button>
+        <button onclick="press(3)">3</button>
+        <button onclick="press('*')">×</button>
 
-    <h4>Livraison</h4>
-    <input id="delivery" type="number" placeholder="0">
-
-    <h4>Remise: <span id="discount-value">0%</span></h4>
-
-    <h2 id="grand-total">0 FCFA</h2>
-
-    <!-- PAYMENT -->
-    <h4>Paiement</h4>
-    <div class="payment-boxes">
-
-      <div class="pay-btn" onclick="selectPayment(this, 'cash')">Cash</div>
-      <div class="pay-btn" onclick="selectPayment(this, 'orange')">Orange Money</div>
-      <div class="pay-btn" onclick="selectPayment(this, 'wave')">Wave</div>
+        <button onclick="press(0)">0</button>
+        <button onclick="clearCalc()">C</button>
+        <button onclick="calculate()">=</button>
+        <button onclick="press('/')">÷</button>
+      </div>
 
     </div>
 
-    <!-- ACTIONS -->
-    <button onclick="saveSale()">💾 Sauvegarder</button>
-    <button onclick="printInvoice()">🖨 Imprimer</button>
+    <!-- RIGHT -->
+    <div class="panel right">
 
-    <div id="qr-code"></div>
+      <div class="invoice-header">
+        <h2>Bienvenue à Éclat de Coco</h2>
+        <p>Abidjan - Côte d’Ivoire</p>
+      </div>
 
-    <p class="thanks">Merci d’avoir choisi Éclat de Coco 💗</p>
+      <h3>Facture N°: <span id="invoice-id"></span></h3>
+
+      <h4>Client(e)</h4>
+      <input id="client-name" placeholder="Nom">
+      <input id="client-phone" placeholder="Téléphone">
+      <input id="client-address" placeholder="Adresse">
+
+      <h4>Date</h4>
+      <input type="date" id="date">
+
+      <table>
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th>Qté</th>
+            <th>Prix</th>
+            <th>Total</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="invoice-body"></tbody>
+      </table>
+
+      <h4>Livraison</h4>
+      <input id="delivery" type="number" placeholder="0">
+
+      <h4>Remise: <span id="discount-value">0%</span></h4>
+
+      <h2 id="grand-total">0 FCFA</h2>
+
+      <h4>Paiement</h4>
+      <div class="payment-boxes">
+        <div class="pay-btn" onclick="selectPayment(this, 'cash')">Cash</div>
+        <div class="pay-btn" onclick="selectPayment(this, 'orange')">Orange Money</div>
+        <div class="pay-btn" onclick="selectPayment(this, 'wave')">Wave</div>
+      </div>
+
+      <button onclick="saveSale()">💾 Sauvegarder</button>
+      <button onclick="printInvoice()">🖨 Imprimer</button>
+
+      <div id="qr-code"></div>
+
+      <p class="thanks">Merci d’avoir choisi Éclat de Coco 💗</p>
+
+    </div>
 
   </div>
 
@@ -147,8 +167,6 @@
 <script src="./script.js"></script>
 
 <script>
-
-/* ================= LOGIN CHECK ================= */
 function initPOS(){
 
   const logged = localStorage.getItem("eclat_logged");
@@ -158,19 +176,16 @@ function initPOS(){
     return;
   }
 
-  // invoice number
   if(typeof generateInvoiceNumber === "function"){
     document.getElementById("invoice-id").innerText =
       generateInvoiceNumber();
   }
 
-  // init functions
   if(typeof loadCategories === "function") loadCategories();
   if(typeof renderProducts === "function") renderProducts(products);
   if(typeof renderInvoice === "function") renderInvoice();
   if(typeof updateTotal === "function") updateTotal();
 
-  // search
   const search = document.getElementById("search");
   if(search){
     search.addEventListener("input", e => {
@@ -180,26 +195,22 @@ function initPOS(){
     });
   }
 
-  // date
   const date = document.getElementById("date");
   if(date){
     date.value = new Date().toISOString().split("T")[0];
   }
 }
 
-/* ================= SERVICE WORKER ================= */
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./service-worker.js");
   });
 }
 
-/* ================= START ================= */
 window.addEventListener("load", initPOS);
-
 </script>
 
-<!-- FOOTER -->
+<!-- FOOTER FIX -->
 <footer class="site-footer">
   © 2025 Éclat de Coco Official • All rights reserved 🌿🥥
 </footer>
