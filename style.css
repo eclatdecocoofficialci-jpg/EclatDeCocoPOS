@@ -17,13 +17,15 @@ body{
   flex-direction:column;
   min-height:100vh;
   overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
 }
 
-/* ================= MAIN WRAPPER (IMPORTANT FOOTER FIX) ================= */
+/* ================= MAIN WRAPPER ================= */
 .main-content{
   flex:1;
   display:flex;
   flex-direction:column;
+  min-height:0;
 }
 
 /* ================= HEADER ================= */
@@ -65,6 +67,7 @@ header h1{
   padding:10px;
   align-items:flex-start;
   flex:1;
+  min-height:0;
 }
 
 /* ================= PANELS ================= */
@@ -74,15 +77,17 @@ header h1{
   padding:10px;
   max-height:calc(100vh - 140px);
   overflow-y:auto;
+  overflow-x:hidden;
   box-shadow:0 5px 15px rgba(0,0,0,0.05);
   display:flex;
   flex-direction:column;
+  min-height:0;
 }
 
 /* ================= 3 COLONNES ================= */
-.left{ width:18%; min-width:180px; }
+.left{ width:18%; min-width:180px; overflow-y:auto; }
 .center{ width:52%; min-width:320px; }
-.right{ width:30%; min-width:280px; }
+.right{ width:30%; min-width:280px; overflow-x:hidden; }
 
 /* ================= PINK BOX ================= */
 .pink-box{
@@ -209,6 +214,7 @@ button{
   border-radius:8px;
   cursor:pointer;
   font-weight:bold;
+  transition:0.2s;
 }
 
 button:hover{
@@ -216,7 +222,7 @@ button:hover{
   color:white;
 }
 
-/* ================= FOOTER FIX ================= */
+/* ================= FOOTER ================= */
 .site-footer{
   margin-top:auto;
   padding:20px 10px;
@@ -237,5 +243,23 @@ button:hover{
 
   .panel{
     max-height:none;
+  }
+}
+
+/* ================= PRINT FIX (FACTURE ONLY) ================= */
+@media print{
+  body *{
+    visibility:hidden;
+  }
+
+  .right, .right *{
+    visibility:visible;
+  }
+
+  .right{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
   }
 }
