@@ -17,7 +17,7 @@
 
 <style>
 
-/* ================= FULLSCREEN FIX ================= */
+/* ================= RESET FULLSCREEN ================= */
 html, body {
   margin: 0;
   padding: 0;
@@ -27,12 +27,16 @@ html, body {
   font-family: Poppins, sans-serif;
 }
 
-/* ================= LAYOUT ================= */
+/* ================= BACKGROUND ================= */
 body {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-/* ================= BACKGROUND ================= */
+/* ================= BACKGROUND IMAGE ================= */
 body::before {
   content: "";
   position: absolute;
@@ -57,15 +61,6 @@ body::after {
   z-index: -2;
 }
 
-/* ================= CENTER LOGIN ================= */
-.center {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
 /* ================= TITLE ================= */
 .title {
   position: absolute;
@@ -78,7 +73,7 @@ body::after {
   text-shadow: 0 5px 15px rgba(0,0,0,0.4);
 }
 
-/* ================= CARD ================= */
+/* ================= LOGIN CARD ================= */
 .card {
   background: rgba(255,255,255,0.12);
   backdrop-filter: blur(15px);
@@ -93,7 +88,6 @@ body::after {
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 
   color: white;
-  z-index: 2;
 }
 
 /* ================= INPUT ================= */
@@ -127,15 +121,16 @@ button {
   opacity: 0.9;
 }
 
-/* ================= FOOTER FIX BOTTOM ================= */
+/* ================= FOOTER (FIX BOTTOM PROPRE) ================= */
 .site-footer {
   position: absolute;
-  bottom: 10px;
+  bottom: 12px;
   width: 100%;
   text-align: center;
   color: white;
   font-size: 11px;
   opacity: 0.8;
+  z-index: 2;
 }
 
 </style>
@@ -147,26 +142,20 @@ button {
   Bienvenue dans l’univers Éclat de Coco
 </div>
 
-<!-- LOGIN CENTER -->
-<div class="center">
+<div class="card">
 
-  <div class="card">
+  <h2>Éclat de Coco POS</h2>
 
-    <h2>Éclat de Coco POS</h2>
+  <input type="password" id="code" placeholder="Enter code">
 
-    <input type="password" id="code" placeholder="Enter code">
+  <button onclick="enterApp()">Enter</button>
 
-    <button onclick="enterApp()">Enter</button>
-
-    <div class="small">
-      Nature • Coco • Beauté 🌿
-    </div>
-
+  <div class="small">
+    Nature • Coco • Beauté 🌿
   </div>
 
 </div>
 
-<!-- FOOTER -->
 <footer class="site-footer">
   © 2025 Éclat de Coco Official • All rights reserved
 </footer>
@@ -186,15 +175,16 @@ function enterApp(){
   }
 }
 
-/* ================= AUTO LOGIN ================= */
-window.onload = function(){
+/* ================= AUTO LOGIN FIX ================= */
+window.addEventListener("load", function(){
 
   const logged = localStorage.getItem("eclat_logged");
 
   if(logged === "true"){
     window.location.href = "./pos.html";
   }
-};
+
+});
 
 </script>
 
