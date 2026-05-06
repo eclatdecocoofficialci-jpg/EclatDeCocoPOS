@@ -1,12 +1,11 @@
-/* ================= RESET ================= */
+/* ================= RESET GLOBAL ================= */
 *{
   margin:0;
   padding:0;
   box-sizing:border-box;
 }
 
-html,
-body{
+html, body{
   height:100%;
   font-family:Poppins, sans-serif;
 }
@@ -17,8 +16,9 @@ body{
   display:flex;
   flex-direction:column;
   min-height:100vh;
-  overflow:hidden;
-  color:#333;
+  overflow-x:hidden;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
 }
 
 /* ================= MAIN WRAPPER ================= */
@@ -34,172 +34,150 @@ header{
   background:#e91e63;
   color:white;
   text-align:center;
-  padding:14px;
-  box-shadow:0 3px 10px rgba(0,0,0,0.08);
+  padding:16px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.08);
 }
 
 header h1{
-  font-size:22px;
+  font-size:18px;
   font-weight:700;
 }
 
-/* ================= NAV GIRLY BOXES ================= */
+/* ================= NAV ================= */
 .top-nav{
   display:flex;
   flex-wrap:wrap;
-  gap:12px;
+  gap:10px;
   padding:12px;
-  justify-content:center;
   background:white;
+  border-bottom:1px solid #ffd6e5;
 }
 
 .top-nav a{
   background:linear-gradient(135deg,#f8bbd0,#ffe6ef);
-  padding:12px 16px;
-  border-radius:16px;
+  padding:10px 14px;
+  border-radius:12px;
   text-decoration:none;
   color:#333;
   font-weight:600;
-  font-size:14px;
-  transition:0.25s;
-  box-shadow:0 4px 10px rgba(0,0,0,0.08);
-  min-width:110px;
-  text-align:center;
+  transition:0.2s;
+  box-shadow:0 2px 6px rgba(0,0,0,0.06);
 }
 
 .top-nav a:hover{
-  transform:translateY(-2px) scale(1.03);
   background:#e91e63;
   color:white;
+  transform:translateY(-2px);
 }
 
 /* ================= POS LAYOUT ================= */
 .pos-container{
-  flex:1;
   display:flex;
-  gap:10px;
-  padding:10px;
-  min-height:0;
-  overflow:hidden;
+  gap:12px;
+  padding:12px;
+  flex:1;
+  align-items:flex-start;
 }
 
 /* ================= PANELS ================= */
 .panel{
   background:white;
   border-radius:16px;
-  padding:12px;
-  overflow-y:auto;
-  min-height:0;
+  padding:14px;
   box-shadow:0 5px 15px rgba(0,0,0,0.05);
+  display:flex;
+  flex-direction:column;
 }
 
-/* ================= PANEL TITLES ================= */
-.panel h3{
-  margin-bottom:12px;
-  color:#e91e63;
-  font-size:18px;
-}
-
-/* ================= LEFT / CENTER / RIGHT ================= */
+/* ================= 3 COLUMNS ================= */
 .left{
   width:18%;
+  min-width:180px;
 }
 
 .center{
   width:52%;
+  min-width:320px;
 }
 
 .right{
   width:30%;
-  display:flex;
-  flex-direction:column;
-  overflow-y:auto;
+  min-width:280px;
+  max-height:none;
+  overflow:visible;
 }
 
-/* ================= INPUT ================= */
-input{
-  width:100%;
-  padding:12px;
-  border-radius:12px;
-  border:2px solid #f8bbd0;
+/* ================= TITLES ================= */
+h3{
   margin-bottom:10px;
-  outline:none;
-  font-size:14px;
-  background:white;
+  color:#222;
 }
 
-input:focus{
-  border-color:#e91e63;
-}
-
-/* ================= PRODUCTS ================= */
-#product-list{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-  margin-bottom:15px;
+h2{
+  color:#111;
 }
 
 /* ================= CATEGORY BOXES ================= */
 #category-boxes{
   display:flex;
   flex-direction:column;
-  gap:10px;
+  gap:12px;
+}
+
+/* ================= PRODUCT GRID ================= */
+#product-list{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-bottom:20px;
 }
 
 /* ================= PINK BOX ================= */
 .pink-box{
   background:linear-gradient(135deg,#f8bbd0,#ffe6ef);
-  padding:16px;
-  border-radius:14px;
+  padding:18px;
+  border-radius:16px;
   text-align:center;
-  font-weight:600;
-  font-size:14px;
   cursor:pointer;
   transition:0.2s;
-  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+  box-shadow:0 4px 10px rgba(0,0,0,0.05);
+  font-size:15px;
+  font-weight:500;
 }
 
 .pink-box:hover{
-  transform:scale(1.04);
-  background:#e91e63;
+  transform:scale(1.03);
+  background:#f06292;
   color:white;
 }
 
-/* ================= CALCULATOR ================= */
-#display{
+/* ================= INPUTS ================= */
+input{
   width:100%;
-  height:60px;
-  border-radius:15px;
-  border:2px solid #f8bbd0;
-  font-size:26px;
-  text-align:right;
   padding:10px;
-  margin-bottom:12px;
-  font-weight:bold;
+  border-radius:10px;
+  border:2px solid #f8bbd0;
+  outline:none;
+  margin-bottom:10px;
+  background:white;
 }
 
-.calc{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-bottom:15px;
+/* ================= INVOICE HEADER ================= */
+.invoice-header{
+  text-align:center;
+  margin-bottom:14px;
 }
 
-.calc button{
-  height:60px;
-  border:none;
-  background:#f8bbd0;
-  border-radius:15px;
+.invoice-header h2{
+  color:#000;
   font-size:20px;
-  font-weight:bold;
-  cursor:pointer;
-  transition:0.2s;
+  font-weight:800;
 }
 
-.calc button:hover{
-  background:#e91e63;
-  color:white;
+.sub-title{
+  color:#444;
+  font-size:14px;
+  margin-top:4px;
 }
 
 /* ================= TABLE ================= */
@@ -208,46 +186,27 @@ table{
   border-collapse:collapse;
   margin-top:10px;
   margin-bottom:10px;
-  background:white;
 }
 
-th,
-td{
-  border:1px solid #f3d6df;
+th, td{
+  border:1px solid #eee;
   padding:8px;
   text-align:center;
-  font-size:13px;
+  font-size:14px;
 }
 
 th{
   background:#ffe6ef;
-  color:#e91e63;
-}
-
-/* ================= FACTURE HEADER ================= */
-.invoice-header{
-  text-align:center;
-  margin-bottom:15px;
-}
-
-.invoice-header h2{
-  color:#e91e63;
-  font-size:22px;
-}
-
-.sub-title{
-  color:#777;
-  font-size:13px;
 }
 
 /* ================= TOTAL ================= */
 #grand-total{
   text-align:center;
   color:#e91e63;
-  font-size:28px;
-  font-weight:bold;
+  font-size:34px;
+  font-weight:800;
   margin-top:10px;
-  margin-bottom:15px;
+  margin-bottom:10px;
 }
 
 /* ================= PAYMENT ================= */
@@ -263,17 +222,17 @@ th{
   flex:1;
   min-width:90px;
   padding:14px;
-  background:#f8bbd0;
-  border-radius:12px;
   text-align:center;
+  background:#f8bbd0;
+  border-radius:14px;
   cursor:pointer;
   font-weight:bold;
   transition:0.2s;
-  box-shadow:0 2px 6px rgba(0,0,0,0.08);
 }
 
 .pay-btn:hover{
-  transform:scale(1.03);
+  background:#e91e63;
+  color:white;
 }
 
 .pay-btn.active{
@@ -281,70 +240,94 @@ th{
   color:white;
 }
 
+/* ================= CALCULATOR ================= */
+#display{
+  width:100%;
+  height:60px;
+  border-radius:14px;
+  border:2px solid #f8bbd0;
+  font-size:28px;
+  text-align:right;
+  padding:10px;
+  font-weight:bold;
+  margin-bottom:12px;
+}
+
+.calc{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:10px;
+}
+
+.calc button{
+  height:60px;
+  border:none;
+  background:#f8bbd0;
+  border-radius:14px;
+  font-size:20px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.calc button:hover{
+  background:#e91e63;
+  color:white;
+}
+
 /* ================= BUTTONS ================= */
 button{
-  width:100%;
-  margin-top:10px;
-  padding:14px;
-  border:none;
-  border-radius:12px;
   background:#f8bbd0;
-  font-weight:bold;
-  font-size:15px;
+  border:none;
+  padding:14px;
+  border-radius:12px;
   cursor:pointer;
+  font-weight:bold;
   transition:0.2s;
 }
 
 button:hover{
   background:#e91e63;
   color:white;
-  transform:scale(1.02);
+}
+
+.right > button{
+  width:100%;
+  margin-top:10px;
+  font-size:15px;
 }
 
 /* ================= FOOTER ================= */
 .site-footer{
+  margin-top:auto;
   text-align:center;
-  padding:15px;
-  background:#ffe6ef;
-  color:#555;
-  font-size:13px;
+  padding:16px;
+  background:linear-gradient(135deg,#fff0f5,#ffe6ef);
   border-top:1px solid rgba(233,30,99,0.15);
-}
-
-/* ================= SCROLLBAR ================= */
-::-webkit-scrollbar{
-  width:8px;
-}
-
-::-webkit-scrollbar-thumb{
-  background:#f8bbd0;
-  border-radius:10px;
+  font-size:14px;
 }
 
 /* ================= MOBILE ================= */
 @media(max-width:900px){
 
-  body{
-    overflow:auto;
-  }
-
   .pos-container{
     flex-direction:column;
-    overflow:auto;
   }
 
   .left,
   .center,
   .right{
     width:100%;
-  }
-
-  .top-nav{
-    justify-content:center;
+    min-width:100%;
   }
 
   #product-list{
     grid-template-columns:1fr;
+  }
+
+  .calc{
+    grid-template-columns:repeat(4,1fr);
   }
 }
 
@@ -365,5 +348,7 @@ button:hover{
     left:0;
     top:0;
     width:100%;
+    background:white;
   }
+
 }
