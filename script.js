@@ -1,9 +1,13 @@
-let products = [
+.let products = JSON.parse(localStorage.getItem("products")) || [
   {name:"Savon Rose", price:3000, stock:10, category:"Savon"},
   {name:"Savon Coco", price:3500, stock:8, category:"Savon"},
   {name:"Lotion Vanille", price:5000, stock:5, category:"Lotion"},
   {name:"Beurre Karité", price:4000, stock:7, category:"Beurre"}
 ];
+
+function saveProducts(){
+  localStorage.setItem("products", JSON.stringify(products));
+}
 
 let invoice = [];
 let paymentMethod = "cash";
@@ -93,24 +97,54 @@ function renderInvoice(){
   if(!body) return;
 
   body.innerHTML = invoice.map((item, index) => {
+
     const total = item.price * item.qty;
 
     return `
       <tr>
+
         <td>${item.name}</td>
-        <td>${item.qty}</td>
-        <td>${item.price}</td>
-        <td>${total}</td>
+
         <td>
-          <button onclick="removeItem(${index})">
-            ❌
-          </button>
+          <input type="number" min="1"
+            value="${item.qty}"
+            onchange="updateQty(${index}, this.value)">
         </td>
+
+        <td>
+          <input type="number"
+            value="${item.price}"
+            onchange="updatePrice(${index}, this.value)">
+        </td>
+
+        <td>${total}</td>
+
+        <td>
+          <button onclick="removeItem(${index})">❌</button>
+        </td>
+
       </tr>
     `;
   }).join("");
 
   updateTotal();
+}
+
+/* ================= EDIT INVOICE ================= */
+function updateQty(index, value){
+
+  invoice[index].qty = Number(value);
+  if(invoice[index].qty < 1) invoice[index].qty = 1;
+
+  renderInvoice();
+}
+
+function updatePrice(index, value){
+
+  invoice[index].price = Number(value);
+  if(invoice[index].price < 0) invoice[index].price = 0;
+
+  renderInvoice();
 }
 
 /* ================= REMOVE ================= */
@@ -130,9 +164,7 @@ function updateTotal(){
 
   const delivery = Number(document.getElementById("delivery")?.value || 0);
 
-  const discountAmount = total * (discount / 100);
-  total = total - discountAmount;
-
+  total = total - (total * discount / 100);
   total += delivery;
 
   const grand = document.getElementById("grand-total");
@@ -171,7 +203,7 @@ function calculate(){
   }
 }
 
-/* ================= DISCOUNT FROM CALC ================= */
+/* ================= DISCOUNT ================= */
 function applyDiscountFromCalc(){
 
   const value = Number(document.getElementById("display").value);
@@ -189,7 +221,12 @@ function applyDiscountFromCalc(){
   clearCalc();
 }
 
-/* ================= SAVE ================= */
+/* ================= SAVE PRODUCTS (IMPORTANT) ================= */
+function saveProducts(){
+  localStorage.setItem("products", JSON.stringify(products));
+}
+
+/* ================= SAVE SALE ================= */
 function saveSale(){
 
   if(invoice.length === 0){
@@ -207,13 +244,10 @@ function saveSale(){
       phone: document.getElementById("client-phone")?.value || "-",
       address: document.getElementById("client-address")?.value || "-"
     },
-
-    // FIX SAFE
     cart: JSON.parse(JSON.stringify(invoice)),
-
-    discount: discount,
+    discount,
     delivery: Number(document.getElementById("delivery")?.value || 0),
-    paymentMethod: paymentMethod,
+    paymentMethod,
     total: document.getElementById("grand-total")?.innerText || "0 FCFA"
   };
 
@@ -255,32 +289,20 @@ function printInvoice(){
     wave: "Wave"
   };
 
-  const selectedPayment = paymentLabels[paymentMethod] || paymentMethod;
+  const selectedPayment = paymentLabels[paymentMethod];
 
   const deliveryValue = Number(document.getElementById("delivery")?.value || 0);
 
-  const invoiceNumber =
-    document.getElementById("invoice-id")?.innerText || generateInvoiceNumber();
-
-  const invoiceBody = invoice.map(item => {
-    const total = item.price * item.qty;
-
-    return `
-      <tr>
-        <td>${item.name}</td>
-        <td>${item.qty}</td>
-        <td>${item.price}</td>
-        <td>${total}</td>
-      </tr>
-    `;
-  }).join("");
+  const invoiceBody = invoice.map(item => `
+    <tr>
+      <td>${item.name}</td>
+      <td>${item.qty}</td>
+      <td>${item.price}</td>
+      <td>${item.price * item.qty}</td>
+    </tr>
+  `).join("");
 
   const win = window.open("", "_blank");
-
-  if(!win){
-    alert("Active les popups");
-    return;
-  }
 
   win.document.write(`
     <html>
@@ -300,26 +322,15 @@ function printInvoice(){
       <h2>ÉCLAT DE COCO OFFICIAL</h2>
       <p style="text-align:center;">Abidjan - Côte d’Ivoire</p>
 
-      <div style="text-align:center;font-size:12px;">
-        Facture N°: ${invoiceNumber}<br>
-        Date: ${new Date().toLocaleDateString()}
-      </div>
-
       <table>
         <tbody>${invoiceBody}</tbody>
       </table>
 
-      <p class="total">Livraison: ${deliveryValue} FCFA</p>
       <p class="total">Remise: ${discount}%</p>
+      <p class="total">Livraison: ${deliveryValue} FCFA</p>
       <p class="total">Paiement: ${selectedPayment}</p>
 
-      <h3 class="total">
-        TOTAL: ${document.getElementById("grand-total")?.innerText || "0 FCFA"}
-      </h3>
-
-      <div style="text-align:center;margin-top:30px;color:#e91e63;">
-        Merci de faire partie de l’univers Éclat de Coco 💗
-      </div>
+      <h3 class="total">${document.getElementById("grand-total").innerText}</h3>
 
     </body>
     </html>
