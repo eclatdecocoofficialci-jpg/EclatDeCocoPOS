@@ -25,40 +25,57 @@
   <h1>✨ Éclat de Coco POS</h1>
 </header>
 
-<!-- NAV -->
+<!-- NAVIGATION -->
 <nav class="top-nav">
+
   <a href="./dashboard.html">Dashboard</a>
+
   <a href="./pos.html">POS</a>
+
   <a href="./sales.html">Ventes</a>
-  <a href="./products.html">produits</a>
+
+  <a href="./products.html">Produits</a>
+
   <a href="./inventory.html">Inventory</a>
+
   <a href="./customers.html">Clients</a>
-  <a href="./reports.html">rapports</a>
- <a href="./expenses.html">dépences</a> 
-  <a href="./suppliers.html">fournisseurs</a>
+
+  <a href="./reports.html">Rapports</a>
+
+  <a href="./expenses.html">Dépenses</a>
+
+  <a href="./suppliers.html">Fournisseurs</a>
+
 </nav>
 
-<!-- MAIN WRAPPER -->
+<!-- MAIN -->
 <div class="main-content">
 
   <div class="pos-container">
 
-    <!-- LEFT -->
+    <!-- LEFT PANEL -->
     <div class="panel left">
-      <h3>Catégories</h3>
+
+      <h3>📂 Catégories</h3>
+
       <div id="category-boxes"></div>
+
     </div>
 
-    <!-- CENTER -->
+    <!-- CENTER PANEL -->
     <div class="panel center">
 
       <h3>🔎 Recherche produit</h3>
-      <input id="search" placeholder="Nom ou barcode...">
 
-      <h3>Produits</h3>
+      <input id="search" type="text" placeholder="Nom ou barcode...">
+
+      <h3>🛍 Produits</h3>
+
       <div id="product-list"></div>
 
-      <h3>Calculatrice</h3>
+      <!-- CALCULATOR -->
+      <h3>🧮 Calculatrice</h3>
+
       <input id="display" type="text" placeholder="0">
 
       <div class="calc">
@@ -83,57 +100,115 @@
         <button onclick="calculate()">=</button>
         <button onclick="press('/')">÷</button>
 
+        <!-- REMISE -->
         <button onclick="applyDiscountFromCalc()">%</button>
 
       </div>
 
     </div>
 
-    <!-- RIGHT (FACTURE) -->
+    <!-- RIGHT PANEL -->
     <div class="panel right">
 
+      <!-- FACTURE HEADER -->
       <div class="invoice-header">
+
         <h2>ÉCLAT DE COCO OFFICIAL</h2>
-        <p class="sub-title">Abidjan - Côte d’Ivoire</p>
+
+        <p class="sub-title">
+          Abidjan - Côte d’Ivoire
+        </p>
+
       </div>
 
-      <h3>Facture N°: <span id="invoice-id"></span></h3>
+      <h3>
+        Facture N°:
+        <span id="invoice-id"></span>
+      </h3>
 
-      <input id="client-name" placeholder="Nom">
+      <!-- CLIENT -->
+      <input id="client-name" placeholder="Nom client">
+
       <input id="client-phone" placeholder="Téléphone">
+
       <input id="client-address" placeholder="Adresse">
 
+      <!-- DATE -->
       <input type="date" id="date">
 
+      <!-- TABLE -->
       <table>
+
         <thead>
           <tr>
+
             <th>Produit</th>
+
             <th>Qté</th>
+
             <th>Prix</th>
+
             <th>Total</th>
+
             <th>Action</th>
+
           </tr>
         </thead>
+
         <tbody id="invoice-body"></tbody>
+
       </table>
 
-      <input id="delivery" type="number" placeholder="Livraison">
+      <!-- LIVRAISON -->
+      <input
+        id="delivery"
+        type="number"
+        placeholder="Livraison"
+      >
 
-      <h4>Remise: <span id="discount-value">0%</span></h4>
+      <!-- REMISE -->
+      <h4>
+        Remise :
+        <span id="discount-value">0%</span>
+      </h4>
 
+      <!-- TOTAL -->
       <h2 id="grand-total">0 FCFA</h2>
 
       <!-- PAYMENT -->
       <div class="payment-boxes">
-        <div class="pay-btn" onclick="selectPayment(this, 'cash')">Cash</div>
-        <div class="pay-btn" onclick="selectPayment(this, 'orange')">Orange Money</div>
-        <div class="pay-btn" onclick="selectPayment(this, 'wave')">Wave</div>
+
+        <div
+          class="pay-btn"
+          onclick="selectPayment(this, 'cash')"
+        >
+          Cash
+        </div>
+
+        <div
+          class="pay-btn"
+          onclick="selectPayment(this, 'orange')"
+        >
+          Orange Money
+        </div>
+
+        <div
+          class="pay-btn"
+          onclick="selectPayment(this, 'wave')"
+        >
+          Wave
+        </div>
+
       </div>
 
       <!-- BUTTONS -->
-      <button onclick="saveSale()">💾 Sauvegarder</button>
-      <button onclick="printInvoice()">🖨 Imprimer</button>
+      <button onclick="saveSale()">
+        💾 Sauvegarder
+      </button>
+
+      <button onclick="printInvoice()">
+        🖨 Imprimer
+      </button>
 
     </div>
 
@@ -143,9 +218,10 @@
 
 <!-- FOOTER -->
 <footer class="site-footer">
-  © 2025 Éclat de Coco Official
+  © 2025 Éclat de Coco Official • All rights reserved 🌿🥥
 </footer>
 
+<!-- SCRIPT -->
 <script src="./script.js"></script>
 
 </body>
