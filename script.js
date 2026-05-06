@@ -1,4 +1,4 @@
-.let products = JSON.parse(localStorage.getItem("products")) || [
+let products = JSON.parse(localStorage.getItem("products")) || [
   {name:"Savon Rose", price:3000, stock:10, category:"Savon"},
   {name:"Savon Coco", price:3500, stock:8, category:"Savon"},
   {name:"Lotion Vanille", price:5000, stock:5, category:"Lotion"},
@@ -12,6 +12,9 @@ function saveProducts(){
 let invoice = [];
 let paymentMethod = "cash";
 let discount = 0;
+
+/* ================= CATEGORY STATE ================= */
+let activeCategory = "ALL";
 
 /* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded", function(){
@@ -41,27 +44,43 @@ function loadCategories(){
 
   const categories = [...new Set(products.map(p => p.category))];
 
-  box.innerHTML = categories.map(cat =>
+  box.innerHTML = `
+    <div class="pink-box" onclick="showAll()">ALL</div>
+  ` + categories.map(cat =>
     `<div class="pink-box" onclick="filterProducts('${cat}')">${cat}</div>`
   ).join("");
 }
 
-/* ================= FILTER ================= */
+function showAll(){
+  activeCategory = "ALL";
+  renderProducts(products);
+}
+
 function filterProducts(category){
+  activeCategory = category;
   renderProducts(products.filter(p => p.category === category));
 }
 
 /* ================= SEARCH ================= */
 function searchProducts(value){
+
   const v = value.toLowerCase();
 
-  renderProducts(products.filter(p =>
-    p.name.toLowerCase().includes(v) ||
-    p.category.toLowerCase().includes(v)
-  ));
+  let base = products;
+
+  if(activeCategory !== "ALL"){
+    base = products.filter(p => p.category === activeCategory);
+  }
+
+  renderProducts(
+    base.filter(p =>
+      p.name.toLowerCase().includes(v) ||
+      p.category.toLowerCase().includes(v)
+    )
+  );
 }
 
-/* ================= PRODUCTS ================= */
+/* ================= PRODUCTS DISPLAY ================= */
 function renderProducts(list){
 
   const box = document.getElementById("product-list");
@@ -69,15 +88,31 @@ function renderProducts(list){
 
   box.innerHTML = list.map(p =>
     `<div class="pink-box" onclick="addToInvoice('${p.name}', ${p.price})">
+
       <strong>${p.name}</strong><br>
       💰 ${p.price} FCFA<br>
-      📦 Stock: ${p.stock}
+
+      📦 ${
+        p.stock <= 0
+          ? `<span style="color:red;font-weight:bold;">RUPTURE</span>`
+          : p.stock
+      }
+
     </div>`
   ).join("");
 }
 
-/* ================= ADD ================= */
+/* ================= ADD TO INVOICE ================= */
 function addToInvoice(name, price){
+
+  const product = products.find(p => p.name === name);
+
+  if(!product) return;
+
+  if(product.stock <= 0){
+    alert("❌ Produit en rupture de stock");
+    return;
+  }
 
   const item = invoice.find(i => i.name === name);
 
@@ -102,7 +137,6 @@ function renderInvoice(){
 
     return `
       <tr>
-
         <td>${item.name}</td>
 
         <td>
@@ -122,7 +156,6 @@ function renderInvoice(){
         <td>
           <button onclick="removeItem(${index})">❌</button>
         </td>
-
       </tr>
     `;
   }).join("");
@@ -130,7 +163,7 @@ function renderInvoice(){
   updateTotal();
 }
 
-/* ================= EDIT INVOICE ================= */
+/* ================= EDIT ================= */
 function updateQty(index, value){
 
   invoice[index].qty = Number(value);
@@ -185,7 +218,7 @@ function selectPayment(el, method){
   el.classList.add("active");
 }
 
-/* ================= CALC ================= */
+/* ================= CALCULATOR ================= */
 function press(v){
   document.getElementById("display").value += v;
 }
@@ -221,7 +254,7 @@ function applyDiscountFromCalc(){
   clearCalc();
 }
 
-/* ================= SAVE PRODUCTS (IMPORTANT) ================= */
+/* ================= SAVE PRODUCTS ================= */
 function saveProducts(){
   localStorage.setItem("products", JSON.stringify(products));
 }
@@ -233,6 +266,21 @@ function saveSale(){
     alert("Aucun produit dans la facture");
     return;
   }
+
+  /* 🔥 STOCK DIMINUTION */
+  invoice.forEach(item => {
+    let product = products.find(p => p.name === item.name);
+
+    if(product){
+      product.stock -= item.qty;
+
+      if(product.stock < 0){
+        product.stock = 0;
+      }
+    }
+  });
+
+  saveProducts();
 
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
@@ -320,7 +368,6 @@ function printInvoice(){
     <body onload="window.print();window.close();">
 
       <h2>ÉCLAT DE COCO OFFICIAL</h2>
-      <p style="text-align:center;">Abidjan - Côte d’Ivoire</p>
 
       <table>
         <tbody>${invoiceBody}</tbody>
