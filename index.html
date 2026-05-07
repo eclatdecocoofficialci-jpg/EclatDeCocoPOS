@@ -1,17 +1,20 @@
-.<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Éclat de Coco Login</title>
 
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Éclat de Coco Login</title>
 
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#e91e63">
 
 <link rel="apple-touch-icon" href="./icon-192.png">
+
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Éclat POS">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
@@ -57,7 +60,11 @@ body::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(233,30,99,0.30), rgba(46,125,50,0.25));
+  background: linear-gradient(
+    135deg,
+    rgba(233,30,99,0.30),
+    rgba(46,125,50,0.25)
+  );
   z-index: -2;
 }
 
@@ -75,16 +82,22 @@ body::after {
 
 /* ================= LOGIN CARD ================= */
 .card {
+
   background: rgba(255,255,255,0.12);
+
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
 
   padding: 30px;
+
   border-radius: 20px;
+
   width: 320px;
+
   text-align: center;
 
   border: 1px solid rgba(255,255,255,0.25);
+
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 
   color: white;
@@ -92,25 +105,43 @@ body::after {
 
 /* ================= INPUT ================= */
 input {
+
   width: 100%;
+
   padding: 12px;
+
   margin-top: 15px;
+
   border-radius: 10px;
+
   border: none;
+
   outline: none;
+
   font-size: 16px;
+
+  box-sizing: border-box;
 }
 
 /* ================= BUTTON ================= */
 button {
+
   width: 100%;
+
   margin-top: 15px;
+
   padding: 12px;
+
   border: none;
+
   border-radius: 10px;
+
   background: #e91e63;
+
   color: white;
+
   font-weight: bold;
+
   cursor: pointer;
 }
 
@@ -123,13 +154,21 @@ button {
 
 /* ================= FOOTER ================= */
 .site-footer {
+
   position: absolute;
+
   bottom: 12px;
+
   width: 100%;
+
   text-align: center;
+
   color: white;
+
   font-size: 11px;
+
   opacity: 0.8;
+
   z-index: 2;
 }
 
@@ -146,9 +185,15 @@ button {
 
   <h2>Éclat de Coco POS</h2>
 
-  <input type="password" id="code" placeholder="Enter code">
+  <input
+    type="password"
+    id="code"
+    placeholder="Enter code"
+  >
 
-  <button onclick="enterApp()">Enter</button>
+  <button onclick="enterApp()">
+    Enter
+  </button>
 
   <div class="small">
     Nature • Coco • Beauté 🌿
@@ -160,36 +205,20 @@ button {
   © 2025 Éclat de Coco Official • All rights reserved
 </footer>
 
-
-
 <script>
-if ("serviceWorker" in navigator) {
 
-  navigator.serviceWorker.register("./service-worker.js")
-    .then(reg => {
-
-      reg.update();
-
-      // 🔥 sécurité iOS (pas de loop)
-      let refreshing = false;
-
-      navigator.serviceWorker.addEventListener("controllerchange", () => {
-        if (refreshing) return;
-        refreshing = true;
-        window.location.reload();
-      });
-
-    })
-    .catch(err => console.log("SW error", err));
-}
-
+/* ================= LOGIN ================= */
 function enterApp(){
 
-  const code = document.getElementById("code").value;
+  const code =
+    document.getElementById("code").value;
 
   if(code === "29121509"){
 
-    localStorage.setItem("eclat_logged", "true");
+    localStorage.setItem(
+      "eclat_logged",
+      "true"
+    );
 
     window.location.href = "./pos.html";
 
@@ -199,24 +228,55 @@ function enterApp(){
   }
 }
 
-</script>
-  if ("serviceWorker" in navigator) {
+/* ================= ENTER KEY ================= */
+document
+  .getElementById("code")
+  .addEventListener("keypress", function(e){
 
-  navigator.serviceWorker.register("./service-worker.js")
-    .then(async (reg) => {
+    if(e.key === "Enter"){
+      enterApp();
+    }
+
+});
+
+/* ================= SERVICE WORKER ================= */
+if("serviceWorker" in navigator){
+
+  window.addEventListener("load", async () => {
+
+    try{
+
+      const reg =
+        await navigator.serviceWorker.register(
+          "./service-worker.js?v=60"
+        );
 
       await reg.update();
 
-      // FORCE TAKE CONTROL IMMEDIATELY
-      if (reg.waiting) {
-        reg.waiting.postMessage({ type: "SKIP_WAITING" });
-      }
+      let refreshing = false;
 
-    });
+      navigator.serviceWorker.addEventListener(
+        "controllerchange",
+        () => {
 
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    window.location.reload();
+          if(refreshing) return;
+
+          refreshing = true;
+
+          window.location.reload();
+        }
+      );
+
+    } catch(err){
+
+      console.log("SW error:", err);
+    }
+
   });
+
 }
+
+</script>
+
 </body>
 </html>
