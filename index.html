@@ -163,33 +163,24 @@ button {
 
 
 <script>
-/* ================= SERVICE WORKER AUTO UPDATE (STABLE IOS) ================= */
 if ("serviceWorker" in navigator) {
 
   navigator.serviceWorker.register("./service-worker.js")
-
     .then(reg => {
 
-      // 🔥 check update à chaque ouverture
       reg.update();
 
-      // 🔥 éviter reload infini iOS
+      // 🔥 sécurité iOS (pas de loop)
       let refreshing = false;
 
       navigator.serviceWorker.addEventListener("controllerchange", () => {
-
         if (refreshing) return;
-
         refreshing = true;
-
         window.location.reload();
       });
 
     })
-
-    .catch(err => {
-      console.log("SW error:", err);
-    });
+    .catch(err => console.log("SW error", err));
 }
 
 function enterApp(){
@@ -197,12 +188,17 @@ function enterApp(){
   const code = document.getElementById("code").value;
 
   if(code === "29121509"){
+
     localStorage.setItem("eclat_logged", "true");
+
     window.location.href = "./pos.html";
+
   } else {
-    alert("Wrong code ❌");
+
+    alert("Code incorrect ❌");
   }
 }
+</script>
 </script>
 </body>
 </html>
