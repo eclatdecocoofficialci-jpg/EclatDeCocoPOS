@@ -6,7 +6,7 @@ let products = JSON.parse(localStorage.getItem("products")) || [
 
   {
     name: "Savon Baptême",
-    price: 0, // 🔥 calculé automatiquement
+    price: 0,
     stock: 5,
     category: "Savon Personnalisé",
 
@@ -26,10 +26,10 @@ let paymentMethod = "cash";
 let discount = 0;
 let activeCategory = "ALL";
 
-/* ================= PRIX SAVON PERSONNALISÉ ================= */
+/* ================= CALCUL SAVON PERSONNALISÉ ================= */
 function calculateCustomPrice(product){
 
-  if(!product.recipe) return product.price;
+  if(!product || !product.recipe) return product.price;
 
   const r = product.recipe;
 
@@ -57,17 +57,16 @@ function renderProducts(list){
 
   box.innerHTML = list.map(p => {
 
-    const finalPrice = p.recipe
+    const price = p.recipe
       ? calculateCustomPrice(p)
       : p.price;
 
     return `
       <div class="pink-box"
-        onclick='addToInvoice(${JSON.stringify(p.name)}, ${finalPrice})'>
+        onclick='addToInvoice(${JSON.stringify(p.name)}, ${price})'>
 
         <strong>${p.name}</strong><br>
-
-        💰 ${finalPrice} FCFA<br>
+        💰 ${price} FCFA<br>
 
         📦 ${
           p.stock <= 0
@@ -116,8 +115,8 @@ function addToInvoice(name, price){
 
   renderInvoice();
 }
-}
 
+/* ================= INVOICE ================= */
 function renderInvoice(){
 
   const body = document.getElementById("invoice-body");
