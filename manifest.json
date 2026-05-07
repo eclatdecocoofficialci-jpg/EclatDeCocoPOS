@@ -3,7 +3,7 @@
   "short_name": "Eclatdecoco",
   "description": "POS Éclat de Coco",
 
-  "start_url": "./index.html",
+  "start_url": "./index.html?v=7",
   "scope": "./",
 
   "display": "standalone",
