@@ -352,3 +352,62 @@ button:hover{
   }
 
 }
+let customSoap = {
+  oil: 0,
+  soap: 0,
+  perfume: 0,
+  mold: 0,
+  labor: 0,
+  pack: 0
+};
+
+/* ================= TOGGLE FORM ================= */
+function toggleCustomSoap(){
+  const form = document.getElementById("custom-soap-form");
+  form.style.display = form.style.display === "none" ? "block" : "none";
+}
+
+/* ================= CALCUL REAL TIME ================= */
+function calcCustomSoap(){
+
+  customSoap.oil = Number(document.getElementById("c_oil").value || 0);
+  customSoap.soap = Number(document.getElementById("c_soap").value || 0);
+  customSoap.perfume = Number(document.getElementById("c_perfume").value || 0);
+  customSoap.mold = Number(document.getElementById("c_mold").value || 0);
+  customSoap.labor = Number(document.getElementById("c_labor").value || 0);
+  customSoap.pack = Number(document.getElementById("c_pack").value || 0);
+
+  const total =
+    (customSoap.oil * 2000) +
+    (customSoap.soap * 3000) +
+    (customSoap.perfume * 20) +
+    customSoap.mold +
+    customSoap.labor +
+    customSoap.pack;
+
+  document.getElementById("custom-total").innerText = total;
+}
+
+/* ================= ADD TO INVOICE ================= */
+function addCustomSoap(){
+
+  const total = Number(document.getElementById("custom-total").innerText);
+
+  if(total <= 0){
+    alert("⚠ Remplis les champs");
+    return;
+  }
+
+  invoice.push({
+    name: "Savon Personnalisé",
+    price: total,
+    qty: 1
+  });
+
+  renderInvoice();
+
+  alert("✔ Ajouté à la facture");
+}
+ #custom-soap-form input {
+  margin-top: 5px;
+}   
