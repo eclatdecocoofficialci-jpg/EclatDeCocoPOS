@@ -3,7 +3,7 @@
   "short_name": "Eclatdecoco",
   "description": "POS Éclat de Coco",
 
-  "start_url": "./index.html",
+  "start_url": "./index.html?v=61",
   "scope": "./",
 
   "display": "standalone",
@@ -27,11 +27,3 @@
     }
   ]
 }
-self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.map(k => caches.delete(k)))
-    )
-  );
-  self.clients.claim();
-});
