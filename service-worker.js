@@ -1,6 +1,6 @@
-const CACHE_NAME = "eclat-de-coco-pos-v59";
+const CACHE_NAME = "eclat-de-coco-pos-v60";
 
-/* ================= FILES TO CACHE ================= */
+/* ================= FILES ================= */
 const urlsToCache = [
   "./",
   "./index.html",
@@ -12,114 +12,81 @@ const urlsToCache = [
   "./reports.html",
   "./inventory.html",
   "./products.html",
-
   "./script.js",
   "./style.css",
-
   "./manifest.json",
-
   "./icon-192.png",
   "./icon-512.png",
-
   "./coco-bg.jpg"
 ];
 
 /* ================= INSTALL ================= */
 self.addEventListener("install", event => {
+  self.skipWaiting(); // 🔥 activation immédiate
 
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
   );
-
-  self.skipWaiting();
 });
 
 /* ================= ACTIVATE ================= */
 self.addEventListener("activate", event => {
-
   event.waitUntil(
-
     caches.keys().then(keys =>
-
       Promise.all(
         keys.map(key => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
+          if (key !== CACHE_NAME) return caches.delete(key);
         })
       )
-
     )
-
   );
 
-  self.clients.claim();
+  self.clients.claim(); // 🔥 prend contrôle direct
 });
 
-/* ================= FETCH ================= */
+/* ================= FETCH (SMART OFFLINE) ================= */
 self.addEventListener("fetch", event => {
-
   const request = event.request;
 
-  /* 🔥 ALWAYS FRESH JS / CSS */
+  // 🔥 ALWAYS NETWORK FIRST FOR JS/CSS
   if (
     request.url.includes("script.js") ||
-    request.url.includes("style.css") ||
-    request.url.includes("manifest.json")
+    request.url.includes("style.css")
   ) {
-
     event.respondWith(
       fetch(request)
-        .then(response => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(request, clone);
-          });
-          return response;
+        .then(res => {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(request, clone));
+          return res;
         })
         .catch(() => caches.match(request))
     );
-
     return;
   }
 
-  /* 🔥 NAVIGATION */
+  // 🔥 NAVIGATION (PWA OFFLINE MODE)
   if (request.mode === "navigate") {
-
     event.respondWith(
       fetch(request)
-        .then(response => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(request, clone);
-          });
-          return response;
+        .then(res => {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(request, clone));
+          return res;
         })
-        .catch(async () => {
-          return (
-            await caches.match("./index.html") ||
-            await caches.match("./pos.html")
-          );
-        })
+        .catch(() => caches.match("./pos.html"))
     );
-
     return;
   }
 
-  /* 🔥 CACHE FIRST */
+  // 🔥 CACHE FIRST DEFAULT
   event.respondWith(
     caches.match(request).then(cached => {
-      return (
-        cached ||
-        fetch(request).then(response => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(request, clone);
-          });
-          return response;
-        })
-      );
+      return cached || fetch(request).then(res => {
+        const clone = res.clone();
+        caches.open(CACHE_NAME).then(c => c.put(request, clone));
+        return res;
+      });
     })
   );
-
 });
