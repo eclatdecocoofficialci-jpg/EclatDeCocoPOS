@@ -2,7 +2,23 @@ let products = JSON.parse(localStorage.getItem("products")) || [
   {name:"Savon Rose", price:3000, stock:10, category:"Savon"},
   {name:"Savon Coco", price:3500, stock:8, category:"Savon"},
   {name:"Lotion Vanille", price:5000, stock:5, category:"Lotion"},
-  {name:"Beurre Karité", price:4000, stock:7, category:"Beurre"}
+  {name:"Beurre Karité", price:4000, stock:7, category:"Beurre"},
+
+  {
+    name: "Savon Baptême",
+    price: 5000,
+    stock: 5,
+    category: "Savon Personnalisé",
+
+    recipe: {
+      oil_litre: 0.5,
+      soap_kg: 1,
+      fragrance_ml: 50,
+      mold_cost: 500,
+      labor_cost: 1000,
+      packaging: 300
+    }
+  }
 ];
 
 let invoice = [];
@@ -77,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function(){
   }
 });
 
-/* ================= CUSTOMERS SYSTEM (FIXED) ================= */
+/* ================= CUSTOMERS SYSTEM ================= */
 function updateCustomer(name, phone, address){
 
   let customers = JSON.parse(localStorage.getItem("customers")) || [];
@@ -87,11 +103,8 @@ function updateCustomer(name, phone, address){
   let existing = customers.find(c => c.phone === phone);
 
   if(existing){
-
     existing.totalInvoices = (existing.totalInvoices || 0) + 1;
-
   } else {
-
     customers.push({
       id: "CL" + String(customers.length + 1).padStart(3,"0"),
       name: name || "-",
@@ -290,7 +303,6 @@ function saveSale(){
   sales.push(sale);
   localStorage.setItem("sales", JSON.stringify(sales));
 
-  /* 🔥 CUSTOMER AUTO UPDATE FIXED */
   updateCustomer(name, phone, address);
 
   backupData();
