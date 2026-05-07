@@ -9,7 +9,6 @@ let products = JSON.parse(localStorage.getItem("products")) || [
     price: 0,
     stock: 5,
     category: "Savon Personnalisé",
-
     recipe: {
       oil_litre: 0.5,
       soap_kg: 1,
@@ -33,15 +32,14 @@ function calculateCustomPrice(product){
 
   const r = product.recipe;
 
-  const materialsCost =
+  return (
     (r.oil_litre * 2000) +
     (r.soap_kg * 3000) +
-    (r.fragrance_ml * 20);
-
-  return materialsCost +
+    (r.fragrance_ml * 20) +
     r.mold_cost +
     r.labor_cost +
-    r.packaging;
+    r.packaging
+  );
 }
 
 /* ================= SAVE PRODUCTS ================= */
@@ -49,7 +47,137 @@ function saveProducts(){
   localStorage.setItem("products", JSON.stringify(products));
 }
 
-/* ================= RENDER PRODUCTS ================= */
+/* ================= BACKUP ================= */
+function backupData(){
+
+  const backup = {
+    products,
+    sales: JSON.parse(localStorage.getItem("sales")) || [],
+    customers: JSON.parse(localStorage.getItem("customers")) || [],
+    expenses: JSON.parse(localStorage.getItem("expenses")) || []
+  };
+
+  localStorage.setItem("eclat_backup", JSON.stringify(backup));
+}
+
+/* ================= RESTORE ================= */
+function restoreBackup(){
+
+  const backup = JSON.parse(localStorage.getItem("eclat_backup"));
+  if(!backup) return;
+
+  if(backup.products){
+    products = backup.products;
+    saveProducts();
+  }
+
+  if(backup.sales){
+    localStorage.setItem("sales", JSON.stringify(backup.sales));
+  }
+
+  if(backup.customers){
+    localStorage.setItem("customers", JSON.stringify(backup.customers));
+  }
+
+  if(backup.expenses){
+    localStorage.setItem("expenses", JSON.stringify(backup.expenses));
+  }
+}
+
+/* ================= INIT ================= */
+document.addEventListener("DOMContentLoaded", function(){
+
+  restoreBackup();
+
+  loadCategories();
+  renderProducts(products);
+
+  const searchInput = document.getElementById("search");
+  if(searchInput){
+    searchInput.addEventListener("input", e =>
+      searchProducts(e.target.value)
+    );
+  }
+
+  const deliveryInput = document.getElementById("delivery");
+  if(deliveryInput){
+    deliveryInput.addEventListener("input", updateTotal);
+  }
+
+  if(document.getElementById("sales-body")){
+    renderSales();
+  }
+});
+
+/* ================= CUSTOMERS ================= */
+function updateCustomer(name, phone, address){
+
+  let customers = JSON.parse(localStorage.getItem("customers")) || [];
+
+  if(!phone || phone === "-") return;
+
+  let existing = customers.find(c => c.phone === phone);
+
+  if(existing){
+    existing.totalInvoices = (existing.totalInvoices || 0) + 1;
+  } else {
+    customers.push({
+      id: "CL" + String(customers.length + 1).padStart(3,"0"),
+      name: name || "-",
+      phone,
+      address: address || "-",
+      totalInvoices: 1
+    });
+  }
+
+  localStorage.setItem("customers", JSON.stringify(customers));
+}
+
+/* ================= CATEGORIES ================= */
+function loadCategories(){
+
+  const box = document.getElementById("category-boxes");
+  if(!box) return;
+
+  const categories = [...new Set(products.map(p => p.category))];
+
+  box.innerHTML =
+    `<div class="pink-box" onclick="showAll()">ALL</div>` +
+    categories.map(cat =>
+      `<div class="pink-box" onclick="filterProducts('${cat}')">${cat}</div>`
+    ).join("");
+}
+
+function showAll(){
+  activeCategory = "ALL";
+  renderProducts(products);
+}
+
+function filterProducts(category){
+  activeCategory = category;
+  renderProducts(products.filter(p => p.category === category));
+}
+
+/* ================= SEARCH ================= */
+function searchProducts(value){
+
+  const v = value.toLowerCase();
+
+  let base = products;
+
+  if(activeCategory !== "ALL"){
+    base = products.filter(p => p.category === activeCategory);
+  }
+
+  renderProducts(
+    base.filter(p =>
+      p.name.toLowerCase().includes(v) ||
+      p.category.toLowerCase().includes(v)
+    )
+  );
+}
+
+/* ================= PRODUCTS ================= */
 function renderProducts(list){
 
   const box = document.getElementById("product-list");
@@ -245,4 +373,46 @@ function renderSales(){
       <td>${s.total}</td>
     </tr>
   `).join("");
+}
+
+/* ================= PROFIT SYSTEM ================= */
+function getCostPrice(item){
+
+  const product = products.find(p => p.name === item.name);
+
+  if(product && product.recipe){
+    const r = product.recipe;
+
+    return (
+      (r.oil_litre * 2000) +
+      (r.soap_kg * 3000) +
+      (r.fragrance_ml * 20) +
+      r.mold_cost +
+      r.labor_cost +
+      r.packaging
+    );
+  }
+
+  return item.price * 0.6;
+}
+
+function getInvoiceStats(){
+
+  let revenue = 0;
+  let cost = 0;
+
+  invoice.forEach(item => {
+    revenue += item.price * item.qty;
+    cost += getCostPrice(item) * item.qty;
+  });
+
+  const delivery = Number(document.getElementById("delivery")?.value || 0);
+
+  revenue += delivery;
+
+  return {
+    revenue,
+    cost,
+    profit: revenue - cost
+  };
 }
