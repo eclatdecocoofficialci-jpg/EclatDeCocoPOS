@@ -5,6 +5,7 @@ let products = JSON.parse(localStorage.getItem("products")) || [
   {name:"Beurre Karité", price:4000, stock:7, category:"Beurre"}
 ];
 
+/* ================= SAVE PRODUCTS ================= */
 function saveProducts(){
   localStorage.setItem("products", JSON.stringify(products));
 }
@@ -23,11 +24,15 @@ document.addEventListener("DOMContentLoaded", function(){
   renderProducts(products);
 
   const searchInput = document.getElementById("search");
+
   if(searchInput){
-    searchInput.addEventListener("input", e => searchProducts(e.target.value));
+    searchInput.addEventListener("input", e =>
+      searchProducts(e.target.value)
+    );
   }
 
   const deliveryInput = document.getElementById("delivery");
+
   if(deliveryInput){
     deliveryInput.addEventListener("input", updateTotal);
   }
@@ -39,7 +44,9 @@ document.addEventListener("DOMContentLoaded", function(){
 
 /* ================= CATEGORIES ================= */
 function loadCategories(){
+
   const box = document.getElementById("category-boxes");
+
   if(!box) return;
 
   const categories = [...new Set(products.map(p => p.category))];
@@ -57,8 +64,12 @@ function showAll(){
 }
 
 function filterProducts(category){
+
   activeCategory = category;
-  renderProducts(products.filter(p => p.category === category));
+
+  renderProducts(
+    products.filter(p => p.category === category)
+  );
 }
 
 /* ================= SEARCH ================= */
@@ -84,21 +95,26 @@ function searchProducts(value){
 function renderProducts(list){
 
   const box = document.getElementById("product-list");
+
   if(!box) return;
 
   box.innerHTML = list.map(p =>
-    `<div class="pink-box" onclick="addToInvoice('${p.name}', ${p.price})">
+
+    `<div class="pink-box"
+      onclick='addToInvoice(${JSON.stringify(p.name)}, ${p.price})'>
 
       <strong>${p.name}</strong><br>
+
       💰 ${p.price} FCFA<br>
 
       📦 ${
         p.stock <= 0
-          ? `<span style="color:red;font-weight:bold;">RUPTURE</span>`
-          : p.stock
+        ? `<span style="color:red;font-weight:bold;">RUPTURE</span>`
+        : p.stock
       }
 
     </div>`
+
   ).join("");
 }
 
@@ -109,17 +125,35 @@ function addToInvoice(name, price){
 
   if(!product) return;
 
+  /* 🔥 BLOCK IF OUT OF STOCK */
   if(product.stock <= 0){
+
     alert("❌ Produit en rupture de stock");
+
     return;
   }
 
   const item = invoice.find(i => i.name === name);
 
   if(item){
+
+    /* 🔥 BLOCK OVER STOCK */
+    if(item.qty >= product.stock){
+
+      alert("⚠ Stock maximum atteint");
+
+      return;
+    }
+
     item.qty += 1;
+
   } else {
-    invoice.push({name, price, qty:1});
+
+    invoice.push({
+      name,
+      price,
+      qty:1
+    });
   }
 
   renderInvoice();
@@ -129,6 +163,7 @@ function addToInvoice(name, price){
 function renderInvoice(){
 
   const body = document.getElementById("invoice-body");
+
   if(!body) return;
 
   body.innerHTML = invoice.map((item, index) => {
@@ -137,16 +172,20 @@ function renderInvoice(){
 
     return `
       <tr>
+
         <td>${item.name}</td>
 
         <td>
-          <input type="number" min="1"
+          <input
+            type="number"
+            min="1"
             value="${item.qty}"
             onchange="updateQty(${index}, this.value)">
         </td>
 
         <td>
-          <input type="number"
+          <input
+            type="number"
             value="${item.price}"
             onchange="updatePrice(${index}, this.value)">
         </td>
@@ -156,6 +195,7 @@ function renderInvoice(){
         <td>
           <button onclick="removeItem(${index})">❌</button>
         </td>
+
       </tr>
     `;
   }).join("");
@@ -166,8 +206,24 @@ function renderInvoice(){
 /* ================= EDIT ================= */
 function updateQty(index, value){
 
-  invoice[index].qty = Number(value);
-  if(invoice[index].qty < 1) invoice[index].qty = 1;
+  value = Number(value);
+
+  if(value < 1){
+    value = 1;
+  }
+
+  const product = products.find(
+    p => p.name === invoice[index].name
+  );
+
+  if(product && value > product.stock){
+
+    alert("⚠ Quantité dépasse le stock");
+
+    value = product.stock;
+  }
+
+  invoice[index].qty = value;
 
   renderInvoice();
 }
@@ -175,14 +231,19 @@ function updateQty(index, value){
 function updatePrice(index, value){
 
   invoice[index].price = Number(value);
-  if(invoice[index].price < 0) invoice[index].price = 0;
+
+  if(invoice[index].price < 0){
+    invoice[index].price = 0;
+  }
 
   renderInvoice();
 }
 
 /* ================= REMOVE ================= */
 function removeItem(index){
+
   invoice.splice(index, 1);
+
   renderInvoice();
 }
 
@@ -195,20 +256,31 @@ function updateTotal(){
     total += i.price * i.qty;
   });
 
-  const delivery = Number(document.getElementById("delivery")?.value || 0);
+  const delivery =
+    Number(document.getElementById("delivery")?.value || 0);
 
   total = total - (total * discount / 100);
+
   total += delivery;
 
-  const grand = document.getElementById("grand-total");
-  const discountBox = document.getElementById("discount-value");
+  const grand =
+    document.getElementById("grand-total");
 
-  if(grand) grand.innerText = Math.round(total) + " FCFA";
-  if(discountBox) discountBox.innerText = discount + "%";
+  const discountBox =
+    document.getElementById("discount-value");
+
+  if(grand){
+    grand.innerText = Math.round(total) + " FCFA";
+  }
+
+  if(discountBox){
+    discountBox.innerText = discount + "%";
+  }
 }
 
 /* ================= PAYMENT ================= */
 function selectPayment(el, method){
+
   paymentMethod = method;
 
   document.querySelectorAll(".pay-btn").forEach(b =>
@@ -228,10 +300,14 @@ function clearCalc(){
 }
 
 function calculate(){
+
   try{
+
     document.getElementById("display").value =
       eval(document.getElementById("display").value);
+
   } catch {
+
     alert("Erreur calcul");
   }
 }
@@ -239,39 +315,45 @@ function calculate(){
 /* ================= DISCOUNT ================= */
 function applyDiscountFromCalc(){
 
-  const value = Number(document.getElementById("display").value);
+  const value =
+    Number(document.getElementById("display").value);
 
   if(isNaN(value) || value < 0 || value > 100){
+
     alert("Remise invalide (0 à 100%)");
+
     return;
   }
 
   discount = value;
 
-  document.getElementById("discount-value").innerText = discount + "%";
+  document.getElementById("discount-value").innerText =
+    discount + "%";
 
   updateTotal();
-  clearCalc();
-}
 
-/* ================= SAVE PRODUCTS ================= */
-function saveProducts(){
-  localStorage.setItem("products", JSON.stringify(products));
+  clearCalc();
 }
 
 /* ================= SAVE SALE ================= */
 function saveSale(){
 
   if(invoice.length === 0){
+
     alert("Aucun produit dans la facture");
+
     return;
   }
 
   /* 🔥 STOCK DIMINUTION */
   invoice.forEach(item => {
-    let product = products.find(p => p.name === item.name);
+
+    let product = products.find(
+      p => p.name === item.name
+    );
 
     if(product){
+
       product.stock -= item.qty;
 
       if(product.stock < 0){
@@ -282,28 +364,54 @@ function saveSale(){
 
   saveProducts();
 
-  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+  let sales =
+    JSON.parse(localStorage.getItem("sales")) || [];
 
   const sale = {
+
     id: generateInvoiceNumber(),
-    date: document.getElementById("date")?.value || new Date().toISOString().split("T")[0],
+
+    date:
+      document.getElementById("date")?.value ||
+      new Date().toISOString().split("T")[0],
+
     client: {
-      name: document.getElementById("client-name")?.value || "-",
-      phone: document.getElementById("client-phone")?.value || "-",
-      address: document.getElementById("client-address")?.value || "-"
+
+      name:
+        document.getElementById("client-name")?.value || "-",
+
+      phone:
+        document.getElementById("client-phone")?.value || "-",
+
+      address:
+        document.getElementById("client-address")?.value || "-"
     },
+
     cart: JSON.parse(JSON.stringify(invoice)),
+
     discount,
-    delivery: Number(document.getElementById("delivery")?.value || 0),
+
+    delivery:
+      Number(document.getElementById("delivery")?.value || 0),
+
     paymentMethod,
-    total: document.getElementById("grand-total")?.innerText || "0 FCFA"
+
+    total:
+      document.getElementById("grand-total")?.innerText || "0 FCFA"
   };
 
   sales.push(sale);
+
   localStorage.setItem("sales", JSON.stringify(sales));
 
   invoice = [];
+
   renderInvoice();
+
+  renderProducts(products);
+
+  loadCategories();
+
   updateTotal();
 
   alert("Vente sauvegardée ✔");
@@ -314,7 +422,8 @@ function generateInvoiceNumber(){
 
   const year = new Date().getFullYear();
 
-  let last = localStorage.getItem("invoiceNumber");
+  let last =
+    localStorage.getItem("invoiceNumber");
 
   last = last ? Number(last) + 1 : 1;
 
@@ -327,7 +436,9 @@ function generateInvoiceNumber(){
 function printInvoice(){
 
   if(invoice.length === 0){
+
     alert("Aucun produit dans la facture");
+
     return;
   }
 
@@ -337,9 +448,11 @@ function printInvoice(){
     wave: "Wave"
   };
 
-  const selectedPayment = paymentLabels[paymentMethod];
+  const selectedPayment =
+    paymentLabels[paymentMethod];
 
-  const deliveryValue = Number(document.getElementById("delivery")?.value || 0);
+  const deliveryValue =
+    Number(document.getElementById("delivery")?.value || 0);
 
   const invoiceBody = invoice.map(item => `
     <tr>
@@ -354,15 +467,44 @@ function printInvoice(){
 
   win.document.write(`
     <html>
+
     <head>
+
       <style>
-        body{font-family:Arial;padding:20px;}
-        h2{text-align:center;color:#e91e63;}
-        table{width:100%;border-collapse:collapse;}
-        th,td{border:1px solid #ddd;padding:8px;text-align:center;}
-        th{background:#ffe6ef;}
-        .total{text-align:right;color:#e91e63;font-weight:bold;}
+
+        body{
+          font-family:Arial;
+          padding:20px;
+        }
+
+        h2{
+          text-align:center;
+          color:#e91e63;
+        }
+
+        table{
+          width:100%;
+          border-collapse:collapse;
+        }
+
+        th,td{
+          border:1px solid #ddd;
+          padding:8px;
+          text-align:center;
+        }
+
+        th{
+          background:#ffe6ef;
+        }
+
+        .total{
+          text-align:right;
+          color:#e91e63;
+          font-weight:bold;
+        }
+
       </style>
+
     </head>
 
     <body onload="window.print();window.close();">
@@ -370,16 +512,29 @@ function printInvoice(){
       <h2>ÉCLAT DE COCO OFFICIAL</h2>
 
       <table>
-        <tbody>${invoiceBody}</tbody>
+        <tbody>
+          ${invoiceBody}
+        </tbody>
       </table>
 
-      <p class="total">Remise: ${discount}%</p>
-      <p class="total">Livraison: ${deliveryValue} FCFA</p>
-      <p class="total">Paiement: ${selectedPayment}</p>
+      <p class="total">
+        Remise: ${discount}%
+      </p>
 
-      <h3 class="total">${document.getElementById("grand-total").innerText}</h3>
+      <p class="total">
+        Livraison: ${deliveryValue} FCFA
+      </p>
+
+      <p class="total">
+        Paiement: ${selectedPayment}
+      </p>
+
+      <h3 class="total">
+        ${document.getElementById("grand-total").innerText}
+      </h3>
 
     </body>
+
     </html>
   `);
 
@@ -389,18 +544,27 @@ function printInvoice(){
 /* ================= SALES ================= */
 function renderSales(){
 
-  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+  let sales =
+    JSON.parse(localStorage.getItem("sales")) || [];
 
-  const body = document.getElementById("sales-body");
+  const body =
+    document.getElementById("sales-body");
+
   if(!body) return;
 
   body.innerHTML = sales.map(sale => `
     <tr>
+
       <td>${sale.id}</td>
+
       <td>${sale.client.name}</td>
+
       <td>${sale.date}</td>
+
       <td>${sale.paymentMethod}</td>
+
       <td>${sale.total}</td>
+
     </tr>
   `).join("");
 }
