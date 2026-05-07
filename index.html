@@ -160,9 +160,38 @@ button {
   © 2025 Éclat de Coco Official • All rights reserved
 </footer>
 
-<script>
 
-/* ================= LOGIN ================= */
+
+<script>
+/* ================= SERVICE WORKER AUTO UPDATE (STABLE IOS) ================= */
+if ("serviceWorker" in navigator) {
+
+  navigator.serviceWorker.register("./service-worker.js")
+
+    .then(reg => {
+
+      // 🔥 check update à chaque ouverture
+      reg.update();
+
+      // 🔥 éviter reload infini iOS
+      let refreshing = false;
+
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+
+        if (refreshing) return;
+
+        refreshing = true;
+
+        window.location.reload();
+      });
+
+    })
+
+    .catch(err => {
+      console.log("SW error:", err);
+    });
+}
+
 function enterApp(){
 
   const code = document.getElementById("code").value;
@@ -173,30 +202,6 @@ function enterApp(){
   } else {
     alert("Wrong code ❌");
   }
-}
-
-/* ================= IMPORTANT ================= */
-/* ❌ AUTO LOGIN SUPPRIMÉ = PLUS DE REDIRECTION AUTOMATIQUE */
-
-</script>
-<script>
-/* ================= SERVICE WORKER AUTO UPDATE ================= */
-if ("serviceWorker" in navigator) {
-
-  navigator.serviceWorker.register("./service-worker.js")
-
-    .then(reg => {
-
-      // 🔥 force check update à chaque ouverture
-      reg.update();
-
-      // 🔥 si nouveau SW prend contrôle → reload auto
-      navigator.serviceWorker.addEventListener("controllerchange", () => {
-        window.location.reload();
-      });
-
-    });
-
 }
 </script>
 </body>
