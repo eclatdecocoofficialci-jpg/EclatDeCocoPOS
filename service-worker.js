@@ -1,45 +1,61 @@
-const CACHE_NAME = "eclat-de-coco-pos-v56";
+const CACHE_NAME = "eclat-de-coco-pos-v57";
 
 /* ================= FILES TO CACHE ================= */
 const urlsToCache = [
-  "/",
-  "/pos.html",
-  "/dashboard.html",
-  "/sales.html",
-  "/expenses.html",
-  "/customers.html",
-  "/reports.html",
-  "/inventory.html",
-  "/products.html",
-  "/style.css",
-  "/manifest.json",
-  "/icon-192.png",
+  "./",
+  "./index.html",
+  "./pos.html",
+  "./dashboard.html",
+  "./sales.html",
+  "./expenses.html",
+  "./customers.html",
+  "./reports.html",
+  "./inventory.html",
+  "./products.html",
 
-  "/coco-bg.jpg"
+  "./script.js",
+  "./style.css",
+
+  "./manifest.json",
+
+  "./icon-192.png",
+  "./icon-512.png",
+
+  "./coco-bg.jpg"
 ];
 
 /* ================= INSTALL ================= */
 self.addEventListener("install", event => {
+
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
   );
 
-  // force update immédiat
   self.skipWaiting();
 });
 
 /* ================= ACTIVATE ================= */
 self.addEventListener("activate", event => {
+
   event.waitUntil(
+
     caches.keys().then(keys =>
+
       Promise.all(
+
         keys.map(key => {
-          if (key !== CACHE_NAME) {
+
+          if(key !== CACHE_NAME){
             return caches.delete(key);
           }
+
         })
+
       )
+
     )
+
   );
 
   self.clients.claim();
@@ -50,33 +66,91 @@ self.addEventListener("fetch", event => {
 
   const request = event.request;
 
-  // 🔥 JS / CSS toujours frais
-  if (
-    request.url.includes("script.js") ||
-    request.url.includes("style.css")
-  ) {
-    event.respondWith(fetch(request).catch(() => caches.match(request)));
-    return;
-  }
+  /* 🔥 ALWAYS FRESH JS / CSS */
+  if(
 
-  // 🔥 NAVIGATION (HTML pages)
-  if (request.mode === "navigate") {
+    request.url.includes("script.js") ||
+    request.url.includes("style.css") ||
+    request.url.includes("manifest.json")
+
+  ){
+
     event.respondWith(
+
       fetch(request)
+
         .then(response => {
+
+          const clone = response.clone();
+
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(request, clone);
+          });
+
           return response;
         })
-        .catch(() => {
-          return caches.match("/pos.html");
-        })
+
+        .catch(() => caches.match(request))
+
     );
+
     return;
   }
 
-  // 🔥 DEFAULT CACHE
+  /* 🔥 HTML NAVIGATION */
+  if(request.mode === "navigate"){
+
+    event.respondWith(
+
+      fetch(request)
+
+        .then(response => {
+
+          const clone = response.clone();
+
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(request, clone);
+          });
+
+          return response;
+        })
+
+        .catch(async () => {
+
+          return (
+            await caches.match("./index.html") ||
+            await caches.match("./pos.html")
+          );
+
+        })
+
+    );
+
+    return;
+  }
+
+  /* 🔥 CACHE FIRST */
   event.respondWith(
-    caches.match(request).then(cached => {
-      return cached || fetch(request);
-    })
+
+    caches.match(request)
+
+      .then(cached => {
+
+        return cached || fetch(request)
+
+          .then(response => {
+
+            const clone = response.clone();
+
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(request, clone);
+            });
+
+            return response;
+          });
+
+      })
+
   );
+
 });
