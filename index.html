@@ -7,7 +7,7 @@
 
 <title>Éclat de Coco Login</title>
 
-<link rel="manifest" href="./manifest.json">
+<link rel="manifest" href="./manifest.json?v=61">
 <meta name="theme-color" content="#e91e63">
 
 <link rel="apple-touch-icon" href="./icon-192.png">
@@ -248,10 +248,19 @@ if("serviceWorker" in navigator){
 
       const reg =
         await navigator.serviceWorker.register(
-          "./service-worker.js?v=60"
+          "./service-worker.js?v=61"
         );
 
       await reg.update();
+
+      // FORCE NEW VERSION
+      if(reg.waiting){
+
+        reg.waiting.postMessage({
+          type: "SKIP_WAITING"
+        });
+
+      }
 
       let refreshing = false;
 
