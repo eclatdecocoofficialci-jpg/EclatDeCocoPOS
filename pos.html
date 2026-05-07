@@ -51,30 +51,50 @@
       <h3>📂 Catégories</h3>
       <div id="category-boxes"></div>
 
-      <!-- 🧼 SAVON PERSONNALISÉ -->
+      <!-- 🧴 SOAP UI -->
       <div class="pink-box" onclick="toggleCustomSoap()">
-        🧴 Savon personnalisé
+        🧴 Savon Creator
       </div>
 
       <div id="custom-soap-form" style="display:none; margin-top:10px;">
 
-        <h4>Création savon</h4>
+        <h4>🧼 Savon personnalisé</h4>
 
-        <input id="c_oil" type="number" placeholder="Huile (L)" oninput="calcCustomSoap()">
-        <input id="c_soap" type="number" placeholder="Base savon (kg)" oninput="calcCustomSoap()">
-        <input id="c_perfume" type="number" placeholder="Parfum (ml)" oninput="calcCustomSoap()">
+        <div class="soap-grid">
 
-        <input id="c_mold" type="number" placeholder="Moule" oninput="calcCustomSoap()">
-        <input id="c_labor" type="number" placeholder="Main d'œuvre" oninput="calcCustomSoap()">
-        <input id="c_pack" type="number" placeholder="Packaging" oninput="calcCustomSoap()">
+          <!-- LEFT INPUTS -->
+          <div class="pink-box">
 
-        <div class="pink-box" style="margin-top:10px;">
-          💰 Total: <span id="custom-total">0</span> FCFA
+            <h5>Ingrédients</h5>
+
+            <input id="c_name" placeholder="Nom savon">
+
+            <input id="c_oil" type="number" placeholder="Huile (L)" oninput="calcCustomSoap()">
+            <input id="c_base" type="number" placeholder="Base (kg)" oninput="calcCustomSoap()">
+            <input id="c_perfume" type="number" placeholder="Parfum (ml)" oninput="calcCustomSoap()">
+
+          </div>
+
+          <!-- RIGHT COST -->
+          <div class="pink-box">
+
+            <h5>Coûts</h5>
+
+            <input id="c_mold" type="number" placeholder="Moule" oninput="calcCustomSoap()">
+            <input id="c_labor" type="number" placeholder="Main d'œuvre" oninput="calcCustomSoap()">
+            <input id="c_pack" type="number" placeholder="Packaging" oninput="calcCustomSoap()">
+
+            <div class="pink-box" style="margin-top:10px;">
+              💰 Total: <span id="custom-total">0</span> FCFA
+            </div>
+
+            <button onclick="addCustomSoap()">
+              ➕ Ajouter facture
+            </button>
+
+          </div>
+
         </div>
-
-        <button onclick="addCustomSoap()" style="margin-top:10px;">
-          ➕ Ajouter facture
-        </button>
 
       </div>
 
@@ -190,7 +210,7 @@ window.addEventListener("load", () => {
 <!-- SCRIPT -->
 <script src="./script.js?v=61"></script>
 
-<!-- SW -->
+<!-- SERVICE WORKER -->
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./service-worker.js?v=61")
