@@ -1,13 +1,9 @@
-/* ================= CACHE ================= */
 const CACHE_NAME = "eclat-de-coco-pos-v62";
 
-/* ================= FILES ================= */
 const urlsToCache = [
-
   "./",
   "./index.html",
   "./pos.html",
-
   "./dashboard.html",
   "./sales.html",
   "./expenses.html",
@@ -15,75 +11,51 @@ const urlsToCache = [
   "./reports.html",
   "./inventory.html",
   "./products.html",
-
-  "./script.js",
-  "./style.css",
-
-  "./manifest.json",
-
+  "./script.js?v=61",
+  "./style.css?v=61",
+  "./manifest.json?v=61",
   "./icon-192.png",
   "./icon-512.png",
-
   "./coco-bg.jpg"
 ];
 
-/* ================= INSTALL ================= */
+/* INSTALL */
 self.addEventListener("install", event => {
-
   self.skipWaiting();
-
   event.waitUntil(
-
-    caches.open(CACHE_NAME)
-
-      .then(cache => cache.addAll(urlsToCache))
-
+    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
   );
-
 });
 
-/* ================= ACTIVATE ================= */
+/* ACTIVATE */
 self.addEventListener("activate", event => {
-
   event.waitUntil(
-
     caches.keys().then(keys =>
-
-      Promise.all(
-
-        keys.map(key => {
-
-          if(key !== CACHE_NAME){
-
-            return caches.delete(key);
-
-          }
-
-        })
-
-      )
-
+      Promise.all(keys.map(k => k !== CACHE_NAME && caches.delete(k)))
     )
-
   );
-
   self.clients.claim();
-
 });
 
-/* ================= FETCH ================= */
+/* FETCH */
 self.addEventListener("fetch", event => {
 
+  const req = event.request;
+
+  if (req.mode === "navigate") {
+    event.respondWith(
+      fetch(req).catch(() => caches.match("./index.html"))
+    );
+    return;
+  }
+
   event.respondWith(
-
-    caches.match(event.request)
-
-      .then(response => {
-
-        return response || fetch(event.request);
-
-      })
-
+    caches.match(req).then(cached => {
+      return cached || fetch(req).then(res => {
+        const clone = res.clone();
+        caches.open(CACHE_NAME).then(c => c.put(req, clone));
+        return res;
+      });
+    })
   );
-
 });
