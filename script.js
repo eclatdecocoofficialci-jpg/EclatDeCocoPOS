@@ -10,6 +10,67 @@ function saveProducts(){
   localStorage.setItem("products", JSON.stringify(products));
 }
 
+/* ================= BACKUP DATA ================= */
+function backupData(){
+
+  const backup = {
+
+    products,
+
+    sales: JSON.parse(localStorage.getItem("sales")) || [],
+
+    customers: JSON.parse(localStorage.getItem("customers")) || [],
+
+    expenses: JSON.parse(localStorage.getItem("expenses")) || []
+
+  };
+
+  localStorage.setItem(
+    "eclat_backup",
+    JSON.stringify(backup)
+  );
+}
+
+/* ================= RESTORE BACKUP ================= */
+function restoreBackup(){
+
+  const backup =
+    JSON.parse(localStorage.getItem("eclat_backup"));
+
+  if(!backup) return;
+
+  if(backup.products){
+
+    products = backup.products;
+
+    saveProducts();
+  }
+
+  if(backup.sales){
+
+    localStorage.setItem(
+      "sales",
+      JSON.stringify(backup.sales)
+    );
+  }
+
+  if(backup.customers){
+
+    localStorage.setItem(
+      "customers",
+      JSON.stringify(backup.customers)
+    );
+  }
+
+  if(backup.expenses){
+
+    localStorage.setItem(
+      "expenses",
+      JSON.stringify(backup.expenses)
+    );
+  }
+}
+
 let invoice = [];
 let paymentMethod = "cash";
 let discount = 0;
@@ -19,6 +80,8 @@ let activeCategory = "ALL";
 
 /* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded", function(){
+
+  restoreBackup();
 
   if(!products) products = [];
   if(!invoice) invoice = [];
@@ -67,8 +130,12 @@ function showAll(){
 }
 
 function filterProducts(category){
+
   activeCategory = category;
-  renderProducts(products.filter(p => p.category === category));
+
+  renderProducts(
+    products.filter(p => p.category === category)
+  );
 }
 
 /* ================= SEARCH ================= */
@@ -125,7 +192,9 @@ function addToInvoice(name, price){
   if(!product) return;
 
   if(product.stock <= 0){
+
     alert("❌ Produit en rupture de stock");
+
     return;
   }
 
@@ -134,7 +203,9 @@ function addToInvoice(name, price){
   if(item){
 
     if(item.qty >= product.stock){
+
       alert("⚠ Stock maximum atteint");
+
       return;
     }
 
@@ -169,13 +240,16 @@ function renderInvoice(){
         <td>${item.name}</td>
 
         <td>
-          <input type="number" min="1"
+          <input
+            type="number"
+            min="1"
             value="${item.qty}"
             onchange="updateQty(${index}, this.value)">
         </td>
 
         <td>
-          <input type="number"
+          <input
+            type="number"
             value="${item.price}"
             onchange="updatePrice(${index}, this.value)">
         </td>
@@ -198,14 +272,18 @@ function updateQty(index, value){
 
   value = Number(value);
 
-  if(value < 1) value = 1;
+  if(value < 1){
+    value = 1;
+  }
 
   const product = products.find(
     p => p.name === invoice[index].name
   );
 
   if(product && value > product.stock){
+
     alert("⚠ Quantité dépasse le stock");
+
     value = product.stock;
   }
 
@@ -227,7 +305,9 @@ function updatePrice(index, value){
 
 /* ================= REMOVE ================= */
 function removeItem(index){
+
   invoice.splice(index, 1);
+
   renderInvoice();
 }
 
@@ -240,16 +320,26 @@ function updateTotal(){
     total += i.price * i.qty;
   });
 
-  const delivery = Number(document.getElementById("delivery")?.value || 0);
+  const delivery =
+    Number(document.getElementById("delivery")?.value || 0);
 
   total = total - (total * discount / 100);
+
   total += delivery;
 
-  const grand = document.getElementById("grand-total");
-  const discountBox = document.getElementById("discount-value");
+  const grand =
+    document.getElementById("grand-total");
 
-  if(grand) grand.innerText = Math.round(total) + " FCFA";
-  if(discountBox) discountBox.innerText = discount + "%";
+  const discountBox =
+    document.getElementById("discount-value");
+
+  if(grand){
+    grand.innerText = Math.round(total) + " FCFA";
+  }
+
+  if(discountBox){
+    discountBox.innerText = discount + "%";
+  }
 }
 
 /* ================= PAYMENT ================= */
@@ -276,9 +366,12 @@ function clearCalc(){
 function calculate(){
 
   try{
+
     document.getElementById("display").value =
       eval(document.getElementById("display").value);
+
   } catch {
+
     alert("Erreur calcul");
   }
 }
@@ -286,79 +379,106 @@ function calculate(){
 /* ================= DISCOUNT ================= */
 function applyDiscountFromCalc(){
 
-  const value = Number(document.getElementById("display").value);
+  const value =
+    Number(document.getElementById("display").value);
 
   if(isNaN(value) || value < 0 || value > 100){
+
     alert("Remise invalide (0 à 100%)");
+
     return;
   }
 
   discount = value;
 
-  document.getElementById("discount-value").innerText = discount + "%";
+  document.getElementById("discount-value").innerText =
+    discount + "%";
 
   updateTotal();
 
   clearCalc();
 }
 
-/* ================= SAVE PRODUCTS ================= */
-function saveProducts(){
-  localStorage.setItem("products", JSON.stringify(products));
-}
-
 /* ================= SAVE SALE ================= */
 function saveSale(){
 
   if(invoice.length === 0){
+
     alert("Aucun produit dans la facture");
+
     return;
   }
 
   /* 🔥 STOCK UPDATE */
   invoice.forEach(item => {
 
-    let product = products.find(p => p.name === item.name);
+    let product = products.find(
+      p => p.name === item.name
+    );
 
     if(product){
+
       product.stock -= item.qty;
-      if(product.stock < 0) product.stock = 0;
+
+      if(product.stock < 0){
+        product.stock = 0;
+      }
     }
   });
 
   saveProducts();
 
-  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+  let sales =
+    JSON.parse(localStorage.getItem("sales")) || [];
 
   const sale = {
 
     id: generateInvoiceNumber(),
 
-    date: document.getElementById("date")?.value ||
-          new Date().toISOString().split("T")[0],
+    date:
+      document.getElementById("date")?.value ||
+      new Date().toISOString().split("T")[0],
 
     client: {
-      name: document.getElementById("client-name")?.value || "-",
-      phone: document.getElementById("client-phone")?.value || "-",
-      address: document.getElementById("client-address")?.value || "-"
+
+      name:
+        document.getElementById("client-name")?.value || "-",
+
+      phone:
+        document.getElementById("client-phone")?.value || "-",
+
+      address:
+        document.getElementById("client-address")?.value || "-"
     },
 
     cart: JSON.parse(JSON.stringify(invoice)),
 
     discount,
-    delivery: Number(document.getElementById("delivery")?.value || 0),
+
+    delivery:
+      Number(document.getElementById("delivery")?.value || 0),
+
     paymentMethod,
-    total: document.getElementById("grand-total")?.innerText || "0 FCFA"
+
+    total:
+      document.getElementById("grand-total")?.innerText || "0 FCFA"
   };
 
   sales.push(sale);
+
   localStorage.setItem("sales", JSON.stringify(sales));
+
+  /* 🔥 AUTO BACKUP */
+  backupData();
 
   invoice = [];
 
   renderInvoice();
+
   renderProducts(products);
+
   loadCategories();
+
   updateTotal();
 
   alert("Vente sauvegardée ✔");
@@ -369,11 +489,40 @@ function generateInvoiceNumber(){
 
   const year = new Date().getFullYear();
 
-  let last = localStorage.getItem("invoiceNumber");
+  let last =
+    localStorage.getItem("invoiceNumber");
 
   last = last ? Number(last) + 1 : 1;
 
   localStorage.setItem("invoiceNumber", last);
 
   return year + String(last).padStart(3, "0");
+}
+
+/* ================= SALES ================= */
+function renderSales(){
+
+  let sales =
+    JSON.parse(localStorage.getItem("sales")) || [];
+
+  const body =
+    document.getElementById("sales-body");
+
+  if(!body) return;
+
+  body.innerHTML = sales.map(sale => `
+    <tr>
+
+      <td>${sale.id}</td>
+
+      <td>${sale.client.name}</td>
+
+      <td>${sale.date}</td>
+
+      <td>${sale.paymentMethod}</td>
+
+      <td>${sale.total}</td>
+
+    </tr>
+  `).join("");
 }
