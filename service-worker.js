@@ -1,10 +1,13 @@
-const CACHE_NAME = "eclat-de-coco-pos-v60";
+/* ================= CACHE VERSION ================= */
+const CACHE_NAME = "eclat-de-coco-pos-v61";
 
 /* ================= FILES ================= */
 const urlsToCache = [
+
   "./",
   "./index.html",
   "./pos.html",
+
   "./dashboard.html",
   "./sales.html",
   "./expenses.html",
@@ -12,81 +15,165 @@ const urlsToCache = [
   "./reports.html",
   "./inventory.html",
   "./products.html",
-  "./script.js",
-  "./style.css",
-  "./manifest.json",
+
+  "./script.js?v=61",
+  "./style.css?v=61",
+
+  "./manifest.json?v=61",
+
   "./icon-192.png",
   "./icon-512.png",
+
   "./coco-bg.jpg"
 ];
 
 /* ================= INSTALL ================= */
 self.addEventListener("install", event => {
-  self.skipWaiting(); // 🔥 activation immédiate
+
+  self.skipWaiting();
 
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+
+    caches.open(CACHE_NAME)
+
+      .then(cache => cache.addAll(urlsToCache))
+
   );
 });
 
 /* ================= ACTIVATE ================= */
 self.addEventListener("activate", event => {
+
   event.waitUntil(
+
     caches.keys().then(keys =>
+
       Promise.all(
+
         keys.map(key => {
-          if (key !== CACHE_NAME) return caches.delete(key);
+
+          if(key !== CACHE_NAME){
+
+            return caches.delete(key);
+          }
+
         })
+
       )
+
     )
+
   );
 
-  self.clients.claim(); // 🔥 prend contrôle direct
+  self.clients.claim();
 });
 
-/* ================= FETCH (SMART OFFLINE) ================= */
+/* ================= FORCE UPDATE ================= */
+self.addEventListener("message", event => {
+
+  if(event.data && event.data.type === "SKIP_WAITING"){
+
+    self.skipWaiting();
+  }
+});
+
+/* ================= FETCH ================= */
 self.addEventListener("fetch", event => {
+
   const request = event.request;
 
-  // 🔥 ALWAYS NETWORK FIRST FOR JS/CSS
-  if (
+  /* ================= JS / CSS / MANIFEST ================= */
+  if(
+
     request.url.includes("script.js") ||
-    request.url.includes("style.css")
-  ) {
+    request.url.includes("style.css") ||
+    request.url.includes("manifest.json")
+
+  ){
+
     event.respondWith(
+
       fetch(request)
-        .then(res => {
-          const clone = res.clone();
-          caches.open(CACHE_NAME).then(c => c.put(request, clone));
-          return res;
+
+        .then(response => {
+
+          const clone = response.clone();
+
+          caches.open(CACHE_NAME)
+
+            .then(cache => cache.put(request, clone));
+
+          return response;
         })
+
         .catch(() => caches.match(request))
+
     );
+
     return;
   }
 
-  // 🔥 NAVIGATION (PWA OFFLINE MODE)
-  if (request.mode === "navigate") {
+  /* ================= HTML NAVIGATION ================= */
+  if(request.mode === "navigate"){
+
     event.respondWith(
+
       fetch(request)
-        .then(res => {
-          const clone = res.clone();
-          caches.open(CACHE_NAME).then(c => c.put(request, clone));
-          return res;
+
+        .then(response => {
+
+          const clone = response.clone();
+
+          caches.open(CACHE_NAME)
+
+            .then(cache => cache.put(request, clone));
+
+          return response;
         })
-        .catch(() => caches.match("./pos.html"))
+
+        .catch(async () => {
+
+          return (
+
+            await caches.match("./index.html") ||
+
+            await caches.match("./pos.html")
+
+          );
+
+        })
+
     );
+
     return;
   }
 
-  // 🔥 CACHE FIRST DEFAULT
+  /* ================= CACHE FIRST ================= */
   event.respondWith(
-    caches.match(request).then(cached => {
-      return cached || fetch(request).then(res => {
-        const clone = res.clone();
-        caches.open(CACHE_NAME).then(c => c.put(request, clone));
-        return res;
-      });
-    })
+
+    caches.match(request)
+
+      .then(cached => {
+
+        if(cached){
+
+          return cached;
+        }
+
+        return fetch(request)
+
+          .then(response => {
+
+            const clone = response.clone();
+
+            caches.open(CACHE_NAME)
+
+              .then(cache => cache.put(request, clone));
+
+            return response;
+          });
+
+      })
+
   );
 });
