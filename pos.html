@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-<link rel="stylesheet" href="./style.css?v=999">
+<link rel="stylesheet" href="./style.css?v=60">
 
 </head>
 
@@ -215,27 +215,70 @@
   </div>
 
 </div>
+
+<!-- LOGIN PROTECTION -->
 <script>
-if(localStorage.getItem("eclat_logged") !== "true"){
-  window.location.href = "./index.html";
-}
-</script>
-<!-- SCRIPT -->
-<script src="./script.js"></script>
-  <script>
 if(localStorage.getItem("eclat_logged") !== "true"){
   window.location.href = "./index.html";
 }
 </script>
 
+<!-- AUTO DATE -->
+<script>
+window.addEventListener("load", () => {
+
+  const dateInput = document.getElementById("date");
+
+  if(dateInput){
+    dateInput.valueAsDate = new Date();
+  }
+
+});
+</script>
+
+<!-- MAIN SCRIPT -->
+<script src="./script.js?v=60"></script>
+
+<!-- SERVICE WORKER -->
 <script>
 if ("serviceWorker" in navigator) {
+
   navigator.serviceWorker.register("./service-worker.js")
-    .then(reg => reg.update());
+
+    .then(async (reg) => {
+
+      await reg.update();
+
+      // FORCE UPDATE
+      if (reg.waiting) {
+
+        reg.waiting.postMessage({
+          type: "SKIP_WAITING"
+        });
+
+      }
+
+    })
+
+    .catch(err => {
+      console.log("SW ERROR:", err);
+    });
+
+  let refreshing = false;
+
+  navigator.serviceWorker.addEventListener(
+    "controllerchange",
+    () => {
+
+      if (refreshing) return;
+
+      refreshing = true;
+
+      window.location.reload();
+    }
+  );
 }
 </script>
-  
-  
 
 </body>
 </html>
