@@ -179,6 +179,25 @@ function enterApp(){
 /* ❌ AUTO LOGIN SUPPRIMÉ = PLUS DE REDIRECTION AUTOMATIQUE */
 
 </script>
+<script>
+/* ================= SERVICE WORKER AUTO UPDATE ================= */
+if ("serviceWorker" in navigator) {
 
+  navigator.serviceWorker.register("./service-worker.js")
+
+    .then(reg => {
+
+      // 🔥 force check update à chaque ouverture
+      reg.update();
+
+      // 🔥 si nouveau SW prend contrôle → reload auto
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        window.location.reload();
+      });
+
+    });
+
+}
+</script>
 </body>
 </html>
