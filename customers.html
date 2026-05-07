@@ -1,71 +1,39 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Éclat de Coco - Clients</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  body { font-family: 'Poppins', sans-serif; margin:0; background:#fdf0f6; }
-  h2,h3{ margin:0 0 10px 0; color:#e91e63; }
-  .container { display:flex; gap:20px; padding:20px; flex-wrap:wrap; }
-  .left-panel { flex:1; background:#fff; padding:20px; border-radius:16px; max-width:400px; }
-  .left-panel input, .left-panel textarea, .left-panel button { width:100%; padding:10px; margin-bottom:10px; border-radius:10px; border:2px solid #f8bbd0; font-size:1em; }
-  .left-panel button { background:#e91e63; color:#fff; border:none; cursor:pointer; }
-  .right-panel { flex:2; background:#fff; padding:20px; border-radius:16px; overflow-x:auto; }
-  table { width:100%; border-collapse:collapse; }
-  th,td { border:1px solid #f8bbd0; padding:8px; text-align:center; font-size:0.9em; word-wrap:break-word; vertical-align:middle; }
-  th { background:#ffe6ef; color:#e91e63; }
-  button.remove-btn { background:#ff4081; color:#fff; padding:5px 10px; border:none; border-radius:6px; cursor:pointer; }
-  @media(max-width:1024px){ .container{ flex-direction:column; align-items:center; } .left-panel,.right-panel{ max-width:100%; } }
-</style>
-</head>
-<body>
-
-<h2>Gestion Clients</h2>
-<div class="container">
-
-  <!-- Formulaire gauche -->
-  <div class="left-panel">
-    <h3>Ajouter un client</h3>
-    <input type="text" id="client-name" placeholder="Nom du client">
-    <input type="text" id="client-phone" placeholder="Téléphone">
-    <input type="text" id="client-address" placeholder="Adresse">
-    <button id="add-client-btn">Ajouter</button>
-  </div>
-
-  <!-- Tableau droite -->
-  <div class="right-panel">
-    <h3>Liste des clients</h3>
-    <table id="clients-table">
-      <thead>
-        <tr>
-          <th>Nom</th>
-          <th>Téléphone</th>
-          <th>Adresse</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td colspan="4">Aucun client</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-</div>
-
 <script>
-let clients = [];
 
-// Ajouter client
+let clients = JSON.parse(localStorage.getItem("clients")) || [];
+
+/* ================= ADD CLIENT ================= */
 document.getElementById('add-client-btn').addEventListener('click', ()=>{
+
   const name = document.getElementById('client-name').value.trim();
   const phone = document.getElementById('client-phone').value.trim();
   const address = document.getElementById('client-address').value.trim();
 
-  if(!name){ alert("Nom obligatoire"); return; }
+  if(!name){
+    alert("Nom obligatoire");
+    return;
+  }
 
-  clients.push({name, phone, address});
+  /* 🔥 CHECK EXISTING CLIENT (IMPORTANT POUR FACTURES) */
+  let existing = clients.find(c => c.phone === phone);
+
+  if(existing){
+
+    alert("Client déjà existant ✔");
+
+  } else {
+
+    clients.push({
+      id: "CL" + String(clients.length + 1).padStart(3,"0"),
+      name,
+      phone,
+      address,
+      totalInvoices: 0
+    });
+
+  }
+
+  saveClients();
   updateTable();
 
   document.getElementById('client-name').value='';
@@ -73,47 +41,112 @@ document.getElementById('add-client-btn').addEventListener('click', ()=>{
   document.getElementById('client-address').value='';
 });
 
-// Mettre à jour tableau
+
+/* ================= SAVE ================= */
+function saveClients(){
+  localStorage.setItem("clients", JSON.stringify(clients));
+}
+
+
+/* ================= AUTO UPDATE FROM POS ================= */
+/* 👉 À utiliser depuis ton saveSale() dans POS */
+
+function updateClientFromSale(name, phone, address){
+
+  let client = clients.find(c => c.phone === phone);
+
+  if(client){
+
+    client.totalInvoices += 1;
+
+  } else {
+
+    clients.push({
+      id: "CL" + String(clients.length + 1).padStart(3,"0"),
+      name,
+      phone,
+      address,
+      totalInvoices: 1
+    });
+
+  }
+
+  saveClients();
+}
+
+
+/* ================= TABLE ================= */
 function updateTable(){
+
   const tbody = document.querySelector('#clients-table tbody');
   tbody.innerHTML='';
-  if(clients.length===0){ 
-    tbody.innerHTML='<tr><td colspan="4">Aucun client</td></tr>'; 
-    return; 
+
+  if(clients.length === 0){
+    tbody.innerHTML = '<tr><td colspan="5">Aucun client</td></tr>';
+    return;
   }
 
   clients.forEach((item,i)=>{
+
     const tr = document.createElement('tr');
-    tr.innerHTML=`
-      <td contenteditable="true">${item.name}</td>
-      <td contenteditable="true">${item.phone}</td>
-      <td contenteditable="true">${item.address}</td>
-      <td><button class="remove-btn" data-index="${i}">X</button></td>
+
+    tr.innerHTML = `
+      <td>${item.id}</td>
+
+      <td contenteditable="true"
+        onblur="editClient(${i}, 'name', this.innerText)">
+        ${item.name}
+      </td>
+
+      <td contenteditable="true"
+        onblur="editClient(${i}, 'phone', this.innerText)">
+        ${item.phone}
+      </td>
+
+      <td contenteditable="true"
+        onblur="editClient(${i}, 'address', this.innerText)">
+        ${item.address}
+      </td>
+
+      <td>${item.totalInvoices}</td>
+
+      <td>
+        <button class="remove-btn"
+          onclick="deleteClient(${i})">
+          X
+        </button>
+      </td>
     `;
+
     tbody.appendChild(tr);
   });
 }
 
-// Supprimer client
-document.querySelector('#clients-table tbody').addEventListener('click', e=>{
-  if(e.target.classList.contains('remove-btn')){
-    const index = parseInt(e.target.dataset.index);
+
+/* ================= EDIT ================= */
+function editClient(index, field, value){
+
+  clients[index][field] = value;
+
+  saveClients();
+}
+
+
+/* ================= DELETE ================= */
+function deleteClient(index){
+
+  if(confirm("Supprimer ce client ?")){
+
     clients.splice(index,1);
+
+    saveClients();
+
     updateTable();
   }
-});
+}
+
+
+/* ================= INIT ================= */
+window.onload = updateTable;
+
 </script>
-<div class="main-content">
-
-  <!-- tout ton contenu ici -->
-  
-</div>
-
-<footer class="site-footer">
-  <div class="footer-inner">
-    <p>© 2025 Éclat de Coco Official</p>
-    <p class="sub">All rights reserved • Natural beauty inspired by Côte d’Ivoire 🌿🥥</p>
-  </div>
-</footer>
-</body>
-</html>
