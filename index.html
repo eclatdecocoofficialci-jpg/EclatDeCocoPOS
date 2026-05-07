@@ -198,7 +198,25 @@ function enterApp(){
     alert("Code incorrect ❌");
   }
 }
+
 </script>
-</script>
+  if ("serviceWorker" in navigator) {
+
+  navigator.serviceWorker.register("./service-worker.js")
+    .then(async (reg) => {
+
+      await reg.update();
+
+      // FORCE TAKE CONTROL IMMEDIATELY
+      if (reg.waiting) {
+        reg.waiting.postMessage({ type: "SKIP_WAITING" });
+      }
+
+    });
+
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    window.location.reload();
+  });
+}
 </body>
 </html>
