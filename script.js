@@ -5,92 +5,63 @@ let products = JSON.parse(localStorage.getItem("products")) || [
   {name:"Beurre Karité", price:4000, stock:7, category:"Beurre"}
 ];
 
+let invoice = [];
+let paymentMethod = "cash";
+let discount = 0;
+let activeCategory = "ALL";
+
 /* ================= SAVE PRODUCTS ================= */
 function saveProducts(){
   localStorage.setItem("products", JSON.stringify(products));
 }
 
-/* ================= BACKUP DATA ================= */
+/* ================= BACKUP ================= */
 function backupData(){
 
   const backup = {
-
     products,
-
     sales: JSON.parse(localStorage.getItem("sales")) || [],
-
     customers: JSON.parse(localStorage.getItem("customers")) || [],
-
     expenses: JSON.parse(localStorage.getItem("expenses")) || []
-
   };
 
-  localStorage.setItem(
-    "eclat_backup",
-    JSON.stringify(backup)
-  );
+  localStorage.setItem("eclat_backup", JSON.stringify(backup));
 }
 
-/* ================= RESTORE BACKUP ================= */
+/* ================= RESTORE ================= */
 function restoreBackup(){
 
-  const backup =
-    JSON.parse(localStorage.getItem("eclat_backup"));
+  const backup = JSON.parse(localStorage.getItem("eclat_backup"));
 
   if(!backup) return;
 
   if(backup.products){
-
     products = backup.products;
-
     saveProducts();
   }
 
   if(backup.sales){
-
-    localStorage.setItem(
-      "sales",
-      JSON.stringify(backup.sales)
-    );
+    localStorage.setItem("sales", JSON.stringify(backup.sales));
   }
 
   if(backup.customers){
-
-    localStorage.setItem(
-      "customers",
-      JSON.stringify(backup.customers)
-    );
+    localStorage.setItem("customers", JSON.stringify(backup.customers));
   }
 
   if(backup.expenses){
-
-    localStorage.setItem(
-      "expenses",
-      JSON.stringify(backup.expenses)
-    );
+    localStorage.setItem("expenses", JSON.stringify(backup.expenses));
   }
 }
-
-let invoice = [];
-let paymentMethod = "cash";
-let discount = 0;
-
-/* ================= CATEGORY STATE ================= */
-let activeCategory = "ALL";
 
 /* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded", function(){
 
   restoreBackup();
 
-  if(!products) products = [];
-  if(!invoice) invoice = [];
-
   loadCategories();
   renderProducts(products);
 
   const searchInput = document.getElementById("search");
-
   if(searchInput){
     searchInput.addEventListener("input", e =>
       searchProducts(e.target.value)
@@ -98,7 +69,6 @@ document.addEventListener("DOMContentLoaded", function(){
   }
 
   const deliveryInput = document.getElementById("delivery");
-
   if(deliveryInput){
     deliveryInput.addEventListener("input", updateTotal);
   }
@@ -108,20 +78,41 @@ document.addEventListener("DOMContentLoaded", function(){
   }
 });
 
+/* ================= CUSTOMERS AUTO UPDATE ================= */
+function updateCustomer(name, phone, address){
+
+  let customers = JSON.parse(localStorage.getItem("customers")) || [];
+
+  let existing = customers.find(c => c.phone === phone);
+
+  if(existing){
+    existing.totalInvoices += 1;
+  } else {
+    customers.push({
+      id: "CL" + String(customers.length + 1).padStart(3,"0"),
+      name,
+      phone,
+      address,
+      totalInvoices: 1
+    });
+  }
+
+  localStorage.setItem("customers", JSON.stringify(customers));
+}
+
 /* ================= CATEGORIES ================= */
 function loadCategories(){
 
   const box = document.getElementById("category-boxes");
-
   if(!box) return;
 
   const categories = [...new Set(products.map(p => p.category))];
 
-  box.innerHTML = `
-    <div class="pink-box" onclick="showAll()">ALL</div>
-  ` + categories.map(cat =>
-    `<div class="pink-box" onclick="filterProducts('${cat}')">${cat}</div>`
-  ).join("");
+  box.innerHTML =
+    `<div class="pink-box" onclick="showAll()">ALL</div>` +
+    categories.map(cat =>
+      `<div class="pink-box" onclick="filterProducts('${cat}')">${cat}</div>`
+    ).join("");
 }
 
 function showAll(){
@@ -130,12 +121,8 @@ function showAll(){
 }
 
 function filterProducts(category){
-
   activeCategory = category;
-
-  renderProducts(
-    products.filter(p => p.category === category)
-  );
+  renderProducts(products.filter(p => p.category === category));
 }
 
 /* ================= SEARCH ================= */
@@ -157,20 +144,17 @@ function searchProducts(value){
   );
 }
 
-/* ================= PRODUCTS DISPLAY ================= */
+/* ================= PRODUCTS ================= */
 function renderProducts(list){
 
   const box = document.getElementById("product-list");
-
   if(!box) return;
 
-  box.innerHTML = list.map(p =>
-
-    `<div class="pink-box"
+  box.innerHTML = list.map(p => `
+    <div class="pink-box"
       onclick='addToInvoice(${JSON.stringify(p.name)}, ${p.price})'>
 
       <strong>${p.name}</strong><br>
-
       💰 ${p.price} FCFA<br>
 
       📦 ${
@@ -179,22 +163,18 @@ function renderProducts(list){
         : p.stock
       }
 
-    </div>`
-
-  ).join("");
+    </div>
+  `).join("");
 }
 
-/* ================= ADD TO INVOICE ================= */
+/* ================= ADD INVOICE ================= */
 function addToInvoice(name, price){
 
   const product = products.find(p => p.name === name);
-
   if(!product) return;
 
   if(product.stock <= 0){
-
     alert("❌ Produit en rupture de stock");
-
     return;
   }
 
@@ -203,21 +183,14 @@ function addToInvoice(name, price){
   if(item){
 
     if(item.qty >= product.stock){
-
       alert("⚠ Stock maximum atteint");
-
       return;
     }
 
-    item.qty += 1;
+    item.qty++;
 
   } else {
-
-    invoice.push({
-      name,
-      price,
-      qty:1
-    });
+    invoice.push({name, price, qty:1});
   }
 
   renderInvoice();
@@ -227,87 +200,35 @@ function addToInvoice(name, price){
 function renderInvoice(){
 
   const body = document.getElementById("invoice-body");
-
   if(!body) return;
 
-  body.innerHTML = invoice.map((item, index) => {
-
-    const total = item.price * item.qty;
-
-    return `
-      <tr>
-
-        <td>${item.name}</td>
-
-        <td>
-          <input
-            type="number"
-            min="1"
-            value="${item.qty}"
-            onchange="updateQty(${index}, this.value)">
-        </td>
-
-        <td>
-          <input
-            type="number"
-            value="${item.price}"
-            onchange="updatePrice(${index}, this.value)">
-        </td>
-
-        <td>${total}</td>
-
-        <td>
-          <button onclick="removeItem(${index})">❌</button>
-        </td>
-
-      </tr>
-    `;
-  }).join("");
+  body.innerHTML = invoice.map((item, index) => `
+    <tr>
+      <td>${item.name}</td>
+      <td><input type="number" value="${item.qty}" onchange="updateQty(${index},this.value)"></td>
+      <td><input type="number" value="${item.price}" onchange="updatePrice(${index},this.value)"></td>
+      <td>${item.price * item.qty}</td>
+      <td><button onclick="removeItem(${index})">❌</button></td>
+    </tr>
+  `).join("");
 
   updateTotal();
 }
 
 /* ================= EDIT ================= */
-function updateQty(index, value){
-
-  value = Number(value);
-
-  if(value < 1){
-    value = 1;
-  }
-
-  const product = products.find(
-    p => p.name === invoice[index].name
-  );
-
-  if(product && value > product.stock){
-
-    alert("⚠ Quantité dépasse le stock");
-
-    value = product.stock;
-  }
-
-  invoice[index].qty = value;
-
+function updateQty(i,v){
+  invoice[i].qty = Math.max(1, Number(v));
   renderInvoice();
 }
 
-function updatePrice(index, value){
-
-  invoice[index].price = Number(value);
-
-  if(invoice[index].price < 0){
-    invoice[index].price = 0;
-  }
-
+function updatePrice(i,v){
+  invoice[i].price = Math.max(0, Number(v));
   renderInvoice();
 }
 
 /* ================= REMOVE ================= */
-function removeItem(index){
-
-  invoice.splice(index, 1);
-
+function removeItem(i){
+  invoice.splice(i,1);
   renderInvoice();
 }
 
@@ -316,169 +237,67 @@ function updateTotal(){
 
   let total = 0;
 
-  invoice.forEach(i => {
+  invoice.forEach(i=>{
     total += i.price * i.qty;
   });
 
-  const delivery =
-    Number(document.getElementById("delivery")?.value || 0);
+  const delivery = Number(document.getElementById("delivery")?.value || 0);
 
   total = total - (total * discount / 100);
-
   total += delivery;
 
-  const grand =
-    document.getElementById("grand-total");
-
-  const discountBox =
-    document.getElementById("discount-value");
-
-  if(grand){
-    grand.innerText = Math.round(total) + " FCFA";
-  }
-
-  if(discountBox){
-    discountBox.innerText = discount + "%";
-  }
-}
-
-/* ================= PAYMENT ================= */
-function selectPayment(el, method){
-
-  paymentMethod = method;
-
-  document.querySelectorAll(".pay-btn").forEach(b =>
-    b.classList.remove("active")
-  );
-
-  el.classList.add("active");
-}
-
-/* ================= CALCULATOR ================= */
-function press(v){
-  document.getElementById("display").value += v;
-}
-
-function clearCalc(){
-  document.getElementById("display").value = "";
-}
-
-function calculate(){
-
-  try{
-
-    document.getElementById("display").value =
-      eval(document.getElementById("display").value);
-
-  } catch {
-
-    alert("Erreur calcul");
-  }
-}
-
-/* ================= DISCOUNT ================= */
-function applyDiscountFromCalc(){
-
-  const value =
-    Number(document.getElementById("display").value);
-
-  if(isNaN(value) || value < 0 || value > 100){
-
-    alert("Remise invalide (0 à 100%)");
-
-    return;
-  }
-
-  discount = value;
-
-  document.getElementById("discount-value").innerText =
-    discount + "%";
-
-  updateTotal();
-
-  clearCalc();
+  document.getElementById("grand-total").innerText =
+    Math.round(total) + " FCFA";
 }
 
 /* ================= SAVE SALE ================= */
 function saveSale(){
 
   if(invoice.length === 0){
-
-    alert("Aucun produit dans la facture");
-
+    alert("Aucun produit");
     return;
   }
 
-  /* 🔥 STOCK UPDATE */
-  invoice.forEach(item => {
-
-    let product = products.find(
-      p => p.name === item.name
-    );
-
-    if(product){
-
-      product.stock -= item.qty;
-
-      if(product.stock < 0){
-        product.stock = 0;
-      }
+  /* STOCK UPDATE */
+  invoice.forEach(item=>{
+    let p = products.find(x=>x.name===item.name);
+    if(p){
+      p.stock -= item.qty;
+      if(p.stock < 0) p.stock = 0;
     }
   });
 
   saveProducts();
 
-  let sales =
-    JSON.parse(localStorage.getItem("sales")) || [];
+  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+
+  const name = document.getElementById("client-name")?.value || "-";
+  const phone = document.getElementById("client-phone")?.value || "-";
+  const address = document.getElementById("client-address")?.value || "-";
 
   const sale = {
-
     id: generateInvoiceNumber(),
-
-    date:
-      document.getElementById("date")?.value ||
-      new Date().toISOString().split("T")[0],
-
-    client: {
-
-      name:
-        document.getElementById("client-name")?.value || "-",
-
-      phone:
-        document.getElementById("client-phone")?.value || "-",
-
-      address:
-        document.getElementById("client-address")?.value || "-"
-    },
-
+    date: new Date().toISOString().split("T")[0],
+    client: {name, phone, address},
     cart: JSON.parse(JSON.stringify(invoice)),
-
     discount,
-
-    delivery:
-      Number(document.getElementById("delivery")?.value || 0),
-
+    delivery: Number(document.getElementById("delivery")?.value || 0),
     paymentMethod,
-
-    total:
-      document.getElementById("grand-total")?.innerText || "0 FCFA"
+    total: document.getElementById("grand-total").innerText
   };
 
   sales.push(sale);
-
   localStorage.setItem("sales", JSON.stringify(sales));
 
-  /* 🔥 AUTO BACKUP */
+  /* 🔥 UPDATE CUSTOMER AUTOMATIC */
+  updateCustomer(name, phone, address);
+
   backupData();
 
   invoice = [];
-
   renderInvoice();
-
   renderProducts(products);
-
   loadCategories();
-
   updateTotal();
 
   alert("Vente sauvegardée ✔");
@@ -486,43 +305,27 @@ function saveSale(){
 
 /* ================= INVOICE NUMBER ================= */
 function generateInvoiceNumber(){
-
   const year = new Date().getFullYear();
-
-  let last =
-    localStorage.getItem("invoiceNumber");
-
-  last = last ? Number(last) + 1 : 1;
-
+  let last = localStorage.getItem("invoiceNumber");
+  last = last ? Number(last)+1 : 1;
   localStorage.setItem("invoiceNumber", last);
-
-  return year + String(last).padStart(3, "0");
+  return year + String(last).padStart(3,"0");
 }
 
 /* ================= SALES ================= */
 function renderSales(){
 
-  let sales =
-    JSON.parse(localStorage.getItem("sales")) || [];
-
-  const body =
-    document.getElementById("sales-body");
-
+  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+  const body = document.getElementById("sales-body");
   if(!body) return;
 
-  body.innerHTML = sales.map(sale => `
+  body.innerHTML = sales.map(s=>`
     <tr>
-
-      <td>${sale.id}</td>
-
-      <td>${sale.client.name}</td>
-
-      <td>${sale.date}</td>
-
-      <td>${sale.paymentMethod}</td>
-
-      <td>${sale.total}</td>
-
+      <td>${s.id}</td>
+      <td>${s.client.name}</td>
+      <td>${s.date}</td>
+      <td>${s.paymentMethod}</td>
+      <td>${s.total}</td>
     </tr>
   `).join("");
 }
