@@ -32,7 +32,6 @@ function backupData(){
 function restoreBackup(){
 
   const backup = JSON.parse(localStorage.getItem("eclat_backup"));
-
   if(!backup) return;
 
   if(backup.products){
@@ -78,21 +77,26 @@ document.addEventListener("DOMContentLoaded", function(){
   }
 });
 
-/* ================= CUSTOMERS AUTO UPDATE ================= */
+/* ================= CUSTOMERS SYSTEM (FIXED) ================= */
 function updateCustomer(name, phone, address){
 
   let customers = JSON.parse(localStorage.getItem("customers")) || [];
 
+  if(!phone || phone === "-") return;
+
   let existing = customers.find(c => c.phone === phone);
 
   if(existing){
-    existing.totalInvoices += 1;
+
+    existing.totalInvoices = (existing.totalInvoices || 0) + 1;
+
   } else {
+
     customers.push({
       id: "CL" + String(customers.length + 1).padStart(3,"0"),
-      name,
+      name: name || "-",
       phone,
-      address,
+      address: address || "-",
       totalInvoices: 1
     });
   }
@@ -167,7 +171,7 @@ function renderProducts(list){
   `).join("");
 }
 
-/* ================= ADD INVOICE ================= */
+/* ================= INVOICE ================= */
 function addToInvoice(name, price){
 
   const product = products.find(p => p.name === name);
@@ -196,7 +200,6 @@ function addToInvoice(name, price){
   renderInvoice();
 }
 
-/* ================= INVOICE ================= */
 function renderInvoice(){
 
   const body = document.getElementById("invoice-body");
@@ -226,7 +229,6 @@ function updatePrice(i,v){
   renderInvoice();
 }
 
-/* ================= REMOVE ================= */
 function removeItem(i){
   invoice.splice(i,1);
   renderInvoice();
@@ -258,7 +260,6 @@ function saveSale(){
     return;
   }
 
-  /* STOCK UPDATE */
   invoice.forEach(item=>{
     let p = products.find(x=>x.name===item.name);
     if(p){
@@ -289,7 +290,7 @@ function saveSale(){
   sales.push(sale);
   localStorage.setItem("sales", JSON.stringify(sales));
 
-  /* 🔥 UPDATE CUSTOMER AUTOMATIC */
+  /* 🔥 CUSTOMER AUTO UPDATE FIXED */
   updateCustomer(name, phone, address);
 
   backupData();
