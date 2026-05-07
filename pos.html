@@ -7,14 +7,14 @@
 
 <title>Éclat de Coco POS</title>
 
-<link rel="manifest" href="./manifest.json">
+<link rel="manifest" href="./manifest.json?v=61">
 <meta name="theme-color" content="#e91e63">
 
 <link rel="apple-touch-icon" href="./icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-<link rel="stylesheet" href="./style.css?v=60">
+<link rel="stylesheet" href="./style.css?v=61">
 
 </head>
 
@@ -237,13 +237,13 @@ window.addEventListener("load", () => {
 </script>
 
 <!-- MAIN SCRIPT -->
-<script src="./script.js?v=60"></script>
+<script src="./script.js?v=61"></script>
 
 <!-- SERVICE WORKER -->
 <script>
 if ("serviceWorker" in navigator) {
 
-  navigator.serviceWorker.register("./service-worker.js")
+  navigator.serviceWorker.register("./service-worker.js?v=61")
 
     .then(async (reg) => {
 
