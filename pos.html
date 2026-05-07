@@ -59,7 +59,32 @@
       <h3>📂 Catégories</h3>
 
       <div id="category-boxes"></div>
+<!-- 🔥 CUSTOM SOAP BOX -->
+<div class="pink-box" onclick="toggleCustomSoap()">
+  🧴 Custom Soap
+</div>
 
+<div id="custom-soap-form" style="display:none; margin-top:10px;">
+
+  <h4>Savon personnalisé</h4>
+
+  <input id="c_oil" type="number" placeholder="Huile (L)" oninput="calcCustomSoap()">
+  <input id="c_soap" type="number" placeholder="Base savon (kg)" oninput="calcCustomSoap()">
+  <input id="c_perfume" type="number" placeholder="Parfum (ml)" oninput="calcCustomSoap()">
+
+  <input id="c_mold" type="number" placeholder="Coût moule" oninput="calcCustomSoap()">
+  <input id="c_labor" type="number" placeholder="Main d'œuvre" oninput="calcCustomSoap()">
+  <input id="c_pack" type="number" placeholder="Packaging" oninput="calcCustomSoap()">
+
+  <div class="pink-box" style="margin-top:10px;">
+    💰 Total: <span id="custom-total">0</span> FCFA
+  </div>
+
+  <button onclick="addCustomSoap()" style="margin-top:10px;">
+    ➕ Ajouter à la facture
+  </button>
+
+</div>
     </div>
 
     <!-- CENTER PANEL -->
