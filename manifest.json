@@ -2,10 +2,12 @@
   "name": "Éclat de Coco POS",
   "short_name": "Eclatdecoco",
   "description": "POS Éclat de Coco",
-"start_url": "./index.html",
-"scope": "./",
-"display": "standalone",
-"orientation": "landscape-primary",
+
+  "start_url": "./index.html",
+  "scope": "./",
+
+  "display": "standalone",
+  "orientation": "landscape-primary",
 
   "background_color": "#fff5fb",
   "theme_color": "#e91e63",
@@ -14,12 +16,12 @@
 
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
