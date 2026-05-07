@@ -25,7 +25,99 @@ let paymentMethod = "cash";
 let discount = 0;
 let activeCategory = "ALL";
 
-/* ================= CALCUL SAVON PERSONNALISÉ ================= */
+/* ================= SOAP UI ================= */
+let soapMode = "standard";
+
+function openSavonUI(){
+  const ui = document.getElementById("soap-ui");
+  if(ui) ui.style.display = "block";
+}
+
+function toggleSoapUI(){
+  const ui = document.getElementById("soap-ui");
+  if(ui){
+    ui.style.display = (ui.style.display === "none") ? "block" : "none";
+  }
+}
+
+function setSoapMode(mode){
+
+  soapMode = mode;
+
+  const std = document.getElementById("soap-standard");
+  const cus = document.getElementById("soap-custom");
+
+  const btns = document.querySelectorAll(".payment-boxes .pay-btn");
+
+  btns.forEach(b => b.classList.remove("active"));
+
+  if(mode === "standard"){
+    std.style.display = "block";
+    cus.style.display = "none";
+    btns[0].classList.add("active");
+  }
+
+  if(mode === "custom"){
+    std.style.display = "none";
+    cus.style.display = "block";
+    btns[1].classList.add("active");
+  }
+}
+
+/* ================= CALC SOAP ================= */
+function calcSoap(){
+
+  const oil = Number(document.getElementById("c_oil")?.value || 0);
+  const base = Number(document.getElementById("c_base")?.value || 0);
+  const perfume = Number(document.getElementById("c_perfume")?.value || 0);
+
+  const mold = Number(document.getElementById("c_mold")?.value || 0);
+  const labor = Number(document.getElementById("c_labor")?.value || 0);
+  const pack = Number(document.getElementById("c_pack")?.value || 0);
+
+  let total = 0;
+
+  if(soapMode === "custom"){
+    total =
+      (oil * 2000) +
+      (base * 3000) +
+      (perfume * 20) +
+      mold + labor + pack;
+  } else {
+    total = (base * 2500) + pack;
+  }
+
+  const el = document.getElementById("soap-total");
+  if(el) el.innerText = Math.round(total);
+}
+
+function addSoapToInvoice(){
+
+  const total = Number(document.getElementById("soap-total")?.innerText || 0);
+
+  if(total <= 0){
+    alert("⚠ Remplis les champs");
+    return;
+  }
+
+  invoice.push({
+    name: soapMode === "custom"
+      ? "Savon Personnalisé"
+      : "Savon Standard",
+
+    price: total,
+    qty: 1
+  });
+
+  renderInvoice();
+}
+
+/* ================= SAVE ================= */
+function saveProducts(){
+  localStorage.setItem("products", JSON.stringify(products));
+}
+
+/* ================= CALCUL PRIX RECETTE ================= */
 function calculateCustomPrice(product){
 
   if(!product || !product.recipe) return product.price;
@@ -40,97 +132,6 @@ function calculateCustomPrice(product){
     r.labor_cost +
     r.packaging
   );
-}
-
-/* ================= SAVE PRODUCTS ================= */
-function saveProducts(){
-  localStorage.setItem("products", JSON.stringify(products));
-}
-
-/* ================= BACKUP ================= */
-function backupData(){
-
-  const backup = {
-    products,
-    sales: JSON.parse(localStorage.getItem("sales")) || [],
-    customers: JSON.parse(localStorage.getItem("customers")) || [],
-    expenses: JSON.parse(localStorage.getItem("expenses")) || []
-  };
-
-  localStorage.setItem("eclat_backup", JSON.stringify(backup));
-}
-
-/* ================= RESTORE ================= */
-function restoreBackup(){
-
-  const backup = JSON.parse(localStorage.getItem("eclat_backup"));
-  if(!backup) return;
-
-  if(backup.products){
-    products = backup.products;
-    saveProducts();
-  }
-
-  if(backup.sales){
-    localStorage.setItem("sales", JSON.stringify(backup.sales));
-  }
-
-  if(backup.customers){
-    localStorage.setItem("customers", JSON.stringify(backup.customers));
-  }
-
-  if(backup.expenses){
-    localStorage.setItem("expenses", JSON.stringify(backup.expenses));
-  }
-}
-
-/* ================= INIT ================= */
-document.addEventListener("DOMContentLoaded", function(){
-
-  restoreBackup();
-
-  loadCategories();
-  renderProducts(products);
-
-  const searchInput = document.getElementById("search");
-  if(searchInput){
-    searchInput.addEventListener("input", e =>
-      searchProducts(e.target.value)
-    );
-  }
-
-  const deliveryInput = document.getElementById("delivery");
-  if(deliveryInput){
-    deliveryInput.addEventListener("input", updateTotal);
-  }
-
-  if(document.getElementById("sales-body")){
-    renderSales();
-  }
-});
-
-/* ================= CUSTOMERS ================= */
-function updateCustomer(name, phone, address){
-
-  let customers = JSON.parse(localStorage.getItem("customers")) || [];
-
-  if(!phone || phone === "-") return;
-
-  let existing = customers.find(c => c.phone === phone);
-
-  if(existing){
-    existing.totalInvoices = (existing.totalInvoices || 0) + 1;
-  } else {
-    customers.push({
-      id: "CL" + String(customers.length + 1).padStart(3,"0"),
-      name: name || "-",
-      phone,
-      address: address || "-",
-      totalInvoices: 1
-    });
-  }
-
-  localStorage.setItem("customers", JSON.stringify(customers));
 }
 
 /* ================= CATEGORIES ================= */
@@ -207,7 +208,7 @@ function renderProducts(list){
   }).join("");
 }
 
-/* ================= ADD TO INVOICE ================= */
+/* ================= INVOICE ================= */
 function addToInvoice(name, price){
 
   const product = products.find(p => p.name === name);
@@ -218,33 +219,21 @@ function addToInvoice(name, price){
     : price;
 
   if(product.stock <= 0){
-    alert("❌ Produit en rupture de stock");
+    alert("❌ Rupture stock");
     return;
   }
 
   const item = invoice.find(i => i.name === name);
 
   if(item){
-
-    if(item.qty >= product.stock){
-      alert("⚠ Stock maximum atteint");
-      return;
-    }
-
     item.qty++;
-
   } else {
-    invoice.push({
-      name,
-      price: finalPrice,
-      qty: 1
-    });
+    invoice.push({name, price: finalPrice, qty:1});
   }
 
   renderInvoice();
 }
 
-/* ================= INVOICE ================= */
 function renderInvoice(){
 
   const body = document.getElementById("invoice-body");
@@ -263,7 +252,6 @@ function renderInvoice(){
   updateTotal();
 }
 
-/* ================= EDIT ================= */
 function updateQty(i,v){
   invoice[i].qty = Math.max(1, Number(v));
   renderInvoice();
@@ -297,122 +285,16 @@ function updateTotal(){
     Math.round(total) + " FCFA";
 }
 
-/* ================= SAVE SALE ================= */
-function saveSale(){
+/* ================= INIT ================= */
+document.addEventListener("DOMContentLoaded", function(){
 
-  if(invoice.length === 0){
-    alert("Aucun produit");
-    return;
-  }
-
-  invoice.forEach(item=>{
-    let p = products.find(x=>x.name===item.name);
-    if(p){
-      p.stock -= item.qty;
-      if(p.stock < 0) p.stock = 0;
-    }
-  });
-
-  saveProducts();
-
-  let sales = JSON.parse(localStorage.getItem("sales")) || [];
-
-  const name = document.getElementById("client-name")?.value || "-";
-  const phone = document.getElementById("client-phone")?.value || "-";
-  const address = document.getElementById("client-address")?.value || "-";
-
-  const sale = {
-    id: generateInvoiceNumber(),
-    date: new Date().toISOString().split("T")[0],
-    client: {name, phone, address},
-    cart: JSON.parse(JSON.stringify(invoice)),
-    discount,
-    delivery: Number(document.getElementById("delivery")?.value || 0),
-    paymentMethod,
-    total: document.getElementById("grand-total").innerText
-  };
-
-  sales.push(sale);
-  localStorage.setItem("sales", JSON.stringify(sales));
-
-  updateCustomer(name, phone, address);
-
-  backupData();
-
-  invoice = [];
-  renderInvoice();
-  renderProducts(products);
   loadCategories();
-  updateTotal();
+  renderProducts(products);
 
-  alert("Vente sauvegardée ✔");
-}
-
-/* ================= INVOICE NUMBER ================= */
-function generateInvoiceNumber(){
-  const year = new Date().getFullYear();
-  let last = localStorage.getItem("invoiceNumber");
-  last = last ? Number(last)+1 : 1;
-  localStorage.setItem("invoiceNumber", last);
-  return year + String(last).padStart(3,"0");
-}
-
-/* ================= SALES ================= */
-function renderSales(){
-
-  let sales = JSON.parse(localStorage.getItem("sales")) || [];
-  const body = document.getElementById("sales-body");
-  if(!body) return;
-
-  body.innerHTML = sales.map(s=>`
-    <tr>
-      <td>${s.id}</td>
-      <td>${s.client.name}</td>
-      <td>${s.date}</td>
-      <td>${s.paymentMethod}</td>
-      <td>${s.total}</td>
-    </tr>
-  `).join("");
-}
-
-/* ================= PROFIT SYSTEM ================= */
-function getCostPrice(item){
-
-  const product = products.find(p => p.name === item.name);
-
-  if(product && product.recipe){
-    const r = product.recipe;
-
-    return (
-      (r.oil_litre * 2000) +
-      (r.soap_kg * 3000) +
-      (r.fragrance_ml * 20) +
-      r.mold_cost +
-      r.labor_cost +
-      r.packaging
+  const searchInput = document.getElementById("search");
+  if(searchInput){
+    searchInput.addEventListener("input", e =>
+      searchProducts(e.target.value)
     );
   }
-
-  return item.price * 0.6;
-}
-
-function getInvoiceStats(){
-
-  let revenue = 0;
-  let cost = 0;
-
-  invoice.forEach(item => {
-    revenue += item.price * item.qty;
-    cost += getCostPrice(item) * item.qty;
-  });
-
-  const delivery = Number(document.getElementById("delivery")?.value || 0);
-
-  revenue += delivery;
-
-  return {
-    revenue,
-    cost,
-    profit: revenue - cost
-  };
-}
+});
