@@ -85,7 +85,7 @@ function renderProducts(list){
     <div class="pink-box" onclick="addToInvoice('${p.name}', ${p.price})">
       <strong>${p.name}</strong><br>
       💰 ${p.price} FCFA<br>
-      📦 ${p.stock <= 0 ? "RUPTURE" : p.stock}
+      📦 ${p.stock <= 0 ? "🔴 RUPTURE" : p.stock}
     </div>
   `).join("");
 }
@@ -174,14 +174,16 @@ function saveSale(){
 
   sales.push({
     id: lastInvoiceId,
-    date: new Date(),
+    date: new Date().toLocaleString(),
+
     client: {
       name: document.getElementById("client-name")?.value || "",
       phone: document.getElementById("client-phone")?.value || "",
       address: document.getElementById("client-address")?.value || ""
     },
+
     items: invoice,
-    payment: paymentMethod,
+    paymentMethod: paymentMethod,
     delivery: Number(document.getElementById("delivery")?.value || 0),
     total: total
   });
@@ -189,7 +191,9 @@ function saveSale(){
   localStorage.setItem("sales", JSON.stringify(sales));
 
   updateSalesView();
+
   alert("✔ Vente sauvegardée");
+
   resetInvoice();
 }
 
@@ -206,7 +210,7 @@ function updateSalesView(){
       <td>${s.id}</td>
       <td>${s.client?.name || "-"}</td>
       <td>${s.client?.phone || "-"}</td>
-      <td>${s.payment || "-"}</td>
+      <td>${s.paymentMethod || "-"}</td>
       <td>${s.delivery || 0}</td>
       <td>${s.total}</td>
     </tr>
@@ -215,6 +219,7 @@ function updateSalesView(){
 
 /* ================= RESET ================= */
 function resetInvoice(){
+
   invoice = [];
 
   const delivery = document.getElementById("delivery");
@@ -227,7 +232,7 @@ function resetInvoice(){
   generateInvoiceId();
 }
 
-/* ================= PRINT FIX FINAL (5x7 STABLE) ================= */
+/* ================= PRINT (5x7 FIX IPAD SAFE) ================= */
 function printInvoice(){
 
   const clientName = document.getElementById("client-name")?.value || "";
@@ -267,7 +272,6 @@ function printInvoice(){
 
         table { width:100%; border-collapse:collapse; }
         th,td { border:1px solid #ddd; padding:5px; text-align:center; }
-        th { background:#f8c8d8; }
 
         .footer {
           position: fixed;
@@ -313,7 +317,12 @@ function printInvoice(){
   `);
 
   win.document.close();
-  setTimeout(()=>{ win.print(); win.close(); }, 500);
+
+  setTimeout(() => {
+    win.focus();
+    win.print();
+    win.close();
+  }, 600);
 }
 
 /* ================= INIT ================= */
