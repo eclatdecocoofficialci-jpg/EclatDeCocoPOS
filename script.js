@@ -284,3 +284,27 @@ document.addEventListener("DOMContentLoaded", ()=>{
   document.getElementById("search")
     ?.addEventListener("input", e => searchProducts(e.target.value));
 });
+document.addEventListener("DOMContentLoaded", () => {
+
+  console.log("POS LOADED");
+
+  loadCategories();   // 🔥 IMPORTANT
+  renderProducts(products);
+
+  if (typeof generateInvoiceId === "function") {
+    generateInvoiceId();
+  }
+
+  if (typeof setInvoiceDate === "function") {
+    setInvoiceDate();
+  }
+
+  const search = document.getElementById("search");
+
+  if(search){
+    search.addEventListener("input", (e) => {
+      searchProducts(e.target.value);
+    });
+  }
+
+});
