@@ -5,7 +5,7 @@
 <title>Ventes | Éclat de Coco</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="style.css?v=62">
+<link rel="stylesheet" href="style.css?v=72">
 
 <style>
 .sales-table {
@@ -25,6 +25,7 @@
   background: #f8c8d8;
 }
 
+/* ACTION BUTTONS CLEAN */
 .action-btn {
   padding: 4px 6px;
   font-size: 12px;
@@ -84,16 +85,17 @@
 
 <script>
 
-/* ================= GET ================= */
+/* ================= GET SALES ================= */
 function getSales(){
   return JSON.parse(localStorage.getItem("sales")) || [];
 }
 
-/* ================= LOAD ================= */
+/* ================= LOAD SALES ================= */
 function loadSales(){
 
   let sales = getSales();
   let tbody = document.getElementById("sales-body");
+
   tbody.innerHTML = "";
 
   if(sales.length === 0){
@@ -107,18 +109,21 @@ function loadSales(){
   }
 
   let sorted = [...sales].sort((a,b)=>
-    new Date(b.date) - new Date(a.date)
+    new Date(b.date || 0) - new Date(a.date || 0)
   );
 
   sorted.forEach((s) => {
 
-    let subtotal = s.subtotal ?? (s.total - (s.delivery || 0));
+    let subtotal = s.subtotal || (s.total - (s.delivery || 0));
 
     let tr = document.createElement("tr");
 
     tr.innerHTML = `
       <td>${s.id || "-"}</td>
-      <td>${new Date(s.date).toLocaleString()}</td>
+
+      <td>
+        ${s.date ? new Date(s.date).toLocaleString() : "-"}
+      </td>
 
       <td>
         ${s.client?.name || "-"}<br>
@@ -127,7 +132,7 @@ function loadSales(){
 
       <td>${s.payment || "-"}</td>
 
-      <td>${Math.round(subtotal || 0)} FCFA</td>
+      <td>${Math.round(subtotal)} FCFA</td>
 
       <td>${s.delivery || 0} FCFA</td>
 
@@ -138,17 +143,17 @@ function loadSales(){
       <td class="action-cell">
 
         <button class="action-btn view"
-          onclick="viewInvoiceById(${s.id})">
+          onclick="viewInvoice(${s.id})">
           👁
         </button>
 
         <button class="action-btn edit"
-          onclick="editSaleById(${s.id})">
+          onclick="editSale(${s.id})">
           ✏️
         </button>
 
         <button class="action-btn delete"
-          onclick="deleteSaleById(${s.id})">
+          onclick="deleteSale(${s.id})">
           🗑
         </button>
 
@@ -162,10 +167,10 @@ function loadSales(){
 }
 
 /* ================= VIEW ================= */
-function viewInvoiceById(id){
+function viewInvoice(id){
 
   let sales = getSales();
-  let s = sales.find(x => x.id == id);
+  let s = sales.find(x => String(x.id) === String(id));
 
   if(!s){
     alert("Facture introuvable");
@@ -176,29 +181,27 @@ function viewInvoiceById(id){
     `${p.name} x${p.qty} = ${p.price * p.qty} FCFA`
   ).join("\n");
 
-  let subtotal = s.subtotal ?? (s.total - (s.delivery || 0));
-
   alert(
     "FACTURE #" + s.id +
-    "\nDATE: " + new Date(s.date).toLocaleString() +
+    "\nDATE: " + (s.date ? new Date(s.date).toLocaleString() : "-") +
     "\nCLIENT: " + (s.client?.name || "-") +
     "\nTEL: " + (s.client?.phone || "-") +
 
     "\n\nPRODUITS:\n" + items +
 
-    "\n\n SOUS-TOTAL: " + Math.round(subtotal || 0) + " FCFA" +
-    "\n LIVRAISON: " + (s.delivery || 0) + " FCFA" +
-    "\n TOTAL: " + Math.round(s.total || 0) + " FCFA" +
+    "\n\nSOUS-TOTAL: " + Math.round((s.subtotal || (s.total - (s.delivery || 0)))) + " FCFA" +
+    "\nLIVRAISON: " + (s.delivery || 0) + " FCFA" +
+    "\nTOTAL: " + Math.round(s.total || 0) + " FCFA" +
 
-    "\n\n PAIEMENT: " + (s.payment || "-")
+    "\n\nPAIEMENT: " + (s.payment || "-")
   );
 }
 
 /* ================= EDIT ================= */
-function editSaleById(id){
+function editSale(id){
 
   let sales = getSales();
-  let s = sales.find(x => x.id == id);
+  let s = sales.find(x => String(x.id) === String(id));
 
   if(!s){
     alert("Facture introuvable");
@@ -210,12 +213,12 @@ function editSaleById(id){
 }
 
 /* ================= DELETE ================= */
-function deleteSaleById(id){
+function deleteSale(id){
 
   if(!confirm("Supprimer cette vente ?")) return;
 
   let sales = getSales();
-  sales = sales.filter(x => x.id != id);
+  sales = sales.filter(x => String(x.id) !== String(id));
 
   localStorage.setItem("sales", JSON.stringify(sales));
 
