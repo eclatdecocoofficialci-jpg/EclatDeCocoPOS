@@ -8,6 +8,7 @@ let products = JSON.parse(localStorage.getItem("products")) || [
 let invoice = [];
 let activeCategory = "ALL";
 let paymentMethod = "cash";
+let currentTotal = 0;
 
 /* ================= INVOICE ID ================= */
 let lastInvoiceId = Number(localStorage.getItem("invoice_id") || 20206000);
@@ -119,6 +120,7 @@ function renderInvoice(){
   `).join("");
 
   updateTotal();
+  updateLivePreview();
 }
 
 function updateQty(i,v){
@@ -136,7 +138,7 @@ function removeItem(i){
   renderInvoice();
 }
 
-/* ================= TOTAL ================= */
+/* ================= TOTAL LIVE ================= */
 function updateTotal(){
 
   let total = 0;
@@ -147,13 +149,30 @@ function updateTotal(){
 
   const delivery = Number(document.getElementById("delivery")?.value || 0);
 
-  const finalTotal = total + delivery;
+  currentTotal = total + delivery;
 
-  document.getElementById("grand-total").innerText =
-    finalTotal + " FCFA";
+  const display = document.getElementById("grand-total");
+  if(display){
+    display.innerText = currentTotal + " FCFA";
+  }
 
-  return finalTotal;
+  return currentTotal;
 }
+
+function updateLivePreview(){
+  const el = document.getElementById("live-invoice-preview");
+  if(el){
+    el.innerText = "TOTAL FACTURE: " + currentTotal + " FCFA";
+  }
+}
+
+/* ================= LIVE DELIVERY ================= */
+document.addEventListener("input", (e)=>{
+  if(e.target.id === "delivery"){
+    updateTotal();
+    updateLivePreview();
+  }
+});
 
 /* ================= PAYMENT ================= */
 function selectPayment(el, method){
@@ -304,7 +323,7 @@ function printInvoice() {
 
     <body onload="window.print(); window.close();">
 
-      <h1>ÉCLAT DE COCO</h1>
+      <h1>ÉCLAT DE COCO OFFICIAL</h1>
 
       <div class="info">
         Abidjan - Côte d’Ivoire <br>
