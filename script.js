@@ -50,7 +50,7 @@ function filterProducts(cat){
   applyFilters();
 }
 
-/* ================= SEARCH + FILTER ================= */
+/* ================= SEARCH ================= */
 function searchProducts(v){
   applyFilters(v);
 }
@@ -74,19 +74,17 @@ function applyFilters(searchValue = ""){
 
 /* ================= PRODUCTS ================= */
 function renderProducts(list){
-
   const box = document.getElementById("product-list");
   if(!box) return;
 
   box.innerHTML = list.map(p => `
-    <div class="pink-box" onclick="addToInvoice('${p.name}', ${p.price})">
+    <div class="pink-box" onclick="addToInvoice(\`${p.name}\`, ${p.price})">
       <strong>${p.name}</strong><br>
       💰 ${p.price} FCFA<br>
       📦 ${p.stock}
     </div>
   `).join("");
 }
-
 /* ================= INVOICE ================= */
 function addToInvoice(name, price){
 
@@ -101,7 +99,6 @@ function addToInvoice(name, price){
   renderInvoice();
 }
 
-/* ================= RENDER INVOICE ================= */
 function renderInvoice(){
 
   const body = document.getElementById("invoice-body");
@@ -139,15 +136,15 @@ function removeItem(i){
 /* ================= TOTAL LIVE ================= */
 function updateTotal(){
 
-  let subtotal = 0;
+  let total = 0;
 
   invoice.forEach(i=>{
-    subtotal += i.qty * i.price;
+    total += i.qty * i.price;
   });
 
   const delivery = Number(document.getElementById("delivery")?.value || 0);
 
-  currentTotal = subtotal + delivery;
+  currentTotal = total + delivery;
 
   const el = document.getElementById("grand-total");
   if(el){
@@ -157,7 +154,7 @@ function updateTotal(){
   return currentTotal;
 }
 
-/* 🔥 LIVE UPDATE GLOBAL */
+/* LIVE DELIVERY */
 document.addEventListener("input", (e)=>{
   if(e.target.id === "delivery"){
     updateTotal();
@@ -190,47 +187,38 @@ function saveSale(){
   sales.push({
     id,
     date: new Date(),
-
-    client: {
-      name: clientName,
-      phone: clientPhone,
-      address: clientAddress
-    },
-
+    client: { name: clientName, phone: clientPhone, address: clientAddress },
     items: invoice,
-
     payment: paymentMethod,
-
-    delivery: delivery,
-
-    total: total
+    delivery,
+    total
   });
 
   localStorage.setItem("sales", JSON.stringify(sales));
 
-  updateSalesTable();
+  updateSalesView();
 
-  alert("✔ Vente enregistrée");
+  alert("✔ Vente sauvegardée");
 
   resetInvoice();
 }
 
-/* ================= UPDATE SALES TABLE ================= */
-function updateSalesTable(){
+/* ================= SALES TABLE ================= */
+function updateSalesView(){
+
+  const table = document.getElementById("sales-table-body");
+  if(!table) return;
 
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
-
-  const table = document.getElementById("sales-body");
-  if(!table) return;
 
   table.innerHTML = sales.map(s => `
     <tr>
       <td>${s.id}</td>
-      <td>${s.client?.name || ""}<br>${s.client?.phone || ""}</td>
-      <td>${s.payment}</td>
-      <td>${s.delivery} FCFA</td>
-      <td>${s.total} FCFA</td>
-      <td>${new Date(s.date).toLocaleString()}</td>
+      <td>${s.client?.name || "-"}</td>
+      <td>${s.client?.phone || "-"}</td>
+      <td>${s.payment || "-"}</td>
+      <td>${s.delivery || 0}</td>
+      <td>${s.total}</td>
     </tr>
   `).join("");
 }
@@ -261,21 +249,20 @@ function printInvoice(){
   const delivery = Number(document.getElementById("delivery")?.value || 0);
 
   let total = 0;
-  let itemsHTML = "";
 
-  invoice.forEach(i=>{
+  let itemsHTML = invoice.map(i => {
     const line = i.qty * i.price;
     total += line;
 
-    itemsHTML += `
+    return `
       <tr>
         <td>${i.name}</td>
         <td>${i.qty}</td>
-        <td>${i.price}</td>
-        <td>${line}</td>
+        <td>${i.price} FCFA</td>
+        <td>${line} FCFA</td>
       </tr>
     `;
-  });
+  }).join("");
 
   const finalTotal = total + delivery;
 
@@ -284,25 +271,13 @@ function printInvoice(){
   win.document.write(`
     <html>
     <head>
-      <title>Éclat de Coco</title>
       <style>
         @page { size: 5in 7in; margin: 5mm; }
-
         body { font-family: Arial; font-size: 12px; }
-
         h1 { text-align:center; color:#e91e63; }
-
-        .info,.client { text-align:center; font-size:11px; }
-
         table { width:100%; border-collapse:collapse; }
-
-        th,td { border:1px solid #ddd; padding:4px; text-align:center; }
-
+        th,td { border:1px solid #ddd; padding:5px; text-align:center; }
         th { background:#f8c8d8; }
-
-        .total { text-align:right; font-weight:bold; color:#e91e63; }
-
-        .footer { text-align:center; margin-top:10px; }
       </style>
     </head>
 
@@ -310,13 +285,12 @@ function printInvoice(){
 
       <h1>ÉCLAT DE COCO OFFICIAL</h1>
 
-      <div class="info">
-        Abidjan - Côte d’Ivoire <br>
-        ${date} <br>
-        ID: ${invoiceId}
+      <div>
+        ID: ${invoiceId} <br>
+        ${date}
       </div>
 
-      <div class="client">
+      <div>
         ${clientName}<br>
         ${clientPhone}<br>
         ${clientAddress}
@@ -326,15 +300,20 @@ function printInvoice(){
         <tbody>${itemsHTML}</tbody>
       </table>
 
-      <div class="total">
+      <h3>
         Livraison: ${delivery} FCFA <br>
         TOTAL: ${finalTotal} FCFA
-      </div>
+      </h3>
+      
+
 
       <div class="footer">
-        Merci de faire parti de l`univers Éclat de Coco
-      </div>
 
+        Merci de faire partie de l`univers Eclat de Coco 💖<br>
+
+        Éclat de Coco - Naturel & Luxe
+
+      </div
     </body>
     </html>
   `);
@@ -350,7 +329,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
   renderProducts(products);
   generateInvoiceId();
   setInvoiceDate();
-  updateSalesTable();
+  updateSalesView();
 
   document.getElementById("search")
     ?.addEventListener("input", e => searchProducts(e.target.value));
