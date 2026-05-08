@@ -9,7 +9,7 @@ let invoice = [];
 let activeCategory = "ALL";
 let paymentMethod = "cash";
 
-/* ================= INVOICE ID AUTO ================= */
+/* ================= INVOICE ID ================= */
 let lastInvoiceId = Number(localStorage.getItem("invoice_id") || 20206000);
 
 function generateInvoiceId(){
@@ -17,7 +17,31 @@ function generateInvoiceId(){
   if(el) el.innerText = lastInvoiceId;
 }
 
-/* ================= DELIVERY LIVE UPDATE ================= */
+/* ================= DATE ================= */
+function setInvoiceDate(){
+  const el = document.getElementById("invoice-date");
+  if(el){
+    const d = new Date();
+    el.innerText = d.toLocaleString("fr-FR");
+  }
+}
+
+/* ================= QR CODE ================= */
+function generateQR(total, id){
+
+  const container = document.getElementById("qrcode");
+  if(!container) return;
+
+  container.innerHTML = "";
+
+  new QRCode(container, {
+    text: `FACTURE: ${id} | TOTAL: ${total} FCFA`,
+    width: 100,
+    height: 100
+  });
+}
+
+/* ================= DELIVERY LIVE ================= */
 document.addEventListener("input", (e)=>{
   if(e.target.id === "delivery"){
     updateTotal();
@@ -122,7 +146,7 @@ function removeItem(i){
   renderInvoice();
 }
 
-/* ================= TOTAL + DELIVERY ================= */
+/* ================= TOTAL ================= */
 function updateTotal(){
 
   let total = 0;
@@ -141,7 +165,7 @@ function updateTotal(){
   return total;
 }
 
-/* ================= CLIENT SYSTEM (CRM LINK) ================= */
+/* ================= CLIENT SYSTEM ================= */
 function saveClientFromPOS(total, invoiceId){
 
   const name = document.getElementById("client-name")?.value || "";
@@ -191,10 +215,9 @@ function selectPayment(el, method){
 function saveSale(){
 
   const total = updateTotal();
+  const id = lastInvoiceId;
 
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
-
-  const id = lastInvoiceId;
 
   sales.push({
     id,
@@ -206,8 +229,12 @@ function saveSale(){
 
   localStorage.setItem("sales", JSON.stringify(sales));
 
-  /* 🔥 LINK CLIENT SYSTEM */
+  /* CLIENT LINK */
   saveClientFromPOS(total, id);
+
+  /* QR + DATE */
+  setInvoiceDate();
+  generateQR(total, id);
 
   alert("✔ Vente sauvegardée");
 
@@ -229,7 +256,7 @@ function resetInvoice(){
   generateInvoiceId();
 }
 
-/* ================= PRINT (FACTURE ONLY 5x7) ================= */
+/* ================= PRINT ================= */
 function printInvoice(){
   window.print();
 }
