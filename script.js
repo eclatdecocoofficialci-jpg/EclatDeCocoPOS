@@ -192,6 +192,58 @@ function saveSale(){
   });
 
   localStorage.setItem("sales", JSON.stringify(sales));
+  /* ================= CUSTOMERS AUTO SAVE ================= */
+
+let customers =
+  JSON.parse(localStorage.getItem("customers")) || [];
+
+const clientName =
+  document.getElementById("client-name")?.value || "";
+
+const clientPhone =
+  document.getElementById("client-phone")?.value || "";
+
+const clientAddress =
+  document.getElementById("client-address")?.value || "";
+
+/* chercher client existant */
+let existingCustomer = customers.find(c =>
+  c.phone === clientPhone
+);
+
+/* total facture */
+const saleTotal = total;
+
+/* si client existe */
+if(existingCustomer){
+
+  existingCustomer.totalInvoices =
+    (existingCustomer.totalInvoices || 0) + 1;
+
+  existingCustomer.totalSpent =
+    (existingCustomer.totalSpent || 0) + saleTotal;
+
+}else{
+
+  customers.push({
+
+    name: clientName,
+
+    phone: clientPhone,
+
+    address: clientAddress,
+
+    totalInvoices: 1,
+
+    totalSpent: saleTotal
+  });
+}
+
+/* sauvegarde */
+localStorage.setItem(
+  "customers",
+  JSON.stringify(customers)
+);
 
   updateSalesView();
   alert("✔ Vente sauvegardée");
