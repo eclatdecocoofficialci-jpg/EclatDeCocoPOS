@@ -63,12 +63,10 @@ function applyFilters(searchValue = ""){
     filtered = filtered.filter(p => p.category === activeCategory);
   }
 
-  if(searchValue === ""){
-    searchValue = document.getElementById("search")?.value || "";
-  }
+  const search = searchValue || document.getElementById("search")?.value || "";
 
   filtered = filtered.filter(p =>
-    p.name.toLowerCase().includes(searchValue.toLowerCase())
+    p.name.toLowerCase().includes(search.toLowerCase())
   );
 
   renderProducts(filtered);
@@ -103,6 +101,7 @@ function addToInvoice(name, price){
   renderInvoice();
 }
 
+/* ================= RENDER INVOICE ================= */
 function renderInvoice(){
 
   const body = document.getElementById("invoice-body");
@@ -137,18 +136,18 @@ function removeItem(i){
   renderInvoice();
 }
 
-/* ================= TOTAL LIVE (IMPORTANT FIX) ================= */
+/* ================= TOTAL LIVE ================= */
 function updateTotal(){
 
-  let total = 0;
+  let subtotal = 0;
 
   invoice.forEach(i=>{
-    total += i.qty * i.price;
+    subtotal += i.qty * i.price;
   });
 
   const delivery = Number(document.getElementById("delivery")?.value || 0);
 
-  currentTotal = total + delivery;
+  currentTotal = subtotal + delivery;
 
   const el = document.getElementById("grand-total");
   if(el){
@@ -158,7 +157,7 @@ function updateTotal(){
   return currentTotal;
 }
 
-/* LIVE DELIVERY UPDATE */
+/* 🔥 LIVE UPDATE GLOBAL */
 document.addEventListener("input", (e)=>{
   if(e.target.id === "delivery"){
     updateTotal();
@@ -175,7 +174,7 @@ function selectPayment(el, method){
   el.classList.add("active");
 }
 
-/* ================= SAVE SALE (FIX PAYMENT + CLIENT) ================= */
+/* ================= SAVE SALE ================= */
 function saveSale(){
 
   const total = updateTotal();
@@ -199,16 +198,41 @@ function saveSale(){
     },
 
     items: invoice,
-    payment: paymentMethod,   // ✔ FIX ICI
-    delivery,
-    total
+
+    payment: paymentMethod,
+
+    delivery: delivery,
+
+    total: total
   });
 
   localStorage.setItem("sales", JSON.stringify(sales));
 
-  alert("✔ Vente sauvegardée avec paiement + livraison");
+  updateSalesTable();
+
+  alert("✔ Vente enregistrée");
 
   resetInvoice();
+}
+
+/* ================= UPDATE SALES TABLE ================= */
+function updateSalesTable(){
+
+  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+
+  const table = document.getElementById("sales-body");
+  if(!table) return;
+
+  table.innerHTML = sales.map(s => `
+    <tr>
+      <td>${s.id}</td>
+      <td>${s.client?.name || ""}<br>${s.client?.phone || ""}</td>
+      <td>${s.payment}</td>
+      <td>${s.delivery} FCFA</td>
+      <td>${s.total} FCFA</td>
+      <td>${new Date(s.date).toLocaleString()}</td>
+    </tr>
+  `).join("");
 }
 
 /* ================= RESET ================= */
@@ -226,7 +250,7 @@ function resetInvoice(){
   generateInvoiceId();
 }
 
-/* ================= PRINT 5x7 FIX FINAL ================= */
+/* ================= PRINT ================= */
 function printInvoice(){
 
   const clientName = document.getElementById("client-name")?.value || "";
@@ -261,7 +285,6 @@ function printInvoice(){
     <html>
     <head>
       <title>Éclat de Coco</title>
-
       <style>
         @page { size: 5in 7in; margin: 5mm; }
 
@@ -280,7 +303,6 @@ function printInvoice(){
         .total { text-align:right; font-weight:bold; color:#e91e63; }
 
         .footer { text-align:center; margin-top:10px; }
-
       </style>
     </head>
 
@@ -301,24 +323,16 @@ function printInvoice(){
       </div>
 
       <table>
-        <thead>
-          <tr>
-            <th>Produit</th>
-            <th>Qté</th>
-            <th>Prix</th>
-            <th>Total</th>
-          </tr>
-        </thead>
         <tbody>${itemsHTML}</tbody>
       </table>
 
       <div class="total">
         Livraison: ${delivery} FCFA <br>
-        TOTAL FINAL: ${finalTotal} FCFA
+        TOTAL: ${finalTotal} FCFA
       </div>
 
       <div class="footer">
-        Merci de faire partie de l’univers Éclat de Coco 💖
+        Merci de faire parti de l`univers Éclat de Coco
       </div>
 
     </body>
@@ -336,8 +350,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
   renderProducts(products);
   generateInvoiceId();
   setInvoiceDate();
+  updateSalesTable();
 
   document.getElementById("search")
     ?.addEventListener("input", e => searchProducts(e.target.value));
-
 });
