@@ -70,9 +70,10 @@ header h1{
 /* ================= POS LAYOUT ================= */
 .pos-container{
   display:flex;
-  gap:20px;
+  gap:22px;
   padding:18px;
   align-items:flex-start;
+  justify-content:space-between;
 }
 
 /* ================= PANELS ================= */
@@ -83,22 +84,12 @@ header h1{
   box-shadow:0 8px 20px rgba(0,0,0,0.06);
   display:flex;
   flex-direction:column;
+  gap:10px;
 }
 
-.left{
-  width:18%;
-  min-width:190px;
-}
-
-.center{
-  width:52%;
-  min-width:320px;
-}
-
-.right{
-  width:30%;
-  min-width:280px;
-}
+.left{ width:18%; min-width:190px; }
+.center{ width:52%; min-width:320px; }
+.right{ width:30%; min-width:280px; }
 
 /* ================= TITLES ================= */
 h3{
@@ -146,7 +137,7 @@ h2{
 }
 
 /* ================= INPUT ================= */
-input{
+input, select{
   width:100%;
   padding:12px;
   border-radius:12px;
@@ -200,7 +191,7 @@ button:hover{
   color:white;
 }
 
-/* ================= CALC ================= */
+/* ================= CALCULATOR (FIX IMPORTANT) ================= */
 .calc{
   display:grid;
   grid-template-columns:repeat(4,1fr);
@@ -209,12 +200,14 @@ button:hover{
 }
 
 .calc button{
-  height:75px;
+  height:85px;
   border:none;
-  background:#f8bbd0;
-  border-radius:16px;
-  font-size:24px;
-  font-weight:bold;
+  background:linear-gradient(135deg,#f8bbd0,#ffe6ef);
+  border-radius:18px;
+  font-size:26px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 3px 8px rgba(0,0,0,0.08);
   transition:0.2s;
 }
 
@@ -223,9 +216,10 @@ button:hover{
   color:white;
 }
 
+/* display calculatrice */
 #display{
   width:100%;
-  height:75px;
+  height:80px;
   border-radius:16px;
   border:2px solid #f8bbd0;
   font-size:32px;
@@ -264,12 +258,6 @@ button:hover{
   color:white;
 }
 
-/* ================= INVOICE HEADER ================= */
-.invoice-header{
-  text-align:center;
-  margin-bottom:14px;
-}
-
 /* ================= PRINT CLEAN ================= */
 @media print{
 
@@ -296,9 +284,18 @@ button:hover{
   nav{
     display:none !important;
   }
+
+  input{
+    border:none !important;
+    background:white !important;
+  }
+
+  #grand-total{
+    font-size:28px;
+  }
 }
 
-/* ================= SOAP ONLY (SAFE ISOLATED) ================= */
+/* ================= SOAP SAFE STYLE ================= */
 #custom-soap-form{
   background:#fff0f5;
   padding:14px;
