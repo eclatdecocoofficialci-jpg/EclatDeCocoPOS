@@ -26,7 +26,6 @@ let activeCategory = "ALL";
 
 /* ================= PRICE CALC ================= */
 function calculateCustomPrice(product){
-
   if(!product || !product.recipe) return product.price;
 
   const r = product.recipe;
@@ -43,7 +42,6 @@ function calculateCustomPrice(product){
 
 /* ================= CATEGORIES ================= */
 function loadCategories(){
-
   const box = document.getElementById("category-boxes");
   if(!box) return;
 
@@ -68,7 +66,6 @@ function filterProducts(category){
 
 /* ================= SEARCH ================= */
 function searchProducts(value){
-
   const v = value.toLowerCase();
 
   let base = products;
@@ -87,17 +84,15 @@ function searchProducts(value){
 
 /* ================= PRODUCTS ================= */
 function renderProducts(list){
-
   const box = document.getElementById("product-list");
   if(!box) return;
 
-  box.innerHTML = list.map(p => {
+  box.innerHTML = list.map((p, index) => {
 
     const price = p.recipe ? calculateCustomPrice(p) : p.price;
 
     return `
-      <div class="pink-box"
-        onclick='addToInvoice(${JSON.stringify(p.name)}, ${price})'>
+      <div class="pink-box" onclick="addToInvoice('${p.name.replace(/'/g," ") }', ${price})">
 
         <strong>${p.name}</strong><br>
         💰 ${price} FCFA<br>
@@ -119,10 +114,6 @@ function addToInvoice(name, price){
   const product = products.find(p => p.name === name);
   if(!product) return;
 
-  const finalPrice = product.recipe
-    ? calculateCustomPrice(product)
-    : price;
-
   if(product.stock <= 0){
     alert("❌ Rupture stock");
     return;
@@ -133,12 +124,23 @@ function addToInvoice(name, price){
   if(item){
     item.qty++;
   } else {
-    invoice.push({name, price: finalPrice, qty:1});
+    invoice.push({name, price, qty:1});
   }
 
+  // 🔥 décrément stock
+  product.stock -= 1;
+
+  saveProducts();
   renderInvoice();
+  renderProducts(products);
 }
 
+/* ================= SAVE STOCK ================= */
+function saveProducts(){
+  localStorage.setItem("products", JSON.stringify(products));
+}
+
+/* ================= INVOICE ================= */
 function renderInvoice(){
 
   const body = document.getElementById("invoice-body");
@@ -192,7 +194,6 @@ function updateTotal(){
 
 /* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded", function(){
-
   loadCategories();
   renderProducts(products);
 
