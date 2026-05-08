@@ -9,6 +9,19 @@ let invoice = [];
 let activeCategory = "ALL";
 let paymentMethod = "cash";
 let currentTotal = 0;
+let products = JSON.parse(localStorage.getItem("products")) || [
+  {name:"Savon Rose", price:3000, stock:10, category:"Savon"},
+  {name:"Savon Coco", price:3500, stock:8, category:"Savon"},
+  {name:"Lotion Vanille", price:5000, stock:5, category:"Lotion"},
+  {name:"Beurre Karité", price:4000, stock:7, category:"Beurre"}
+];
+
+let invoice = [];
+let activeCategory = "ALL";
+let paymentMethod = "cash";
+let currentTotal = 0;
+
+let editMode = false;
 
 /* ================= INVOICE ID ================= */
 let lastInvoiceId = Number(localStorage.getItem("invoice_id") || 20206000);
@@ -18,7 +31,7 @@ function generateInvoiceId(){
   if(el) el.innerText = lastInvoiceId;
 }
 
-/* ================= DATE ================= */
+/* ================= DATE FIX ================= */
 function setInvoiceDate(){
   const el = document.getElementById("date");
   if(el){
@@ -26,114 +39,101 @@ function setInvoiceDate(){
   }
 }
 
-/* ================= CATEGORIES ================= */
-function loadCategories(){
-  const box = document.getElementById("category-boxes");
-  if(!box) return;
+/* ================= RESET PROPRE ================= */
+function resetInvoice(){
 
-  const categories = [...new Set(products.map(p => p.category))];
+  invoice = [];
 
-  let html = `<div class="pink-box" onclick="showAll()">ALL</div>`;
+  renderInvoice();
 
-  categories.forEach(cat => {
-    html += `<div class="pink-box" onclick="filterCategory('${cat}')">${cat}</div>`;
-  });
+  document.getElementById("delivery").value = "";
+  document.getElementById("client-name").value = "";
+  document.getElementById("client-phone").value = "";
+  document.getElementById("client-address").value = "";
 
-  box.innerHTML = html;
+  paymentMethod = "cash";
+
+  document.querySelectorAll(".pay-btn")
+    .forEach(b => b.classList.remove("active"));
+
+  lastInvoiceId++;
+  localStorage.setItem("invoice_id", lastInvoiceId);
+
+  generateInvoiceId();
+  setInvoiceDate();
+
+  editMode = false;
 }
 
-function showAll(){
-  activeCategory = "ALL";
-  applyFilters();
-}
+/* ================= SAVE SALE FIX DATE ================= */
+function saveSale(){
 
-function filterCategory(cat){
-  activeCategory = cat;
-  applyFilters();
-}
+  const total = updateTotal();
 
-/* ================= SEARCH ================= */
-document.addEventListener("input", (e) => {
-  if(e.target.id === "search") applyFilters();
-  if(e.target.id === "delivery") updateTotal();
-});
+  const clientName = document.getElementById("client-name")?.value || "";
+  const clientPhone = document.getElementById("client-phone")?.value || "";
+  const clientAddress = document.getElementById("client-address")?.value || "";
 
-function applyFilters(){
-  const search = document.getElementById("search")?.value.toLowerCase() || "";
-
-  let filtered = products;
-
-  if(activeCategory !== "ALL"){
-    filtered = filtered.filter(p => p.category === activeCategory);
+  if(!clientName){
+    alert("Nom client obligatoire");
+    return;
   }
 
-  if(search){
-    filtered = filtered.filter(p =>
-      p.name.toLowerCase().includes(search)
-    );
-  }
+  let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
-  renderProducts(filtered);
+  const saleObject = {
+    id: lastInvoiceId,
+
+    // 🔥 FIX IMPORTANT: date FIXE (pas écrasée)
+    date: new Date().toISOString(),
+
+    client: {
+      name: clientName,
+      phone: clientPhone,
+      address: clientAddress
+    },
+
+    items: JSON.parse(JSON.stringify(invoice)),
+
+    payment: paymentMethod,
+    delivery: Number(document.getElementById("delivery")?.value || 0),
+    total: total
+  };
+
+  sales.push(saleObject);
+
+  localStorage.setItem("sales", JSON.stringify(sales));
+
+  resetInvoice();
+
+  alert("✔ Vente sauvegardée");
 }
 
-/* ================= PRODUCTS ================= */
-function renderProducts(list){
-  const box = document.getElementById("product-list");
-  if(!box) return;
+/* ================= EDIT MODE ================= */
+function loadEditSale(){
 
-  box.innerHTML = list.map(p => `
-    <div class="pink-box" onclick="addToInvoice('${p.name}', ${p.price})">
-      <strong>${p.name}</strong><br>
-      💰 ${p.price} FCFA<br>
-      📦 ${p.stock <= 0 ? "🔴 RUPTURE" : p.stock}
-    </div>
-  `).join("");
-}
+  const data = localStorage.getItem("edit_sale");
+  if(!data) return;
 
-/* ================= INVOICE ================= */
-function addToInvoice(name, price){
+  const sale = JSON.parse(data);
 
-  const item = invoice.find(i => i.name === name);
+  invoice = sale.items || [];
 
-  if(item){
-    item.qty++;
-  } else {
-    invoice.push({name, price, qty:1});
-  }
+  document.getElementById("client-name").value = sale.client?.name || "";
+  document.getElementById("client-phone").value = sale.client?.phone || "";
+  document.getElementById("client-address").value = sale.client?.address || "";
+  document.getElementById("delivery").value = sale.delivery || 0;
 
+  paymentMethod = sale.payment || "cash";
+
+  lastInvoiceId = sale.id;
+
+  generateInvoiceId();
   renderInvoice();
-}
 
-function renderInvoice(){
-  const body = document.getElementById("invoice-body");
-  if(!body) return;
+  localStorage.removeItem("edit_sale");
 
-  body.innerHTML = invoice.map((i,index)=>`
-    <tr>
-      <td>${i.name}</td>
-      <td><input type="number" value="${i.qty}" onchange="updateQty(${index},this.value)"></td>
-      <td><input type="number" value="${i.price}" onchange="updatePrice(${index},this.value)"></td>
-      <td>${i.qty * i.price}</td>
-      <td><button onclick="removeItem(${index})">❌</button></td>
-    </tr>
-  `).join("");
-
-  updateTotal();
-}
-
-function updateQty(i,v){
-  invoice[i].qty = Math.max(1, Number(v));
-  renderInvoice();
-}
-
-function updatePrice(i,v){
-  invoice[i].price = Number(v);
-  renderInvoice();
-}
-
-function removeItem(i){
-  invoice.splice(i,1);
-  renderInvoice();
+  editMode = true;
 }
 
 /* ================= TOTAL ================= */
