@@ -27,7 +27,7 @@ function setInvoiceDate(){
   }
 }
 
-/* ================= CATEGORIES (RESTORED) ================= */
+/* ================= CATEGORIES (FIXED STABLE) ================= */
 function loadCategories(){
   const box = document.getElementById("category-boxes");
   if(!box) return;
@@ -43,48 +43,30 @@ function loadCategories(){
 
 function showAll(){
   activeCategory = "ALL";
+  const search = document.getElementById("search");
+  if(search) search.value = "";
   renderProducts(products);
 }
 
 function filterProducts(cat){
   activeCategory = cat;
-  applyFilters();
+  const search = document.getElementById("search");
+  if(search) search.value = "";
+  renderProducts(products.filter(p => p.category === cat));
 }
 
-/* ================= SEARCH (RESTORED CLEAN) ================= */
-function searchProducts(value){
+/* ================= SEARCH (FIXED) ================= */
+function searchProducts(v){
 
-  const search = value.toLowerCase();
+  const value = v.toLowerCase();
 
-  let filtered = products;
+  let base = activeCategory === "ALL"
+    ? products
+    : products.filter(p => p.category === activeCategory);
 
-  if(activeCategory !== "ALL"){
-    filtered = filtered.filter(p => p.category === activeCategory);
-  }
-
-  filtered = filtered.filter(p =>
-    p.name.toLowerCase().includes(search)
+  const filtered = base.filter(p =>
+    p.name.toLowerCase().includes(value)
   );
-
-  renderProducts(filtered);
-}
-
-/* ================= APPLY FILTERS ================= */
-function applyFilters(){
-
-  let filtered = products;
-
-  if(activeCategory !== "ALL"){
-    filtered = filtered.filter(p => p.category === activeCategory);
-  }
-
-  const searchInput = document.getElementById("search")?.value || "";
-
-  if(searchInput){
-    filtered = filtered.filter(p =>
-      p.name.toLowerCase().includes(searchInput.toLowerCase())
-    );
-  }
 
   renderProducts(filtered);
 }
@@ -175,6 +157,7 @@ function updateTotal(){
 
 /* ================= PAYMENT ================= */
 function selectPayment(el, method){
+
   paymentMethod = method;
 
   document.querySelectorAll(".pay-btn")
@@ -234,17 +217,7 @@ function resetInvoice(){
   generateInvoiceId();
 }
 
-/* ================= INIT ================= */
-document.addEventListener("DOMContentLoaded", ()=>{
-
-  loadCategories();
-  renderProducts(products);
-  generateInvoiceId();
-  setInvoiceDate();
-
-  document.getElementById("search")
-    ?.addEventListener("input", e => searchProducts(e.target.value));
-});
+/* ================= PRINT ================= */
 function printInvoice(){
 
   const clientName = document.getElementById("client-name")?.value || "";
@@ -327,6 +300,7 @@ function printInvoice(){
             <th>Total</th>
           </tr>
         </thead>
+
         <tbody>
           ${itemsHTML}
         </tbody>
@@ -352,17 +326,16 @@ function printInvoice(){
     win.close();
   }, 500);
 }
+
+/* ================= INIT (FIXED CLEAN) ================= */
 window.addEventListener("DOMContentLoaded", () => {
 
-  console.log("POS INIT OK");
+  loadCategories();
+  renderProducts(products);
+  generateInvoiceId();
+  setInvoiceDate();
 
-  try {
-    loadCategories();
-    renderProducts(products);
-    generateInvoiceId();
-    setInvoiceDate();
-  } catch (e) {
-    console.error("ERREUR INIT POS:", e);
-  }
+  document.getElementById("search")
+    ?.addEventListener("input", e => searchProducts(e.target.value));
 
 });
