@@ -46,149 +46,100 @@
 <!-- ================= LEFT ================= -->
 <div class="panel left">
 
-<h3>📂 Catégories</h3>
-<div id="category-boxes"></div>
+  <h3>📂 Catégories</h3>
+  <div id="category-boxes"></div>
 
-<!-- SAVON UI -->
-<div class="pink-box" onclick="toggleSoapUI()">
-🧴 Savon UI
-</div>
+  <!-- ❌ SOAP UI SUPPRIMÉ (clean design) -->
 
-<!-- QUICK RECETTE -->
-<div class="pink-box" onclick="window.location.href='./recette.html'">
-🧼 Créer une recette
-</div>
-
-<!-- SOAP UI -->
-<div id="soap-ui" style="display:none; margin-top:10px;">
-
-  <div class="payment-boxes">
-
-    <div class="pay-btn" onclick="setSoapMode('standard')">
-      Standard
-    </div>
-
-    <div class="pay-btn" onclick="setSoapMode('custom')">
-      Personnalisé
-    </div>
-
+  <!-- RECETTE ACCESS -->
+  <div class="pink-box" onclick="window.location.href='./recette.html'">
+    🧼 Créer une recette
   </div>
-
-  <!-- STANDARD -->
-  <div id="soap-standard" style="display:block;">
-
-    <input id="std_name" placeholder="Nom savon">
-    <input id="std_price" type="number" placeholder="Prix">
-    <input id="std_stock" type="number" placeholder="Stock">
-
-  </div>
-
-  <!-- CUSTOM -->
-  <div id="soap-custom" style="display:none;">
-
-    <input id="c_oil" type="number" placeholder="Huile (L)" oninput="calcSoap()">
-    <input id="c_base" type="number" placeholder="Base (kg)" oninput="calcSoap()">
-    <input id="c_perfume" type="number" placeholder="Parfum (ml)" oninput="calcSoap()">
-    <input id="c_mold" type="number" placeholder="Moule" oninput="calcSoap()">
-    <input id="c_labor" type="number" placeholder="Main d'œuvre" oninput="calcSoap()">
-    <input id="c_pack" type="number" placeholder="Packaging" oninput="calcSoap()">
-
-  </div>
-
-  <!-- TOTAL -->
-  <div class="pink-box">
-    💰 Total: <span id="soap-total">0</span> FCFA
-  </div>
-
-  <button onclick="addSoapToInvoice()">
-    ➕ Ajouter au tableau
-  </button>
-
-</div>
 
 </div>
 
 <!-- ================= CENTER ================= -->
 <div class="panel center">
 
-<h3>🔎 Recherche</h3>
-<input id="search" placeholder="Nom ou barcode">
+  <h3>🔎 Recherche</h3>
+  <input id="search" placeholder="Nom ou barcode">
 
-<h3>🛍 Produits</h3>
-<div id="product-list"></div>
+  <h3>🛍 Produits</h3>
+  <div id="product-list"></div>
 
-<h3>🧮 Calculatrice</h3>
-<input id="display">
+  <h3>🧮 Calculatrice</h3>
+  <input id="display">
 
-<div class="calc">
+  <div class="calc">
 
-<button onclick="press(7)">7</button>
-<button onclick="press(8)">8</button>
-<button onclick="press(9)">9</button>
-<button onclick="press('+')">+</button>
+    <button onclick="press(7)">7</button>
+    <button onclick="press(8)">8</button>
+    <button onclick="press(9)">9</button>
+    <button onclick="press('+')">+</button>
 
-<button onclick="press(4)">4</button>
-<button onclick="press(5)">5</button>
-<button onclick="press(6)">6</button>
-<button onclick="press('-')">-</button>
+    <button onclick="press(4)">4</button>
+    <button onclick="press(5)">5</button>
+    <button onclick="press(6)">6</button>
+    <button onclick="press('-')">-</button>
 
-<button onclick="press(1)">1</button>
-<button onclick="press(2)">2</button>
-<button onclick="press(3)">3</button>
-<button onclick="press('*')">×</button>
+    <button onclick="press(1)">1</button>
+    <button onclick="press(2)">2</button>
+    <button onclick="press(3)">3</button>
+    <button onclick="press('*')">×</button>
 
-<button onclick="press(0)">0</button>
-<button onclick="clearCalc()">C</button>
-<button onclick="calculate()">=</button>
-<button onclick="press('/')">÷</button>
+    <button onclick="press(0)">0</button>
+    <button onclick="clearCalc()">C</button>
+    <button onclick="calculate()">=</button>
+    <button onclick="press('/')">÷</button>
 
-</div>
+  </div>
 
 </div>
 
 <!-- ================= RIGHT ================= -->
 <div class="panel right">
 
-<div class="invoice-header">
-<h2>ÉCLAT DE COCO OFFICIAL</h2>
-<p class="sub-title">Abidjan - Côte d’Ivoire</p>
-</div>
+  <div class="invoice-header">
+    <h2>ÉCLAT DE COCO OFFICIAL</h2>
+    <p class="sub-title">Abidjan - Côte d’Ivoire</p>
+  </div>
 
-<h3>Facture N°: <span id="invoice-id"></span></h3>
+  <h3>Facture N°: <span id="invoice-id"></span></h3>
 
-<input id="client-name" placeholder="Nom client">
-<input id="client-phone" placeholder="Téléphone">
-<input id="client-address" placeholder="Adresse">
+  <input id="client-name" placeholder="Nom client">
+  <input id="client-phone" placeholder="Téléphone">
+  <input id="client-address" placeholder="Adresse">
 
-<input type="date" id="date">
+  <input type="date" id="date">
 
-<table>
-<thead>
-<tr>
-<th>Produit</th>
-<th>Qté</th>
-<th>Prix</th>
-<th>Total</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody id="invoice-body"></tbody>
-</table>
+  <table>
+    <thead>
+      <tr>
+        <th>Produit</th>
+        <th>Qté</th>
+        <th>Prix</th>
+        <th>Total</th>
+        <th>Action</th>
+      </tr>
+    </thead>
 
-<input id="delivery" type="number" placeholder="Livraison">
+    <tbody id="invoice-body"></tbody>
+  </table>
 
-<h2 id="grand-total">0 FCFA</h2>
+  <input id="delivery" type="number" placeholder="Livraison">
 
-<div class="payment-boxes">
+  <h2 id="grand-total">0 FCFA</h2>
 
-<div class="pay-btn" onclick="selectPayment(this,'cash')">Cash</div>
-<div class="pay-btn" onclick="selectPayment(this,'orange')">Orange</div>
-<div class="pay-btn" onclick="selectPayment(this,'wave')">Wave</div>
+  <div class="payment-boxes">
 
-</div>
+    <div class="pay-btn" onclick="selectPayment(this,'cash')">Cash</div>
+    <div class="pay-btn" onclick="selectPayment(this,'orange')">Orange</div>
+    <div class="pay-btn" onclick="selectPayment(this,'wave')">Wave</div>
 
-<button onclick="saveSale()">💾 Sauvegarder</button>
-<button onclick="printInvoice()">🖨 Imprimer</button>
+  </div>
+
+  <button onclick="saveSale()">💾 Sauvegarder</button>
+  <button onclick="printInvoice()">🖨 Imprimer</button>
 
 </div>
 
