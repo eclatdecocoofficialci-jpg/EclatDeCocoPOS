@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
+
 <meta charset="UTF-8">
 <title>Ventes | Éclat de Coco</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
@@ -18,150 +22,228 @@
 
   <!-- TOTAL GLOBAL -->
   <h3>
-    Total des ventes:
+    Total des ventes :
     <span id="total-sales">0 FCFA</span>
   </h3>
 
   <table class="sales-table">
+
     <thead>
       <tr>
         <th>Facture</th>
         <th>Date</th>
         <th>Client</th>
-        <th>Remise</th>
         <th>Paiement</th>
+        <th>Livraison</th>
         <th>Total</th>
         <th>Action</th>
       </tr>
     </thead>
 
     <tbody id="sales-body"></tbody>
+
   </table>
 
 </main>
 
 <script>
+
+/* ================= GET SALES ================= */
+
 function getSales(){
   return JSON.parse(localStorage.getItem("sales")) || [];
 }
 
 /* ================= LOAD SALES ================= */
+
 function loadSales(){
 
   let sales = getSales();
+
   let tbody = document.getElementById("sales-body");
+
   tbody.innerHTML = "";
 
   if(sales.length === 0){
+
     tbody.innerHTML = `
       <tr>
-        <td colspan="7">Aucune vente enregistrée</td>
+        <td colspan="7">
+          Aucune vente enregistrée
+        </td>
       </tr>
     `;
+
     updateTotalSales();
+
     return;
   }
 
-  // tri du plus récent
-  sales.sort((a, b) => new Date(b.date) - new Date(a.date));
+  /* TRI RÉCENT → ANCIEN */
+  sales.sort((a, b) =>
+    new Date(b.date || 0) - new Date(a.date || 0)
+  );
 
   sales.forEach((s, index) => {
+
+    let total = Number(s.total || 0);
 
     let tr = document.createElement("tr");
 
     tr.innerHTML = `
+
       <td>${s.id || "-"}</td>
-      <td>${new Date(s.date).toLocaleString()}</td>
 
-      <!-- CLIENT -->
       <td>
-        ${s.client?.name || "-"} <br>
-        <small>${s.client?.phone || ""}</small>
+        ${s.date || "-"}
       </td>
 
-      <!-- REMISE (si tu utilises plus tard) -->
-      <td>${s.discount || 0}%</td>
+      <td>
+        ${s.client?.name || "-"}
+      </td>
 
-      <!-- PAIEMENT (FIX IMPORTANT) -->
-      <td>${s.payment || s.paymentMethod || "-"}</td>
+      <td>
+        ${s.payment || "-"}
+      </td>
 
-      <!-- TOTAL -->
+      <td>
+        ${s.delivery || 0} FCFA
+      </td>
+
       <td style="color:#e91e63;font-weight:bold;">
-        ${Math.round(s.total || 0)} FCFA
+        ${Math.round(total)} FCFA
       </td>
 
-      <!-- ACTION -->
-        <td>
-  <button onclick="viewInvoice(${index})"> Voir</button>
+      <td>
 
-  <button onclick="editSale(${index})">
-     Modifier
-  </button>
+        <button onclick="viewInvoice(${index})">
+          👁 Voir
+        </button>
 
-  <button onclick="deleteSale(${index})">
-    Supprimer
-  </button>
-</td>
+        <button onclick="editSale(${index})">
+          ✏️ Modifier
+        </button>
+
+        <button onclick="deleteSale(${index})">
+          🗑 Supprimer
+        </button>
+
       </td>
     `;
 
     tbody.appendChild(tr);
+
   });
 
   updateTotalSales();
 }
 
 /* ================= VIEW INVOICE ================= */
+
 function viewInvoice(i){
 
   let sales = getSales();
-  sales.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  sales.sort((a, b) =>
+    new Date(b.date || 0) - new Date(a.date || 0)
+  );
 
   let s = sales[i];
 
   if(!s){
+
     alert("Facture introuvable");
+
     return;
   }
 
   let items = (s.items || []).map(p =>
+
     `${p.name} x${p.qty} = ${p.price * p.qty} FCFA`
+
   ).join("\n");
 
   alert(
+
     "FACTURE #" + s.id +
-    "\nDATE: " + new Date(s.date).toLocaleString() +
-    "\n\nCLIENT: " + (s.client?.name || "-") +
-    "\nTEL: " + (s.client?.phone || "-") +
-    "\n\nPRODUITS:\n" + items +
-    "\n\nLIVRAISON: " + (s.delivery || 0) + " FCFA" +
-    "\nPAIEMENT: " + (s.payment || s.paymentMethod || "-") +
-    "\nTOTAL: " + Math.round(s.total || 0) + " FCFA"
+
+    "\nDATE : " + (s.date || "-") +
+
+    "\nCLIENT : " + (s.client?.name || "-") +
+
+    "\nTEL : " + (s.client?.phone || "-") +
+
+    "\n\nPRODUITS :\n" + items +
+
+    "\n\nLIVRAISON : " + (s.delivery || 0) + " FCFA" +
+
+    "\nPAIEMENT : " + (s.payment || "-") +
+
+    "\nTOTAL : " + Math.round(s.total || 0) + " FCFA"
   );
 }
 
+/* ================= EDIT SALE ================= */
+
+function editSale(i){
+
+  let sales = getSales();
+
+  sales.sort((a, b) =>
+    new Date(b.date || 0) - new Date(a.date || 0)
+  );
+
+  let sale = sales[i];
+
+  if(!sale){
+
+    alert("Facture introuvable");
+
+    return;
+  }
+
+  /* sauvegarde temporaire */
+  localStorage.setItem(
+    "edit_sale",
+    JSON.stringify(sale)
+  );
+
+  /* ouvrir POS */
+  window.location.href = "./pos.html";
+}
+
 /* ================= DELETE ================= */
+
 function deleteSale(i){
 
   if(!confirm("Supprimer cette vente ?")) return;
 
   let sales = getSales();
-  sales.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  sales.sort((a, b) =>
+    new Date(b.date || 0) - new Date(a.date || 0)
+  );
 
   sales.splice(i, 1);
 
-  localStorage.setItem("sales", JSON.stringify(sales));
+  localStorage.setItem(
+    "sales",
+    JSON.stringify(sales)
+  );
 
   loadSales();
 }
 
 /* ================= TOTAL GLOBAL ================= */
+
 function updateTotalSales(){
 
   let sales = getSales();
 
   let total = sales.reduce((sum, s) => {
+
     return sum + Number(s.total || 0);
+
   }, 0);
 
   document.getElementById("total-sales").innerText =
@@ -169,19 +251,28 @@ function updateTotalSales(){
 }
 
 /* ================= INIT ================= */
-window.onload = loadSales;
-</script>
-<div class="main-content">
 
-  <!-- tout ton contenu ici -->
-  
-</div>
+window.onload = loadSales;
+
+</script>
+
+<div class="main-content"></div>
 
 <footer class="site-footer">
+
   <div class="footer-inner">
-    <p>© 2025 Éclat de Coco Official</p>
-    <p class="sub">All rights reserved • Natural beauty inspired by Côte d’Ivoire 🌿🥥</p>
+
+    <p>
+      © 2025 Éclat de Coco Official
+    </p>
+
+    <p class="sub">
+      All rights reserved • Natural beauty inspired by Côte d’Ivoire 🌿🥥
+    </p>
+
   </div>
+
 </footer>
+
 </body>
 </html>
