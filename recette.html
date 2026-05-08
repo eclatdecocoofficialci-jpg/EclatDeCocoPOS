@@ -4,17 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title> Éclat de Coco Official</title>
+<title>Éclat de Coco Official</title>
 
 <link rel="stylesheet" href="./style.css">
+
 </head>
 
 <body>
 
+<!-- HEADER -->
 <header>
-  <h1> Recette  - Éclat de Coco</h1>
+  <h1>Recette - Éclat de Coco</h1>
 </header>
 
+<!-- NAV -->
 <nav class="top-nav">
   <a href="./pos.html">POS</a>
   <a href="./recette.html">Recette</a>
@@ -25,6 +28,28 @@
 
 <!-- ================= LEFT ================= -->
 <div class="panel left">
+
+  <h3>📦 Nom de la recette</h3>
+
+  <!-- TITLE INPUT -->
+  <input id="recipe-name"
+    placeholder="Ex: Savon Coco Luxe"
+    oninput="updateRecipeTitle()"
+    style="
+      font-weight:bold;
+      text-align:center;
+      border:2px solid #f8bbd0;
+      border-radius:10px;
+      padding:10px;
+    "
+  >
+
+  <!-- DISPLAY TITLE -->
+  <div class="pink-box" style="margin-top:10px;">
+    🧼 <span id="recipe-title" style="font-weight:bold;">Nouvelle recette</span>
+  </div>
+
+  <hr style="margin:15px 0; border:1px solid #ffd6e5;">
 
   <h3>➕ Ajouter ingrédient</h3>
 
@@ -73,7 +98,7 @@
 <!-- ================= RIGHT ================= -->
 <div class="panel right">
 
-  <h3> Résumé recette</h3>
+  <h3>Résumé recette</h3>
 
   <div class="pink-box">
     Total recette :
@@ -95,6 +120,15 @@
 </div>
 
 <script src="./recette.js"></script>
+
+<!-- ================= TITLE SCRIPT ================= -->
+<script>
+function updateRecipeTitle(){
+  const name = document.getElementById("recipe-name").value;
+  document.getElementById("recipe-title").innerText =
+    name || "Nouvelle recette";
+}
+</script>
 
 </body>
 </html>
