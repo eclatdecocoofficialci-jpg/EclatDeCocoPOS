@@ -2,45 +2,25 @@ let products = JSON.parse(localStorage.getItem("products")) || [
   {name:"Savon Rose", price:3000, stock:10, category:"Savon"},
   {name:"Savon Coco", price:3500, stock:8, category:"Savon"},
   {name:"Lotion Vanille", price:5000, stock:5, category:"Lotion"},
-  {name:"Beurre Karité", price:4000, stock:7, category:"Beurre"},
-  {
-    name: "Savon Baptême",
-    price: 0,
-    stock: 5,
-    category: "Savon Personnalisé",
-    recipe: {
-      oil_litre: 0.5,
-      soap_kg: 1,
-      fragrance_ml: 50,
-      mold_cost: 500,
-      labor_cost: 1000,
-      packaging: 300
-    }
-  }
+  {name:"Beurre Karité", price:4000, stock:7, category:"Beurre"}
 ];
 
 let invoice = [];
-let paymentMethod = "cash";
-let discount = 0;
 let activeCategory = "ALL";
+let paymentMethod = "cash";
 
-/* ================= PRICE CALC ================= */
-function calculateCustomPrice(product){
-  if(!product || !product.recipe) return product.price;
+/* ================= INVOICE ID ================= */
+let lastInvoiceId = Number(localStorage.getItem("invoice_id") || 20206000);
 
-  const r = product.recipe;
+function generateInvoiceId(){
+  lastInvoiceId++;
+  localStorage.setItem("invoice_id", lastInvoiceId);
 
-  return (
-    (r.oil_litre * 2000) +
-    (r.soap_kg * 3000) +
-    (r.fragrance_ml * 20) +
-    r.mold_cost +
-    r.labor_cost +
-    r.packaging
-  );
+  const el = document.getElementById("invoice-id");
+  if(el) el.innerText = lastInvoiceId;
 }
 
-/* ================= CATEGORIES ================= */
+/* ================= PRODUCTS ================= */
 function loadCategories(){
   const box = document.getElementById("category-boxes");
   if(!box) return;
@@ -59,65 +39,40 @@ function showAll(){
   renderProducts(products);
 }
 
-function filterProducts(category){
-  activeCategory = category;
-  renderProducts(products.filter(p => p.category === category));
+function filterProducts(cat){
+  activeCategory = cat;
+  renderProducts(products.filter(p => p.category === cat));
 }
 
-/* ================= SEARCH ================= */
-function searchProducts(value){
-  const v = value.toLowerCase();
+function searchProducts(v){
+  const value = v.toLowerCase();
 
-  let base = products;
-
-  if(activeCategory !== "ALL"){
-    base = products.filter(p => p.category === activeCategory);
-  }
+  let base = activeCategory === "ALL"
+    ? products
+    : products.filter(p => p.category === activeCategory);
 
   renderProducts(
     base.filter(p =>
-      p.name.toLowerCase().includes(v) ||
-      p.category.toLowerCase().includes(v)
+      p.name.toLowerCase().includes(value)
     )
   );
 }
 
-/* ================= PRODUCTS ================= */
 function renderProducts(list){
   const box = document.getElementById("product-list");
   if(!box) return;
 
-  box.innerHTML = list.map((p, index) => {
-
-    const price = p.recipe ? calculateCustomPrice(p) : p.price;
-
-    return `
-      <div class="pink-box" onclick="addToInvoice('${p.name.replace(/'/g," ") }', ${price})">
-
-        <strong>${p.name}</strong><br>
-        💰 ${price} FCFA<br>
-
-        📦 ${
-          p.stock <= 0
-          ? `<span style="color:red;font-weight:bold;">RUPTURE</span>`
-          : p.stock
-        }
-
-      </div>
-    `;
-  }).join("");
+  box.innerHTML = list.map(p => `
+    <div class="pink-box" onclick="addToInvoice('${p.name}', ${p.price})">
+      <strong>${p.name}</strong><br>
+      💰 ${p.price} FCFA<br>
+      📦 ${p.stock}
+    </div>
+  `).join("");
 }
 
 /* ================= INVOICE ================= */
 function addToInvoice(name, price){
-
-  const product = products.find(p => p.name === name);
-  if(!product) return;
-
-  if(product.stock <= 0){
-    alert("❌ Rupture stock");
-    return;
-  }
 
   const item = invoice.find(i => i.name === name);
 
@@ -127,31 +82,20 @@ function addToInvoice(name, price){
     invoice.push({name, price, qty:1});
   }
 
-  // 🔥 décrément stock
-  product.stock -= 1;
-
-  saveProducts();
   renderInvoice();
-  renderProducts(products);
 }
 
-/* ================= SAVE STOCK ================= */
-function saveProducts(){
-  localStorage.setItem("products", JSON.stringify(products));
-}
-
-/* ================= INVOICE ================= */
 function renderInvoice(){
 
   const body = document.getElementById("invoice-body");
   if(!body) return;
 
-  body.innerHTML = invoice.map((item, index) => `
+  body.innerHTML = invoice.map((i,index)=>`
     <tr>
-      <td>${item.name}</td>
-      <td><input type="number" value="${item.qty}" onchange="updateQty(${index},this.value)"></td>
-      <td><input type="number" value="${item.price}" onchange="updatePrice(${index},this.value)"></td>
-      <td>${item.price * item.qty}</td>
+      <td>${i.name}</td>
+      <td><input type="number" value="${i.qty}" onchange="updateQty(${index},this.value)"></td>
+      <td><input type="number" value="${i.price}" onchange="updatePrice(${index},this.value)"></td>
+      <td>${i.qty * i.price}</td>
       <td><button onclick="removeItem(${index})">❌</button></td>
     </tr>
   `).join("");
@@ -165,7 +109,7 @@ function updateQty(i,v){
 }
 
 function updatePrice(i,v){
-  invoice[i].price = Math.max(0, Number(v));
+  invoice[i].price = Number(v);
   renderInvoice();
 }
 
@@ -174,40 +118,83 @@ function removeItem(i){
   renderInvoice();
 }
 
-/* ================= TOTAL ================= */
+/* ================= TOTAL + DELIVERY ================= */
 function updateTotal(){
 
   let total = 0;
 
-  invoice.forEach(i => {
-    total += i.price * i.qty;
+  invoice.forEach(i=>{
+    total += i.qty * i.price;
   });
 
   const delivery = Number(document.getElementById("delivery")?.value || 0);
 
-  // remise + livraison
-  total = total - (total * discount / 100);
-  total = total + delivery;
+  total += delivery;
 
-  const el = document.getElementById("grand-total");
-  if(el) el.innerText = Math.round(total) + " FCFA";
+  document.getElementById("grand-total").innerText =
+    Math.round(total) + " FCFA";
+
+  return total;
 }
+
+/* ================= PAYMENT ================= */
+function selectPayment(el, method){
+  paymentMethod = method;
+
+  document.querySelectorAll(".pay-btn")
+    .forEach(b=>b.classList.remove("active"));
+
+  el.classList.add("active");
+}
+
+/* ================= SAVE SALE ================= */
+function saveSale(){
+
+  const total = updateTotal();
+
+  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+
+  sales.push({
+    id: lastInvoiceId,
+    date: new Date(),
+    items: invoice,
+    total,
+    payment: paymentMethod
+  });
+
+  localStorage.setItem("sales", JSON.stringify(sales));
+
+  alert("✔ Vente sauvegardée");
+
+  resetInvoice();
+}
+
+/* ================= RESET ================= */
+function resetInvoice(){
+  invoice = [];
+
+  const delivery = document.getElementById("delivery");
+  if(delivery) delivery.value = "";
+
+  renderInvoice();
+  generateInvoiceId();
+}
+
+/* ================= PRINT (FACTURE 5x7 ONLY) ================= */
+function printInvoice(){
+  window.print();
+}
+
 /* ================= INIT ================= */
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", ()=>{
+
   loadCategories();
   renderProducts(products);
+  generateInvoiceId();
 
-  const searchInput = document.getElementById("search");
-  if(searchInput){
-    searchInput.addEventListener("input", e =>
-      searchProducts(e.target.value)
-    );
-  }
-});
-document.addEventListener("DOMContentLoaded", () => {
-  const deliveryInput = document.getElementById("delivery");
+  document.getElementById("search")
+    ?.addEventListener("input", e => searchProducts(e.target.value));
 
-  if (deliveryInput) {
-    deliveryInput.addEventListener("input", updateTotal);
-  }
+  const d = document.getElementById("date");
+  if(d) d.valueAsDate = new Date();
 });
