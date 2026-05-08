@@ -179,19 +179,19 @@ function updateTotal(){
 
   let total = 0;
 
-  invoice.forEach(i=>{
+  invoice.forEach(i => {
     total += i.price * i.qty;
   });
 
   const delivery = Number(document.getElementById("delivery")?.value || 0);
 
+  // remise + livraison
   total = total - (total * discount / 100);
-  total += delivery;
+  total = total + delivery;
 
   const el = document.getElementById("grand-total");
   if(el) el.innerText = Math.round(total) + " FCFA";
 }
-
 /* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded", function(){
   loadCategories();
@@ -202,5 +202,12 @@ document.addEventListener("DOMContentLoaded", function(){
     searchInput.addEventListener("input", e =>
       searchProducts(e.target.value)
     );
+  }
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const deliveryInput = document.getElementById("delivery");
+
+  if (deliveryInput) {
+    deliveryInput.addEventListener("input", updateTotal);
   }
 });
