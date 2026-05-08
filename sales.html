@@ -91,9 +91,17 @@ function loadSales(){
       </td>
 
       <!-- ACTION -->
-      <td>
-        <button onclick="viewInvoice(${index})">👁 Voir</button>
-        <button onclick="deleteSale(${index})">🗑 Supprimer</button>
+        <td>
+  <button onclick="viewInvoice(${index})"> Voir</button>
+
+  <button onclick="editSale(${index})">
+     Modifier
+  </button>
+
+  <button onclick="deleteSale(${index})">
+    Supprimer
+  </button>
+</td>
       </td>
     `;
 
