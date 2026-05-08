@@ -277,46 +277,50 @@ button:hover {
     grid-template-columns: 1fr;
   }
 }
-/* ACTION BUTTONS SALES */
+/* ================= SALES ACTION BUTTONS FIX ================= */
 
 .sales-table td button{
 
-  padding: 4px 6px;
+  padding: 3px 5px !important;
 
-  font-size: 11px;
+  font-size: 10px !important;
 
-  border: none;
+  border: none !important;
 
-  border-radius: 6px;
+  border-radius: 5px !important;
 
   cursor: pointer;
 
-  margin: 2px;
+  margin: 1px;
+
+  width: auto !important;
+
+  min-width: 55px;
+
+  display: inline-block;
+
+}
+
+/* Voir */
+.sales-table td button:nth-child(1){
+  background: #f8c8d8 !important;
+}
+
+/* Modifier */
+.sales-table td button:nth-child(2){
+  background: #ffe0a3 !important;
+}
+
+/* Supprimer */
+.sales-table td button:nth-child(3){
+  background: #ffb3b3 !important;
+}
+
+/* colonne action compacte */
+.sales-table td:last-child{
 
   white-space: nowrap;
-}
 
-/* VOIR */
-.sales-table td button:nth-child(1){
-  background: #f8c8d8;
-}
+  width: 1%;
 
-/* MODIFIER */
-.sales-table td button:nth-child(2){
-  background: #ffd6a5;
-}
-
-/* SUPPRIMER */
-.sales-table td button:nth-child(3){
-  background: #ffb3b3;
-}
-
-/* MOBILE + IPAD */
-.sales-table td{
-  vertical-align: middle;
-}
-
-.sales-table{
-  width: 100%;
-  border-collapse: collapse;
 }
