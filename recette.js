@@ -171,6 +171,7 @@ function printRecipe(){
     </html>
   `);
 
-  printWindow.document.close();
-  printWindow.print();
+  
+function printRecipe(){
+  window.print();
 }
