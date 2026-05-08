@@ -401,10 +401,11 @@ function printInvoice(){
 }
 
 /* ================= INIT ================= */
-document.addEventListener("DOMContentLoaded", () => {
+window.onload = () => {
   loadCategories();
   renderProducts(products);
   generateInvoiceId();
   setInvoiceDate();
   updateSalesView();
-});
+  loadEditSale(); // 🔥 important pour modifier facture
+};
