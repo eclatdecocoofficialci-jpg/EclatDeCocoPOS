@@ -367,3 +367,77 @@ button:hover{
     margin-top: 10px;
   }
 }
+/* ================= FACTURE PANEL (RIGHT) FIX ================= */
+.right{
+  width:30%;
+  min-width:300px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+/* ================= FACTURE HEADER ================= */
+.invoice-header{
+  text-align:center;
+  padding:10px;
+  border-bottom:1px solid #ffd6e5;
+}
+
+/* ================= FACTURE TITLE ================= */
+#invoice-id{
+  color:#e91e63;
+  font-weight:800;
+}
+
+/* ================= FACTURE TABLE FIX ================= */
+.right table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+  background:white;
+}
+
+.right th{
+  background:#ffe6ef;
+  font-size:13px;
+}
+
+.right td{
+  font-size:13px;
+}
+
+/* ================= INPUT FACTURE CLEAN ================= */
+.right input{
+  margin-bottom:8px;
+}
+
+/* ================= TOTAL FIX ================= */
+#grand-total{
+  font-size:32px;
+  font-weight:900;
+  text-align:center;
+  color:#e91e63;
+  margin:10px 0;
+}
+
+/* ================= ACTION BUTTONS FIX ================= */
+.right button{
+  width:100%;
+  margin-top:6px;
+}
+
+/* ================= MOBILE / IPAD FIX ================= */
+@media (max-width: 1024px){
+
+  .pos-container{
+    flex-direction:column;
+  }
+
+  .left, .center, .right{
+    width:100%;
+  }
+
+  #product-list{
+    grid-template-columns:1fr;
+  }
+}
