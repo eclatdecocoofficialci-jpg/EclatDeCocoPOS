@@ -1,5 +1,5 @@
 /* ================= RESET GLOBAL ================= */
-*{
+{
   margin:0;
   padding:0;
   box-sizing:border-box;
@@ -10,7 +10,7 @@ html, body{
   font-family:Poppins, sans-serif;
 }
 
-/* ================= BODY ================= */
+/ ================= BODY ================= /
 body{
   background:#fff0f5;
   display:flex;
@@ -19,14 +19,14 @@ body{
   overflow-x:hidden;
 }
 
-/* ================= MAIN ================= */
+/ ================= MAIN ================= /
 .main-content{
   flex:1;
   display:flex;
   flex-direction:column;
 }
 
-/* ================= HEADER ================= */
+/ ================= HEADER ================= /
 header{
   background:#e91e63;
   color:white;
@@ -40,7 +40,7 @@ header h1{
   font-weight:700;
 }
 
-/* ================= NAV ================= */
+/ ================= NAV ================= /
 .top-nav{
   display:flex;
   flex-wrap:wrap;
@@ -67,16 +67,17 @@ header h1{
   transform:translateY(-2px);
 }
 
-/* ================= POS LAYOUT (FIX ESPACEMENT) ================= */
+/ ================= POS LAYOUT ================= /
 .pos-container{
   display:flex;
-  gap:26px;
-  padding:20px;
+  gap:22px;
+  padding:18px;
   align-items:flex-start;
   justify-content:space-between;
+  width:100%;
 }
 
-/* ================= PANELS ================= */
+/ ================= PANELS ================= /
 .panel{
   background:white;
   border-radius:18px;
@@ -84,31 +85,47 @@ header h1{
   box-shadow:0 8px 20px rgba(0,0,0,0.06);
   display:flex;
   flex-direction:column;
-  gap:12px;
 }
 
-.left{ width:18%; min-width:190px; }
-.center{ width:52%; min-width:320px; }
-.right{ width:30%; min-width:280px; }
+/ ================= LEFT PANEL ================= /
+.left{
+  width:18%;
+  min-width:210px;
+}
 
-/* ================= TITLES ================= */
+/ ================= CENTER PANEL ================= /
+.center{
+  width:47%;
+  min-width:420px;
+}
+
+/ ================= RIGHT PANEL ================= /
+.right{
+  width:35%;
+  min-width:360px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+/ ================= TITLES ================= /
+h2{
+  color:#111;
+}
+
 h3{
   margin-bottom:12px;
   color:#222;
 }
 
-h2{
-  color:#111;
-}
-
-/* ================= CATEGORY ================= */
+/ ================= CATEGORY ================= /
 #category-boxes{
   display:flex;
   flex-direction:column;
   gap:14px;
 }
 
-/* ================= PRODUCTS ================= */
+/ ================= PRODUCTS ================= /
 #product-list{
   display:grid;
   grid-template-columns:repeat(2,1fr);
@@ -116,10 +133,10 @@ h2{
   margin-top:10px;
 }
 
-/* ================= PINK BOX (FIX ESPACE) ================= */
+/ ================= PINK BOX ================= /
 .pink-box{
   background:linear-gradient(135deg,#f8bbd0,#ffe6ef);
-  padding:16px;
+  padding:18px;
   border-radius:16px;
   text-align:center;
   cursor:pointer;
@@ -136,8 +153,9 @@ h2{
   color:white;
 }
 
-/* ================= INPUT ================= */
-input, select{
+/ ================= INPUT ================= /
+input,
+select{
   width:100%;
   padding:12px;
   border-radius:12px;
@@ -145,37 +163,72 @@ input, select{
   margin-bottom:12px;
   font-size:15px;
   outline:none;
+  background:white;
 }
 
-/* ================= TABLE ================= */
+/ ================= TABLE ================= /
 table{
   width:100%;
   border-collapse:collapse;
   margin-top:10px;
+  table-layout:fixed;
 }
 
-th, td{
+th,
+td{
   border:1px solid #eee;
-  padding:10px;
+  padding:9px;
   text-align:center;
   font-size:14px;
+  word-break:break-word;
 }
 
 th{
   background:#ffe6ef;
+  font-weight:700;
 }
 
-/* ================= TOTAL ================= */
+/ ================= FACTURE HEADER ================= /
+.invoice-header{
+  text-align:center;
+  padding-bottom:10px;
+  border-bottom:1px solid #ffd6e5;
+}
+
+.sub-title{
+  font-size:15px;
+  margin-top:4px;
+}
+
+#invoice-id{
+  color:#e91e63;
+  font-weight:800;
+}
+
+/ ================= FACTURE TABLE ================= /
+.right table{
+  font-size:13px;
+}
+
+.right th{
+  font-size:13px;
+}
+
+.right td{
+  font-size:13px;
+}
+
+/ ================= TOTAL ================= /
 #grand-total{
   text-align:center;
   font-size:36px;
-  font-weight:800;
+  font-weight:900;
   color:#e91e63;
   margin-top:10px;
   margin-bottom:10px;
 }
 
-/* ================= BUTTON ================= */
+/ ================= BUTTON ================= /
 button{
   background:#f8bbd0;
   border:none;
@@ -191,7 +244,12 @@ button:hover{
   color:white;
 }
 
-/* ================= CALCULATOR (FIX UI) ================= */
+.right button{
+  width:100%;
+  margin-top:6px;
+}
+
+/ ================= CALCULATOR ================= /
 .calc{
   display:grid;
   grid-template-columns:repeat(4,1fr);
@@ -216,10 +274,10 @@ button:hover{
   color:white;
 }
 
-/* display calculatrice */
+/ ================= DISPLAY ================= /
 #display{
   width:100%;
-  height:75px;
+  height:78px;
   border-radius:16px;
   border:2px solid #f8bbd0;
   font-size:30px;
@@ -229,7 +287,7 @@ button:hover{
   margin-bottom:14px;
 }
 
-/* ================= PAYMENT ================= */
+/ ================= PAYMENT ================= /
 .payment-boxes{
   display:flex;
   gap:12px;
@@ -258,12 +316,93 @@ button:hover{
   color:white;
 }
 
-/* ================= MOBILE ================= */
-@media(max-width:900px){
+/ ================= QR CODE ================= /
+#qr-code{
+  display:flex;
+  justify-content:center;
+  margin-top:8px;
+}
+
+/ ================= PRINT ================= */
+@media print{
+
+  body *{
+    visibility:hidden !important;
+  }
+
+  #invoice-print-area,
+  #invoice-print-area {
+    visibility:visible !important;
+  }
+
+  #invoice-print-area{
+    position:absolute;
+    left:0;
+    top:0;
+    width:5in;
+    min-height:7in;
+    background:white;
+    padding:14px;
+    box-shadow:none !important;
+    border-radius:0;
+  }
+
+  / cache POS /
+  nav,
+  .left,
+  .center,
+  .payment-boxes,
+  button{
+    display:none !important;
+  }
+
+  / cache action tableau /
+  table th:last-child,
+  table td:last-child{
+    display:none !important;
+  }
+
+  / table print /
+  table{
+    width:100%;
+    border-collapse:collapse;
+  }
+
+  th,
+  td{
+    border:1px solid #000;
+    padding:6px;
+    font-size:12px;
+  }
+
+  th{
+    background:#f2f2f2 !important;
+  }
+
+  / total /
+  #grand-total{
+    font-size:26px;
+  }
+
+  / titre /
+  .invoice-header h2{
+    font-size:17px;
+  }
+
+  / texte /
+  #invoice-print-area p{
+    text-align:center;
+    font-size:11px;
+    margin-top:10px;
+  }
+}
+
+/ ================= MOBILE / IPAD ================= */
+@media(max-width:1100px){
 
   .pos-container{
     flex-direction:column;
-    gap:14px;
+    gap:16px;
   }
 
   .left,
@@ -281,163 +420,9 @@ button:hover{
     height:70px;
     font-size:20px;
   }
-}
-@media print {
 
-  /* ❌ cache tout le site */
-  body * {
-    visibility: hidden !important;
-  }
-
-  /* ✅ affiche uniquement la facture */
-  #invoice-print-area,
-  #invoice-print-area * {
-    visibility: visible !important;
-  }
-
-  /* 📄 zone facture imprimée */
-  #invoice-print-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-
-    width: 5in;     /* ⭐ format demandé */
-    height: 7in;
-
-    background: white;
-    padding: 12px;
-    box-shadow: none !important;
-  }
-
-  /* ❌ cache navigation + POS */
-  nav,
-  .pos-container,
-  .left,
-  .center,
-  .calc,
-  input,
-  .payment-boxes {
-    display: none !important;
-  }
-
-  /* ❌ cache boutons */
-  button {
-    display: none !important;
-  }
-
-  /* ❌ cache colonne ACTION du tableau */
-  table th:last-child,
-  table td:last-child {
-    display: none !important;
-  }
-
-  /* 📊 tableau propre impression */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  th, td {
-    border: 1px solid #000;
-    padding: 6px;
-    font-size: 12px;
-  }
-
-  th {
-    background: #f2f2f2 !important;
-  }
-
-  /* 🧾 titre facture */
-  .invoice-header h2 {
-    font-size: 16px;
-    text-align: center;
-  }
-
-  /* 📌 QR centré */
-  #qr-code {
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
-  }
-
-  /* 💬 message final */
-  #invoice-print-area p {
-    font-size: 11px;
-    text-align: center;
-    margin-top: 10px;
-  }
-}
-/* ================= FACTURE PANEL (RIGHT) FIX ================= */
-.right{
-  width:30%;
-  min-width:300px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-/* ================= FACTURE HEADER ================= */
-.invoice-header{
-  text-align:center;
-  padding:10px;
-  border-bottom:1px solid #ffd6e5;
-}
-
-/* ================= FACTURE TITLE ================= */
-#invoice-id{
-  color:#e91e63;
-  font-weight:800;
-}
-
-/* ================= FACTURE TABLE FIX ================= */
-.right table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
-  background:white;
-}
-
-.right th{
-  background:#ffe6ef;
-  font-size:13px;
-}
-
-.right td{
-  font-size:13px;
-}
-
-/* ================= INPUT FACTURE CLEAN ================= */
-.right input{
-  margin-bottom:8px;
-}
-
-/* ================= TOTAL FIX ================= */
-#grand-total{
-  font-size:32px;
-  font-weight:900;
-  text-align:center;
-  color:#e91e63;
-  margin:10px 0;
-}
-
-/* ================= ACTION BUTTONS FIX ================= */
-.right button{
-  width:100%;
-  margin-top:6px;
-}
-
-/* ================= MOBILE / IPAD FIX ================= */
-@media (max-width: 1024px){
-
-  .pos-container{
-    flex-direction:column;
-  }
-
-  .left, .center, .right{
-    width:100%;
-  }
-
-  #product-list{
-    grid-template-columns:1fr;
+  #display{
+    height:70px;
+    font-size:24px;
   }
 }
