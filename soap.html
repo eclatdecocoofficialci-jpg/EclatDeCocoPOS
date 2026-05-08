@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Soap Studio - Éclat de Coco</title>
+
+<link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+<header>
+  <h1> Soap Studio - Production</h1>
+</header>
+
+<nav class="top-nav">
+  <a href="./pos.html">POS</a>
+  <a href="./recette.html">Recette</a>
+  <a href="./soap.html">Soap Studio</a>
+</nav>
+
+<div class="main-content">
+<div class="pos-container">
+
+<!-- ================= LEFT ================= -->
+<div class="panel left">
+
+  <h3>🧪 Création savon</h3>
+
+  <input id="soap_name" placeholder="Nom du savon">
+
+  <div class="pink-box">
+    <input id="oil" type="number" placeholder="Huile (L)" oninput="calcSoap()">
+  </div>
+
+  <div class="pink-box">
+    <input id="base" type="number" placeholder="Base (kg)" oninput="calcSoap()">
+  </div>
+
+  <div class="pink-box">
+    <input id="fragrance" type="number" placeholder="Parfum (ml)" oninput="calcSoap()">
+  </div>
+
+  <div class="pink-box">
+    <input id="mold" type="number" placeholder="Moule coût" oninput="calcSoap()">
+  </div>
+
+  <div class="pink-box">
+    <input id="labor" type="number" placeholder="Main d'œuvre" oninput="calcSoap()">
+  </div>
+
+  <div class="pink-box">
+    <input id="packaging" type="number" placeholder="Packaging" oninput="calcSoap()">
+  </div>
+
+  <div class="pink-box" onclick="addSoap()">
+    ➕ Ajouter au tableau
+  </div>
+
+</div>
+
+<!-- ================= CENTER ================= -->
+<div class="panel center">
+
+  <h3>Résumé coût</h3>
+
+  <div class="pink-box">
+    Coût total:
+    <h2 id="total_cost">0 FCFA</h2>
+  </div>
+
+  <div class="pink-box">
+    Prix conseillé:
+    <h2 id="selling_price">0 FCFA</h2>
+  </div>
+
+</div>
+
+<!-- ================= RIGHT ================= -->
+<div class="panel right">
+
+  <h3> Liste des savons</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Coût</th>
+        <th>Marge</th>
+        <th>Prix vente</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody id="soap_table"></tbody>
+  </table>
+
+</div>
+
+</div>
+</div>
+
+<script src="./soap.js"></script>
+
+</body>
+</html>
