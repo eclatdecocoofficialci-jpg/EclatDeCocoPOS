@@ -63,29 +63,26 @@ function loadSales(){
     return;
   }
 
-  /* TRI PAR DATE (récent → ancien) */
   sales.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
   sales.forEach((s, index) => {
 
-    let total = Number(
-      (s.total || "0")
-      .toString()
-      .replace("FCFA","")
-    );
+    let total = Number((s.total || 0));
 
     let tr = document.createElement("tr");
 
     tr.innerHTML = `
       <td>${s.id || "-"}</td>
-      <td>${s.date || "-"}</td>
+      <td>${new Date(s.date).toLocaleString()}</td>
       <td>${s.client?.name || "-"}</td>
-      <td>${s.discount ? s.discount + "%" : "0%"}</td>
-      <td>${s.paymentMethod || "-"}</td>
-      <td>${Math.round(total)} FCFA</td>
+      <td>${s.discount || 0}%</td>
+      <td>${s.payment || "-"}</td> <!-- ✅ FIX ICI -->
+      <td style="color:#e91e63;font-weight:bold;">
+        ${Math.round(total)} FCFA
+      </td>
       <td>
-        <button onclick="viewInvoice(${index})">Voir</button>
-        <button onclick="deleteSale(${index})">Supprimer</button>
+        <button onclick="viewInvoice(${index})">👁 Voir</button>
+        <button onclick="deleteSale(${index})">🗑 Supprimer</button>
       </td>
     `;
 
@@ -99,7 +96,6 @@ function loadSales(){
 function viewInvoice(i){
 
   let sales = getSales();
-
   sales.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
   let s = sales[i];
@@ -109,19 +105,20 @@ function viewInvoice(i){
     return;
   }
 
-  let items = (s.cart || []).map(p =>
+  let items = (s.items || []).map(p =>
     `${p.name} x${p.qty} = ${p.price * p.qty} FCFA`
   ).join("\n");
 
   alert(
-    "FACTURE: " + (s.id || "-") +
-    "\nDATE: " + (s.date || "-") +
+    "FACTURE #" + s.id +
+    "\nDATE: " + new Date(s.date).toLocaleString() +
     "\nCLIENT: " + (s.client?.name || "-") +
+    "\nTEL: " + (s.client?.phone || "-") +
     "\n\nPRODUITS:\n" + items +
-    "\n\nREMISE: " + (s.discount || "0%") +
+    "\n\nREMISE: " + (s.discount || 0) + "%" +
     "\nLIVRAISON: " + (s.delivery || 0) + " FCFA" +
-    "\nPAIEMENT: " + (s.paymentMethod || "-") +
-    "\nTOTAL: " + Math.round(Number(s.total || 0)) + " FCFA"
+    "\nPAIEMENT: " + (s.payment || "-") +
+    "\nTOTAL: " + Math.round(s.total || 0) + " FCFA"
   );
 }
 
@@ -147,33 +144,14 @@ function updateTotalSales(){
   let sales = getSales();
 
   let total = sales.reduce((sum, s) => {
-    return sum + Number((s.total || "0").toString().replace("FCFA",""));
+    return sum + Number(s.total || 0);
   }, 0);
 
   document.getElementById("total-sales").innerText =
     Math.round(total) + " FCFA";
 }
-renderSales(){
 
-  let sales = JSON.parse(localStorage.getItem("sales")) || [];
-
-  sales.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-  document.getElementById("sales-body").innerHTML =
-    sales.map(sale => `
-      <tr>
-        <td>${sale.id}</td>
-        <td>${new Date(sale.date).toLocaleString()}</td>
-        <td>${sale.client?.name || "-"}</td>
-        <td>${sale.discount || 0}%</td>
-        <td>${sale.payment || "-"}</td>
-        <td style="color:#e91e63;font-weight:bold;">
-          ${sale.total}
-        </td>
-      </tr>
-    `).join("");
-}
-}
+/* ================= INIT ================= */
 window.onload = loadSales;
 </script>
 <div class="main-content">
