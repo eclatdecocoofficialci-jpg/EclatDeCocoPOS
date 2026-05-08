@@ -19,16 +19,15 @@ function generateInvoiceId(){
 
 /* ================= DATE ================= */
 function setInvoiceDate(){
-  const el = document.getElementById("invoice-date");
+  const el = document.getElementById("date");
   if(el){
     const d = new Date();
-    el.innerText = d.toLocaleString("fr-FR");
+    el.value = d.toISOString().split("T")[0];
   }
 }
 
 /* ================= QR CODE ================= */
 function generateQR(total, id){
-
   const container = document.getElementById("qrcode");
   if(!container) return;
 
@@ -40,13 +39,6 @@ function generateQR(total, id){
     height: 100
   });
 }
-
-/* ================= DELIVERY LIVE ================= */
-document.addEventListener("input", (e)=>{
-  if(e.target.id === "delivery"){
-    updateTotal();
-  }
-});
 
 /* ================= PRODUCTS ================= */
 function loadCategories(){
@@ -80,9 +72,7 @@ function searchProducts(v){
     : products.filter(p => p.category === activeCategory);
 
   renderProducts(
-    base.filter(p =>
-      p.name.toLowerCase().includes(value)
-    )
+    base.filter(p => p.name.toLowerCase().includes(value))
   );
 }
 
@@ -165,53 +155,18 @@ function updateTotal(){
   return total;
 }
 
-/* ================= CLIENT SYSTEM ================= */
-function saveClientFromPOS(total, invoiceId){
-
-  const name = document.getElementById("client-name")?.value || "";
-  const phone = document.getElementById("client-phone")?.value || "";
-  const address = document.getElementById("client-address")?.value || "";
-
-  if(!phone) return;
-
-  let clients = JSON.parse(localStorage.getItem("clients")) || [];
-
-  let client = clients.find(c => c.phone === phone);
-
-  if(!client){
-    client = {
-      id: "CL" + String(clients.length + 1).padStart(3,"0"),
-      name,
-      phone,
-      address,
-      totalInvoices: 0,
-      sales: []
-    };
-    clients.push(client);
-  }
-
-  client.totalInvoices += 1;
-
-  client.sales.push({
-    id: invoiceId,
-    date: new Date(),
-    total: total
-  });
-
-  localStorage.setItem("clients", JSON.stringify(clients));
-}
-
 /* ================= PAYMENT ================= */
 function selectPayment(el, method){
+
   paymentMethod = method;
 
   document.querySelectorAll(".pay-btn")
-    .forEach(b=>b.classList.remove("active"));
+    .forEach(b => b.classList.remove("active"));
 
   el.classList.add("active");
 }
 
-/* ================= SAVE SALE ================= */
+/* ================= SAVE ================= */
 function saveSale(){
 
   const total = updateTotal();
@@ -229,10 +184,6 @@ function saveSale(){
 
   localStorage.setItem("sales", JSON.stringify(sales));
 
-  /* CLIENT LINK */
-  saveClientFromPOS(total, id);
-
-  /* QR + DATE */
   setInvoiceDate();
   generateQR(total, id);
 
@@ -256,6 +207,7 @@ function resetInvoice(){
   generateInvoiceId();
 }
 
+/* ================= PRINT 5x7 INCH ================= */
 function printInvoice() {
 
   const clientName = document.getElementById("client-name")?.value || "";
@@ -287,18 +239,13 @@ function printInvoice() {
 
   const win = window.open("", "_blank", "width=400,height=700");
 
-  win.document.open();
-
   win.document.write(`
     <html>
     <head>
       <title>Éclat de Coco</title>
 
       <style>
-        @page {
-          size: 5in 7in;
-          margin: 5mm;
-        }
+        @page { size: 5in 7in; margin: 5mm; }
 
         body {
           font-family: Arial;
@@ -327,9 +274,7 @@ function printInvoice() {
           text-align: center;
         }
 
-        th {
-          background: #f8c8d8;
-        }
+        th { background: #f8c8d8; }
 
         .total {
           text-align: right;
@@ -348,13 +293,12 @@ function printInvoice() {
           font-style: italic;
           font-size: 11px;
         }
-
       </style>
     </head>
 
     <body onload="window.print(); window.close();">
 
-      <h1>ÉCLAT DE COCO OFFICIAL</h1>
+      <h1>ÉCLAT DE COCO</h1>
 
       <div class="info">
         Abidjan - Côte d’Ivoire <br>
@@ -405,62 +349,7 @@ function printInvoice() {
   setTimeout(() => {
     win.print();
     win.close();
-  }, 400);
-}
-
-  win.document.close();
-}
-    </head>
-
-    <body onload="window.print(); window.close();">
-
-      <h1>ÉCLAT DE COCO OFFICIAL</h1>
-
-      <div class="info">
-        Abidjan - Côte d’Ivoire <br>
-        Date: ${date} <br>
-        Facture ID: ${invoiceId}
-      </div>
-
-      <div class="client">
-        <strong>Client :</strong> ${clientName} <br>
-        <strong>Téléphone :</strong> ${clientPhone} <br>
-        <strong>Adresse :</strong> ${clientAddress} <br>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Produit</th>
-            <th>Qté</th>
-            <th>Prix</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          ${itemsHTML}
-        </tbody>
-      </table>
-
-      <div class="total">
-        Livraison: ${delivery} FCFA <br>
-        Total Final: ${total}
-      </div>
-
-      <div class="footer">
-        Merci de faire partie de l’univers Éclat de Coco 💖
-      </div>
-
-      <div class="message">
-        Produits naturels - respect de la peau et de la nature 🌿
-      </div>
-
-    </body>
-    </html>
-  `);
-
-  win.document.close();
+  }, 500);
 }
 
 /* ================= INIT ================= */
@@ -469,10 +358,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
   loadCategories();
   renderProducts(products);
   generateInvoiceId();
+  setInvoiceDate();
 
   document.getElementById("search")
     ?.addEventListener("input", e => searchProducts(e.target.value));
-
-  const d = document.getElementById("date");
-  if(d) d.valueAsDate = new Date();
 });
