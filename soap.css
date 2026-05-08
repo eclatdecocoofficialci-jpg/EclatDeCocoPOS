@@ -21,3 +21,38 @@
   text-align: center;
   margin-top: 10px;
 }
+.soap-container{
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+}
+
+/* LEFT INPUT */
+.soap-left{
+  flex:1;
+  min-width:280px;
+  background:white;
+  padding:12px;
+  border-radius:16px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* RIGHT TABLE / RESULT */
+.soap-right{
+  flex:2;
+  min-width:320px;
+  background:white;
+  padding:12px;
+  border-radius:16px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* TABLE CLEAN */
+.soap-right table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.soap-right th{
+  background:#ffe6ef;
+}
