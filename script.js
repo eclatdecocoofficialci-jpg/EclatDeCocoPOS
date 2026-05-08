@@ -1,30 +1,5 @@
-let products = JSON.parse(localStorage.getItem("products")) || [
-  {name:"Savon Rose", price:3000, stock:10, category:"Savon"},
-  {name:"Savon Coco", price:3500, stock:8, category:"Savon"},
-  {name:"Lotion Vanille", price:5000, stock:5, category:"Lotion"},
-  {name:"Beurre Karité", price:4000, stock:7, category:"Beurre"}
-];
-
-let invoice = [];
 let activeCategory = "ALL";
-let paymentMethod = "cash";
-let currentTotal = 0;
-
-/* ================= INVOICE ID ================= */
-let lastInvoiceId = Number(localStorage.getItem("invoice_id") || 20206000);
-
-function generateInvoiceId(){
-  const el = document.getElementById("invoice-id");
-  if(el) el.innerText = lastInvoiceId;
-}
-
-/* ================= DATE ================= */
-function setInvoiceDate(){
-  const el = document.getElementById("date");
-  if(el){
-    el.value = new Date().toISOString().split("T")[0];
-  }
-}
+let searchValue = "";
 
 /* ================= CATEGORIES ================= */
 function loadCategories(){
@@ -33,29 +8,41 @@ function loadCategories(){
 
   const categories = [...new Set(products.map(p => p.category))];
 
-  box.innerHTML =
-    `<div class="pink-box" onclick="showAll()">ALL</div>` +
-    categories.map(cat =>
-      `<div class="pink-box" onclick="filterProducts('${cat}')">${cat}</div>`
-    ).join("");
-}
+  box.innerHTML = "";
 
-function showAll(){
-  activeCategory = "ALL";
-  applyFilters();
-}
+  // ALL button
+  const all = document.createElement("div");
+  all.className = "pink-box";
+  all.innerText = "ALL";
+  all.onclick = () => {
+    activeCategory = "ALL";
+    applyFilters();
+  };
+  box.appendChild(all);
 
-function filterProducts(cat){
-  activeCategory = cat;
-  applyFilters();
+  // categories
+  categories.forEach(cat => {
+    const div = document.createElement("div");
+    div.className = "pink-box";
+    div.innerText = cat;
+
+    div.onclick = () => {
+      activeCategory = cat;
+      applyFilters();
+    };
+
+    box.appendChild(div);
+  });
 }
 
 /* ================= SEARCH ================= */
 function searchProducts(v){
-  applyFilters(v);
+  searchValue = v.toLowerCase();
+  applyFilters();
 }
 
-function applyFilters(searchValue = ""){
+/* ================= FILTER ENGINE ================= */
+function applyFilters(){
 
   let filtered = products;
 
@@ -63,74 +50,37 @@ function applyFilters(searchValue = ""){
     filtered = filtered.filter(p => p.category === activeCategory);
   }
 
-  const search = searchValue || document.getElementById("search")?.value || "";
-
-  filtered = filtered.filter(p =>
-    p.name.toLowerCase().includes(search.toLowerCase())
-  );
+  if(searchValue){
+    filtered = filtered.filter(p =>
+      p.name.toLowerCase().includes(searchValue)
+    );
+  }
 
   renderProducts(filtered);
 }
 
 /* ================= PRODUCTS ================= */
 function renderProducts(list){
+
   const box = document.getElementById("product-list");
   if(!box) return;
 
-  box.innerHTML = list.map(p => `
-    <div class="pink-box" onclick="addToInvoice(\`${p.name}\`, ${p.price})">
+  box.innerHTML = "";
+
+  list.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "pink-box";
+
+    div.innerHTML = `
       <strong>${p.name}</strong><br>
       💰 ${p.price} FCFA<br>
       📦 ${p.stock}
-    </div>
-  `).join("");
-}
-/* ================= INVOICE ================= */
-function addToInvoice(name, price){
+    `;
 
-  const item = invoice.find(i => i.name === name);
+    div.onclick = () => addToInvoice(p.name, p.price);
 
-  if(item){
-    item.qty++;
-  } else {
-    invoice.push({name, price, qty:1});
-  }
-
-  renderInvoice();
-}
-
-function renderInvoice(){
-
-  const body = document.getElementById("invoice-body");
-  if(!body) return;
-
-  body.innerHTML = invoice.map((i,index)=>`
-    <tr>
-      <td>${i.name}</td>
-      <td><input type="number" value="${i.qty}" onchange="updateQty(${index},this.value)"></td>
-      <td><input type="number" value="${i.price}" onchange="updatePrice(${index},this.value)"></td>
-      <td>${i.qty * i.price}</td>
-      <td><button onclick="removeItem(${index})">❌</button></td>
-    </tr>
-  `).join("");
-
-  updateTotal();
-}
-
-/* ================= UPDATE ================= */
-function updateQty(i,v){
-  invoice[i].qty = Math.max(1, Number(v));
-  renderInvoice();
-}
-
-function updatePrice(i,v){
-  invoice[i].price = Number(v);
-  renderInvoice();
-}
-
-function removeItem(i){
-  invoice.splice(i,1);
-  renderInvoice();
+    box.appendChild(div);
+  });
 }
 
 /* ================= TOTAL LIVE ================= */
