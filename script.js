@@ -9,18 +9,6 @@ let invoice = [];
 let activeCategory = "ALL";
 let paymentMethod = "cash";
 let currentTotal = 0;
-let products = JSON.parse(localStorage.getItem("products")) || [
-  {name:"Savon Rose", price:3000, stock:10, category:"Savon"},
-  {name:"Savon Coco", price:3500, stock:8, category:"Savon"},
-  {name:"Lotion Vanille", price:5000, stock:5, category:"Lotion"},
-  {name:"Beurre Karité", price:4000, stock:7, category:"Beurre"}
-];
-
-let invoice = [];
-let activeCategory = "ALL";
-let paymentMethod = "cash";
-let currentTotal = 0;
-
 let editMode = false;
 
 /* ================= INVOICE ID ================= */
@@ -31,7 +19,7 @@ function generateInvoiceId(){
   if(el) el.innerText = lastInvoiceId;
 }
 
-/* ================= DATE FIX ================= */
+/* ================= DATE ================= */
 function setInvoiceDate(){
   const el = document.getElementById("date");
   if(el){
@@ -39,101 +27,114 @@ function setInvoiceDate(){
   }
 }
 
-/* ================= RESET PROPRE ================= */
-function resetInvoice(){
+/* ================= CATEGORIES ================= */
+function loadCategories(){
+  const box = document.getElementById("category-boxes");
+  if(!box) return;
 
-  invoice = [];
+  const categories = [...new Set(products.map(p => p.category))];
 
-  renderInvoice();
+  let html = `<div class="pink-box" onclick="showAll()">ALL</div>`;
 
-  document.getElementById("delivery").value = "";
-  document.getElementById("client-name").value = "";
-  document.getElementById("client-phone").value = "";
-  document.getElementById("client-address").value = "";
+  categories.forEach(cat => {
+    html += `<div class="pink-box" onclick="filterCategory('${cat}')">${cat}</div>`;
+  });
 
-  paymentMethod = "cash";
-
-  document.querySelectorAll(".pay-btn")
-    .forEach(b => b.classList.remove("active"));
-
-  lastInvoiceId++;
-  localStorage.setItem("invoice_id", lastInvoiceId);
-
-  generateInvoiceId();
-  setInvoiceDate();
-
-  editMode = false;
+  box.innerHTML = html;
 }
 
-/* ================= SAVE SALE FIX DATE ================= */
-function saveSale(){
+function showAll(){
+  activeCategory = "ALL";
+  applyFilters();
+}
 
-  const total = updateTotal();
+function filterCategory(cat){
+  activeCategory = cat;
+  applyFilters();
+}
 
-  const clientName = document.getElementById("client-name")?.value || "";
-  const clientPhone = document.getElementById("client-phone")?.value || "";
-  const clientAddress = document.getElementById("client-address")?.value || "";
+/* ================= SEARCH ================= */
+document.addEventListener("input", (e) => {
+  if(e.target.id === "search") applyFilters();
+  if(e.target.id === "delivery") updateTotal();
+});
 
-  if(!clientName){
-    alert("Nom client obligatoire");
-    return;
+function applyFilters(){
+  const search = document.getElementById("search")?.value.toLowerCase() || "";
+
+  let filtered = products;
+
+  if(activeCategory !== "ALL"){
+    filtered = filtered.filter(p => p.category === activeCategory);
   }
 
-  let sales = JSON.parse(localStorage.getItem("sales")) || [];
+  if(search){
+    filtered = filtered.filter(p =>
+      p.name.toLowerCase().includes(search)
+    );
+  }
 
-  const saleObject = {
-    id: lastInvoiceId,
-
-    // 🔥 FIX IMPORTANT: date FIXE (pas écrasée)
-    date: new Date().toISOString(),
-
-    client: {
-      name: clientName,
-      phone: clientPhone,
-      address: clientAddress
-    },
-
-    items: JSON.parse(JSON.stringify(invoice)),
-
-    payment: paymentMethod,
-    delivery: Number(document.getElementById("delivery")?.value || 0),
-    total: total
-  };
-
-  sales.push(saleObject);
-
-  localStorage.setItem("sales", JSON.stringify(sales));
-
-  resetInvoice();
-
-  alert("✔ Vente sauvegardée");
+  renderProducts(filtered);
 }
 
-/* ================= EDIT MODE ================= */
-function loadEditSale(){
+/* ================= PRODUCTS ================= */
+function renderProducts(list){
+  const box = document.getElementById("product-list");
+  if(!box) return;
 
-  const data = localStorage.getItem("edit_sale");
-  if(!data) return;
+  box.innerHTML = list.map(p => `
+    <div class="pink-box" onclick="addToInvoice('${p.name}', ${p.price})">
+      <strong>${p.name}</strong><br>
+      💰 ${p.price} FCFA<br>
+      📦 ${p.stock <= 0 ? "🔴 RUPTURE" : p.stock}
+    </div>
+  `).join("");
+}
 
-  const sale = JSON.parse(data);
+/* ================= INVOICE ================= */
+function addToInvoice(name, price){
 
-  invoice = sale.items || [];
+  const item = invoice.find(i => i.name === name);
 
-  document.getElementById("client-name").value = sale.client?.name || "";
-  document.getElementById("client-phone").value = sale.client?.phone || "";
-  document.getElementById("client-address").value = sale.client?.address || "";
-  document.getElementById("delivery").value = sale.delivery || 0;
+  if(item){
+    item.qty++;
+  } else {
+    invoice.push({name, price, qty:1});
+  }
 
-  paymentMethod = sale.payment || "cash";
-
-  lastInvoiceId = sale.id;
-
-  generateInvoiceId();
   renderInvoice();
+}
 
-  localStorage.removeItem("edit_sale");
+function renderInvoice(){
+  const body = document.getElementById("invoice-body");
+  if(!body) return;
 
-  editMode = true;
+  body.innerHTML = invoice.map((i,index)=>`
+    <tr>
+      <td>${i.name}</td>
+      <td><input type="number" value="${i.qty}" onchange="updateQty(${index},this.value)"></td>
+      <td><input type="number" value="${i.price}" onchange="updatePrice(${index},this.value)"></td>
+      <td>${i.qty * i.price}</td>
+      <td><button onclick="removeItem(${index})">❌</button></td>
+    </tr>
+  `).join("");
+
+  updateTotal();
+}
+
+function updateQty(i,v){
+  invoice[i].qty = Math.max(1, Number(v));
+  renderInvoice();
+}
+
+function updatePrice(i,v){
+  invoice[i].price = Number(v);
+  renderInvoice();
+}
+
+function removeItem(i){
+  invoice.splice(i,1);
+  renderInvoice();
 }
 
 /* ================= TOTAL ================= */
@@ -165,6 +166,7 @@ function selectPayment(el, method){
   el.classList.add("active");
 }
 
+/* ================= SAVE SALE ================= */
 function saveSale(){
 
   const total = updateTotal();
@@ -182,7 +184,7 @@ function saveSale(){
 
   const saleObject = {
     id: lastInvoiceId,
-    date: document.getElementById("date")?.value || new Date().toLocaleString(),
+    date: new Date().toISOString(),
 
     client: {
       name: clientName,
@@ -190,57 +192,50 @@ function saveSale(){
       address: clientAddress
     },
 
-    items: invoice,
+    items: JSON.parse(JSON.stringify(invoice)),
 
-    // ✅ IMPORTANT UNIQUE KEY
     payment: paymentMethod,
-
     delivery: Number(document.getElementById("delivery")?.value || 0),
     total: total
   };
 
   sales.push(saleObject);
-
   localStorage.setItem("sales", JSON.stringify(sales));
 
-  /* ================= CUSTOMERS SYNC ================= */
-
-  let customers = JSON.parse(localStorage.getItem("customers")) || [];
-
-  let existingCustomer = customers.find(c =>
-    c.phone === clientPhone
-  );
-
-  if(existingCustomer){
-
-    existingCustomer.totalInvoices =
-      (existingCustomer.totalInvoices || 0) + 1;
-
-    existingCustomer.totalSpent =
-      (existingCustomer.totalSpent || 0) + total;
-
-  } else {
-
-    customers.push({
-      name: clientName,
-      phone: clientPhone,
-      address: clientAddress,
-      totalInvoices: 1,
-      totalSpent: total
-    });
-
-  }
-
-  localStorage.setItem("customers", JSON.stringify(customers));
-
   updateSalesView();
-
   alert("✔ Vente sauvegardée");
 
   resetInvoice();
 }
 
-/* ================= SALES TABLE FIX ================= */
+/* ================= EDIT MODE ================= */
+function loadEditSale(){
+
+  const data = localStorage.getItem("edit_sale");
+  if(!data) return;
+
+  const sale = JSON.parse(data);
+
+  invoice = sale.items || [];
+
+  document.getElementById("client-name").value = sale.client?.name || "";
+  document.getElementById("client-phone").value = sale.client?.phone || "";
+  document.getElementById("client-address").value = sale.client?.address || "";
+  document.getElementById("delivery").value = sale.delivery || 0;
+
+  paymentMethod = sale.payment || "cash";
+
+  lastInvoiceId = sale.id;
+
+  generateInvoiceId();
+  renderInvoice();
+
+  localStorage.removeItem("edit_sale");
+
+  editMode = true;
+}
+
+/* ================= UPDATE TABLE ================= */
 function updateSalesView(){
 
   const table = document.getElementById("sales-table-body");
@@ -263,42 +258,29 @@ function updateSalesView(){
 /* ================= RESET ================= */
 function resetInvoice(){
 
-  // vider panier
   invoice = [];
-
-  // reset UI facture
   renderInvoice();
 
-  // reset livraison
-  const delivery = document.getElementById("delivery");
-  if(delivery) delivery.value = "";
-
-  // reset client
-  const name = document.getElementById("client-name");
-  const phone = document.getElementById("client-phone");
-  const address = document.getElementById("client-address");
-
-  if(name) name.value = "";
-  if(phone) phone.value = "";
-  if(address) address.value = "";
-
-  // reset paiement visuel
-  document.querySelectorAll(".pay-btn")
-    .forEach(b => b.classList.remove("active"));
+  document.getElementById("delivery")?.value = "";
+  document.getElementById("client-name")?.value = "";
+  document.getElementById("client-phone")?.value = "";
+  document.getElementById("client-address")?.value = "";
 
   paymentMethod = "cash";
 
-  // NOUVEL ID
+  document.querySelectorAll(".pay-btn")
+    .forEach(b => b.classList.remove("active"));
+
   lastInvoiceId++;
   localStorage.setItem("invoice_id", lastInvoiceId);
 
   generateInvoiceId();
-
-  // IMPORTANT : remettre la date actuelle propre
   setInvoiceDate();
+
+  editMode = false;
 }
 
-/* ================= PRINT FIX 5x7 ================= */
+/* ================= PRINT 5x7 ================= */
 function printInvoice(){
 
   const clientName = document.getElementById("client-name")?.value || "";
@@ -335,29 +317,17 @@ function printInvoice(){
         @page { size: 5in 7in; margin: 5mm; }
         body { font-family: Arial; font-size: 12px; }
         h1 { text-align:center; color:#e91e63; }
-
         table { width:100%; border-collapse:collapse; }
         th,td { border:1px solid #ddd; padding:5px; text-align:center; }
-
-        .footer {
-          position: fixed;
-          bottom: 10px;
-          width: 100%;
-          text-align: center;
-          font-size: 11px;
-        }
       </style>
     </head>
 
     <body onload="window.print(); window.close();">
 
       <h1>ÉCLAT DE COCO OFFICIAL</h1>
-      <div style="text-align:center;">Abidjan, Côte d’Ivoire</div>
 
-      <div>
-        ID: ${invoiceId}<br>
-        Date: ${date}
-      </div>
+      <div>ID: ${invoiceId}</div>
+      <div>Date: ${date}</div>
 
       <div>
         ${clientName}<br>
@@ -366,14 +336,6 @@ function printInvoice(){
       </div>
 
       <table>
-        <thead>
-          <tr>
-            <th>Produit</th>
-            <th>Qté</th>
-            <th>Prix</th>
-            <th>Total</th>
-          </tr>
-        </thead>
         <tbody>${itemsHTML}</tbody>
       </table>
 
@@ -383,18 +345,12 @@ function printInvoice(){
         Paiement: ${paymentMethod}
       </h3>
 
-      <div class="footer">
-        Merci de faire partie de l'univers Éclat de Coco 💖
-      </div>
-
     </body>
     </html>
   `);
 
   win.document.close();
-
   setTimeout(() => {
-    win.focus();
     win.print();
     win.close();
   }, 600);
@@ -407,5 +363,5 @@ window.onload = () => {
   generateInvoiceId();
   setInvoiceDate();
   updateSalesView();
-  loadEditSale(); // 🔥 important pour modifier facture
+  loadEditSale();
 };
