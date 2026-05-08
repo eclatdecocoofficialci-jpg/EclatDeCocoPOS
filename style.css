@@ -277,3 +277,46 @@ button:hover {
     grid-template-columns: 1fr;
   }
 }
+/* ACTION BUTTONS SALES */
+
+.sales-table td button{
+
+  padding: 4px 6px;
+
+  font-size: 11px;
+
+  border: none;
+
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  margin: 2px;
+
+  white-space: nowrap;
+}
+
+/* VOIR */
+.sales-table td button:nth-child(1){
+  background: #f8c8d8;
+}
+
+/* MODIFIER */
+.sales-table td button:nth-child(2){
+  background: #ffd6a5;
+}
+
+/* SUPPRIMER */
+.sales-table td button:nth-child(3){
+  background: #ffb3b3;
+}
+
+/* MOBILE + IPAD */
+.sales-table td{
+  vertical-align: middle;
+}
+
+.sales-table{
+  width: 100%;
+  border-collapse: collapse;
+}
