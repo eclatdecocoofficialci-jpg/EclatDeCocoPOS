@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
 
 <meta charset="UTF-8">
@@ -24,7 +25,6 @@
   <h1>✨ Éclat de Coco POS</h1>
 </header>
 
-<!-- NAV -->
 <nav class="top-nav">
 
   <a href="./dashboard.html">Dashboard</a>
@@ -39,7 +39,6 @@
 
 </nav>
 
-<!-- MAIN -->
 <div class="main-content">
 
   <div class="pos-container">
@@ -110,7 +109,7 @@
       </div>
 
       <h3>
-        Facture N°:
+        Facture N° :
         <span id="invoice-id"></span>
       </h3>
 
@@ -122,7 +121,6 @@
 
       <input type="date" id="date">
 
-      <!-- TABLE -->
       <table>
 
         <thead>
@@ -139,17 +137,16 @@
 
       </table>
 
-      <!-- LIVRAISON -->
       <input
         id="delivery"
         type="number"
         placeholder="Livraison"
       >
 
-      <!-- TOTAL -->
-      <h2 id="grand-total">0 FCFA</h2>
+      <h2 id="grand-total">
+        0 FCFA
+      </h2>
 
-      <!-- PAYMENT -->
       <div class="payment-boxes">
 
         <div class="pay-btn"
@@ -169,12 +166,10 @@
 
       </div>
 
-      <!-- MESSAGE -->
       <p class="invoice-message">
         Merci de faire partie de l’univers Éclat de Coco 💖
       </p>
 
-      <!-- BUTTONS -->
       <button onclick="saveSale()">
         💾 Sauvegarder
       </button>
@@ -193,7 +188,6 @@
 
 </div>
 
-<!-- LOGIN CHECK -->
 <script>
 
 if(localStorage.getItem("eclat_logged") !== "true"){
@@ -212,10 +206,8 @@ window.addEventListener("load", ()=>{
 
 </script>
 
-<!-- QR CODE -->
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
-<!-- MAIN SCRIPT -->
 <script src="./script.js?v=61"></script>
 
 </body>
