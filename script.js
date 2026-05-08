@@ -182,7 +182,7 @@ function saveSale(){
 
   const saleObject = {
     id: lastInvoiceId,
-    date: new Date().toLocaleString(),
+    date: document.getElementById("date")?.value || new Date().toLocaleString(),
 
     client: {
       name: clientName,
@@ -263,16 +263,39 @@ function updateSalesView(){
 /* ================= RESET ================= */
 function resetInvoice(){
 
+  // vider panier
   invoice = [];
 
+  // reset UI facture
+  renderInvoice();
+
+  // reset livraison
   const delivery = document.getElementById("delivery");
   if(delivery) delivery.value = "";
 
+  // reset client
+  const name = document.getElementById("client-name");
+  const phone = document.getElementById("client-phone");
+  const address = document.getElementById("client-address");
+
+  if(name) name.value = "";
+  if(phone) phone.value = "";
+  if(address) address.value = "";
+
+  // reset paiement visuel
+  document.querySelectorAll(".pay-btn")
+    .forEach(b => b.classList.remove("active"));
+
+  paymentMethod = "cash";
+
+  // NOUVEL ID
   lastInvoiceId++;
   localStorage.setItem("invoice_id", lastInvoiceId);
 
-  renderInvoice();
   generateInvoiceId();
+
+  // IMPORTANT : remettre la date actuelle propre
+  setInvoiceDate();
 }
 
 /* ================= PRINT FIX 5x7 ================= */
