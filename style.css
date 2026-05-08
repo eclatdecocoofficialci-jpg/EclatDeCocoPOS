@@ -324,3 +324,6 @@ button:hover {
   width: 1%;
 
 }
+#category-boxes, #product-list {
+  min-height: 50px;
+}
