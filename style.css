@@ -1,29 +1,14 @@
-/* ================= RESET GLOBAL ================= */
+/* ================= RESET ================= */
 {
   margin:0;
   padding:0;
   box-sizing:border-box;
 }
 
-html, body{
-  height:100%;
-  font-family:Poppins, sans-serif;
-}
-
-/ ================= BODY ================= /
 body{
-  background:#fff0f5;
-  display:flex;
-  flex-direction:column;
-  min-height:100vh;
+  font-family:Poppins,sans-serif;
+  background:#fff4f7;
   overflow-x:hidden;
-}
-
-/ ================= MAIN ================= /
-.main-content{
-  flex:1;
-  display:flex;
-  flex-direction:column;
 }
 
 / ================= HEADER ================= /
@@ -32,261 +17,121 @@ header{
   color:white;
   text-align:center;
   padding:18px;
-  box-shadow:0 3px 10px rgba(0,0,0,0.08);
 }
 
 header h1{
-  font-size:20px;
-  font-weight:700;
+  font-size:22px;
 }
 
-/ ================= NAVIGATION ================= /
+/ ================= NAV ================= /
 .top-nav{
   display:flex;
-  flex-wrap:wrap;
   gap:10px;
-  padding:14px;
+  flex-wrap:wrap;
+  padding:12px;
   background:white;
-  border-bottom:1px solid #ffd6e5;
 }
 
 .top-nav a{
-  background:linear-gradient(135deg,#f8bbd0,#ffe6ef);
+  text-decoration:none;
+  background:#f8c8d8;
+  color:#333;
   padding:10px 14px;
   border-radius:12px;
-  text-decoration:none;
-  color:#333;
   font-weight:600;
-  transition:0.2s;
-  box-shadow:0 2px 6px rgba(0,0,0,0.05);
 }
 
-.top-nav a:hover{
-  background:#e91e63;
-  color:white;
-  transform:translateY(-2px);
+/ ================= MAIN ================= /
+.main-content{
+  width:100%;
+  padding:14px;
 }
 
-/ ================= POS LAYOUT ================= /
+/ ================= 3 COLUMNS ================= /
 .pos-container{
   display:flex;
   flex-direction:row;
-  align-items:flex-start;
-  justify-content:space-between;
   gap:16px;
-
-  width:100%;
-  padding:16px;
+  align-items:flex-start;
 }
 
 / ================= PANELS ================= /
 .panel{
   background:white;
-  border-radius:18px;
+  border-radius:20px;
   padding:18px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.05);
-
-  display:flex;
-  flex-direction:column;
+  box-shadow:0 2px 10px rgba(0,0,0,0.05);
 }
 
-/ ================= LEFT PANEL ================= /
+/ ================= LEFT ================= /
 .left{
-  width:19%;
-  min-width:190px;
+  width:18%;
 }
 
-/ ================= CENTER PANEL ================= /
+/ ================= CENTER ================= /
 .center{
-  width:46%;
-  min-width:430px;
+  width:47%;
 }
 
-/ ================= RIGHT PANEL ================= /
+/ ================= RIGHT ================= /
 .right{
   width:35%;
-  min-width:340px;
-}
-
-/ ================= TITLES ================= /
-h2{
-  color:#111;
-}
-
-h3{
-  color:#222;
-  margin-bottom:12px;
 }
 
 / ================= CATEGORY ================= /
 #category-boxes{
   display:flex;
   flex-direction:column;
-  gap:12px;
+  gap:14px;
 }
 
-/ ================= PRODUCTS ================= /
+/ ================= PRODUCT GRID ================= /
 #product-list{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:12px;
+  gap:14px;
   margin-top:10px;
 }
 
-/ ================= BOXES ================= /
+/ ================= PINK BOX ================= /
 .pink-box{
-  background:linear-gradient(135deg,#f8bbd0,#ffe6ef);
-  padding:16px;
+  background:#f8c8d8;
   border-radius:16px;
+  padding:18px;
   text-align:center;
   cursor:pointer;
   transition:0.2s;
-  font-size:15px;
-  font-weight:500;
-  box-shadow:0 3px 8px rgba(0,0,0,0.04);
 }
 
 .pink-box:hover{
-  transform:scale(1.02);
   background:#e91e63;
   color:white;
 }
 
-/ ================= INPUTS ================= /
-input,
-select{
+/ ================= INPUT ================= /
+input{
   width:100%;
   padding:12px;
   border-radius:12px;
-  border:2px solid #f8bbd0;
+  border:2px solid #f8c8d8;
   margin-bottom:10px;
-  font-size:15px;
-  outline:none;
-  background:white;
-}
-
-/ ================= TABLE ================= /
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:10px;
-}
-
-th,
-td{
-  border:1px solid #eee;
-  padding:9px;
-  text-align:center;
-  font-size:13px;
-}
-
-th{
-  background:#ffe6ef;
-  font-weight:700;
-}
-
-/ ================= FACTURE ================= /
-.invoice-header{
-  text-align:center;
-  margin-bottom:10px;
-  border-bottom:1px solid #ffd6e5;
-  padding-bottom:10px;
-}
-
-.sub-title{
-  margin-top:4px;
-  font-size:15px;
-}
-
-#invoice-id{
-  color:#e91e63;
-  font-weight:900;
-}
-
-/ ================= QR CODE ================= /
-#qr-code{
-  display:flex;
-  justify-content:center;
-  margin-top:10px;
-}
-
-/ ================= TOTAL ================= /
-#grand-total{
-  text-align:center;
-  font-size:36px;
-  font-weight:900;
-  color:#e91e63;
-  margin-top:10px;
-  margin-bottom:10px;
-}
-
-/ ================= BUTTONS ================= /
-button{
-  background:#f8bbd0;
-  border:none;
-  padding:14px;
-  border-radius:12px;
-  cursor:pointer;
-  font-weight:bold;
-  transition:0.2s;
-}
-
-button:hover{
-  background:#e91e63;
-  color:white;
-}
-
-.right button{
-  width:100%;
-  margin-top:6px;
-}
-
-/ ================= PAYMENT ================= /
-.payment-boxes{
-  display:flex;
-  gap:10px;
-  margin-top:10px;
-  margin-bottom:10px;
-}
-
-.pay-btn{
-  flex:1;
-  padding:14px;
-  border-radius:14px;
-  text-align:center;
-  background:#f8bbd0;
-  font-weight:bold;
-  cursor:pointer;
-  transition:0.2s;
-}
-
-.pay-btn:hover{
-  background:#e91e63;
-  color:white;
-}
-
-.pay-btn.active{
-  background:#e91e63;
-  color:white;
 }
 
 / ================= CALCULATOR ================= /
 .calc{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:10px;
+  gap:12px;
   margin-top:10px;
 }
 
 .calc button{
-  height:74px;
+  height:78px;
   border:none;
   border-radius:16px;
-  background:linear-gradient(135deg,#f8bbd0,#ffe6ef);
+  background:#f8c8d8;
   font-size:24px;
-  font-weight:800;
-  cursor:pointer;
-  transition:0.2s;
+  font-weight:bold;
 }
 
 .calc button:hover{
@@ -296,23 +141,84 @@ button:hover{
 
 / ================= DISPLAY ================= /
 #display{
-  width:100%;
-  height:74px;
-  border-radius:16px;
-  border:2px solid #f8bbd0;
+  height:80px;
   font-size:30px;
   text-align:right;
-  padding:12px;
-  font-weight:bold;
-  margin-bottom:12px;
 }
 
-/ ================= FACTURE MESSAGE ================= /
-.invoice-message{
-  text-align:center;
-  font-size:12px;
+/ ================= TABLE ================= /
+table{
+  width:100%;
+  border-collapse:collapse;
   margin-top:10px;
-  color:#444;
+}
+
+th,td{
+  border:1px solid #eee;
+  padding:8px;
+  text-align:center;
+  font-size:13px;
+}
+
+th{
+  background:#ffe4ec;
+}
+
+/ ================= TOTAL ================= /
+#grand-total{
+  text-align:center;
+  font-size:36px;
+  color:#e91e63;
+  font-weight:900;
+  margin-top:10px;
+}
+
+/ ================= PAYMENT ================= /
+.payment-boxes{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+
+.pay-btn{
+  flex:1;
+  background:#f8c8d8;
+  padding:14px;
+  border-radius:14px;
+  text-align:center;
+  font-weight:bold;
+}
+
+.pay-btn.active{
+  background:#e91e63;
+  color:white;
+}
+
+/ ================= BUTTON ================= /
+button{
+  width:100%;
+  margin-top:8px;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:#f8c8d8;
+  font-weight:bold;
+}
+
+button:hover{
+  background:#e91e63;
+  color:white;
+}
+
+/ ================= FACTURE ================= /
+.invoice-header{
+  text-align:center;
+  margin-bottom:10px;
+}
+
+#invoice-id{
+  color:#e91e63;
+  font-weight:900;
 }
 
 / ================= PRINT ================= */
@@ -331,67 +237,28 @@ button:hover{
     position:absolute;
     left:0;
     top:0;
-
     width:5in;
     min-height:7in;
-
     background:white;
     padding:14px;
-    box-shadow:none !important;
-    border-radius:0;
   }
 
-  / hide POS /
-  nav,
   .left,
   .center,
-  .payment-boxes,
-  button{
+  nav,
+  button,
+  .payment-boxes{
     display:none !important;
   }
 
-  / hide action column /
   table th:last-child,
   table td:last-child{
     display:none !important;
   }
-
-  / print table /
-  table{
-    width:100%;
-    border-collapse:collapse;
-  }
-
-  th,
-  td{
-    border:1px solid #000;
-    padding:6px;
-    font-size:12px;
-  }
-
-  th{
-    background:#f2f2f2 !important;
-  }
-
-  / print total /
-  #grand-total{
-    font-size:28px;
-  }
-
-  / title /
-  .invoice-header h2{
-    font-size:18px;
-  }
-
-  / message /
-  .invoice-message{
-    font-size:11px;
-    margin-top:10px;
-  }
 }
 
-/ ================= MOBILE + IPAD ================= */
-@media(max-width:1100px){
+/ ================= MOBILE ================= */
+@media(max-width:1000px){
 
   .pos-container{
     flex-direction:column;
@@ -401,20 +268,9 @@ button:hover{
   .center,
   .right{
     width:100%;
-    min-width:100%;
   }
 
   #product-list{
     grid-template-columns:1fr;
-  }
-
-  .calc button{
-    height:68px;
-    font-size:20px;
-  }
-
-  #display{
-    height:68px;
-    font-size:24px;
   }
 }
