@@ -14,7 +14,6 @@ document.getElementById('add-client-btn').addEventListener('click', ()=>{
     return;
   }
 
-  /* 🔥 CHECK EXISTING CLIENT (IMPORTANT POUR FACTURES) */
   let existing = clients.find(c => c.phone === phone);
 
   if(existing){
@@ -28,7 +27,8 @@ document.getElementById('add-client-btn').addEventListener('click', ()=>{
       name,
       phone,
       address,
-      totalInvoices: 0
+      totalInvoices: 0,
+      sales: []   // 🔥 IMPORTANT: historique factures
     });
 
   }
@@ -48,28 +48,34 @@ function saveClients(){
 }
 
 
-/* ================= AUTO UPDATE FROM POS ================= */
-/* 👉 À utiliser depuis ton saveSale() dans POS */
+/* ================= LINK POS → CLIENT ================= */
+/* 👉 À appeler depuis saveSale() dans POS */
 
-function updateClientFromSale(name, phone, address){
+function updateClientFromSale(name, phone, address, saleData){
 
   let client = clients.find(c => c.phone === phone);
 
-  if(client){
+  if(!client){
 
-    client.totalInvoices += 1;
-
-  } else {
-
-    clients.push({
+    client = {
       id: "CL" + String(clients.length + 1).padStart(3,"0"),
       name,
       phone,
       address,
-      totalInvoices: 1
-    });
+      totalInvoices: 0,
+      sales: []
+    };
 
+    clients.push(client);
   }
+
+  client.totalInvoices += 1;
+
+  client.sales.push({
+    id: saleData.id,
+    date: saleData.date,
+    total: saleData.total
+  });
 
   saveClients();
 }
@@ -82,7 +88,7 @@ function updateTable(){
   tbody.innerHTML='';
 
   if(clients.length === 0){
-    tbody.innerHTML = '<tr><td colspan="5">Aucun client</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6">Aucun client</td></tr>';
     return;
   }
 
@@ -111,10 +117,8 @@ function updateTable(){
       <td>${item.totalInvoices}</td>
 
       <td>
-        <button class="remove-btn"
-          onclick="deleteClient(${i})">
-          X
-        </button>
+        <button onclick="viewClientSales(${i})">👁</button>
+        <button onclick="deleteClient(${i})">❌</button>
       </td>
     `;
 
@@ -123,11 +127,24 @@ function updateTable(){
 }
 
 
+/* ================= VIEW HISTORY ================= */
+function viewClientSales(index){
+
+  const client = clients[index];
+
+  alert(
+    "Client: " + client.name +
+    "\nFactures: " + client.totalInvoices +
+    "\nDernière vente: " +
+    (client.sales.length ? client.sales[client.sales.length - 1].date : "Aucune")
+  );
+}
+
+
 /* ================= EDIT ================= */
 function editClient(index, field, value){
 
   clients[index][field] = value;
-
   saveClients();
 }
 
@@ -138,9 +155,7 @@ function deleteClient(index){
   if(confirm("Supprimer ce client ?")){
 
     clients.splice(index,1);
-
     saveClients();
-
     updateTable();
   }
 }
