@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -23,6 +24,7 @@
   <h1>✨ Éclat de Coco POS</h1>
 </header>
 
+<!-- NAV -->
 <nav class="top-nav">
 
   <a href="./dashboard.html">Dashboard</a>
@@ -37,151 +39,183 @@
 
 </nav>
 
+<!-- MAIN -->
 <div class="main-content">
 
-<div class="pos-container">
+  <div class="pos-container">
 
-<!-- LEFT -->
-<div class="panel left">
-  <h3>📂 Catégories</h3>
-  <div id="category-boxes"></div>
-</div>
+    <!-- LEFT -->
+    <div class="panel left">
 
-<!-- CENTER -->
-<div class="panel center">
+      <h3>📂 Catégories</h3>
 
-  <h3>🔎 Recherche</h3>
-  <input id="search" placeholder="Nom ou barcode">
+      <div id="category-boxes"></div>
 
-  <h3>🛍 Produits</h3>
-  <div id="product-list"></div>
+    </div>
 
-  <h3>🧮 Calculatrice</h3>
-  <input id="display">
+    <!-- CENTER -->
+    <div class="panel center">
 
-  <div class="calc">
-    <button onclick="press(7)">7</button>
-    <button onclick="press(8)">8</button>
-    <button onclick="press(9)">9</button>
-    <button onclick="press('+')">+</button>
+      <h3>🔎 Recherche</h3>
 
-    <button onclick="press(4)">4</button>
-    <button onclick="press(5)">5</button>
-    <button onclick="press(6)">6</button>
-    <button onclick="press('-')">-</button>
+      <input id="search" placeholder="Nom ou barcode">
 
-    <button onclick="press(1)">1</button>
-    <button onclick="press(2)">2</button>
-    <button onclick="press(3)">3</button>
-    <button onclick="press('*')">×</button>
+      <h3>🛍 Produits</h3>
 
-    <button onclick="press(0)">0</button>
-    <button onclick="clearCalc()">C</button>
-    <button onclick="calculate()">=</button>
-    <button onclick="press('/')">÷</button>
+      <div id="product-list"></div>
+
+      <h3>🧮 Calculatrice</h3>
+
+      <input id="display">
+
+      <div class="calc">
+
+        <button onclick="press(7)">7</button>
+        <button onclick="press(8)">8</button>
+        <button onclick="press(9)">9</button>
+        <button onclick="press('+')">+</button>
+
+        <button onclick="press(4)">4</button>
+        <button onclick="press(5)">5</button>
+        <button onclick="press(6)">6</button>
+        <button onclick="press('-')">-</button>
+
+        <button onclick="press(1)">1</button>
+        <button onclick="press(2)">2</button>
+        <button onclick="press(3)">3</button>
+        <button onclick="press('*')">×</button>
+
+        <button onclick="press(0)">0</button>
+        <button onclick="clearCalc()">C</button>
+        <button onclick="calculate()">=</button>
+        <button onclick="press('/')">÷</button>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT FACTURE -->
+    <div id="invoice-print-area" class="panel right">
+
+      <div class="invoice-header">
+
+        <h2>ÉCLAT DE COCO OFFICIAL</h2>
+
+        <p class="sub-title">
+          Abidjan - Côte d’Ivoire
+        </p>
+
+        <div id="qr-code"></div>
+
+      </div>
+
+      <h3>
+        Facture N°:
+        <span id="invoice-id"></span>
+      </h3>
+
+      <input id="client-name" placeholder="Nom client">
+
+      <input id="client-phone" placeholder="Téléphone">
+
+      <input id="client-address" placeholder="Adresse">
+
+      <input type="date" id="date">
+
+      <!-- TABLE -->
+      <table>
+
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th>Qté</th>
+            <th>Prix</th>
+            <th>Total</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody id="invoice-body"></tbody>
+
+      </table>
+
+      <!-- LIVRAISON -->
+      <input
+        id="delivery"
+        type="number"
+        placeholder="Livraison"
+      >
+
+      <!-- TOTAL -->
+      <h2 id="grand-total">0 FCFA</h2>
+
+      <!-- PAYMENT -->
+      <div class="payment-boxes">
+
+        <div class="pay-btn"
+          onclick="selectPayment(this,'cash')">
+          Cash
+        </div>
+
+        <div class="pay-btn"
+          onclick="selectPayment(this,'orange')">
+          Orange
+        </div>
+
+        <div class="pay-btn"
+          onclick="selectPayment(this,'wave')">
+          Wave
+        </div>
+
+      </div>
+
+      <!-- MESSAGE -->
+      <p class="invoice-message">
+        Merci de faire partie de l’univers Éclat de Coco 💖
+      </p>
+
+      <!-- BUTTONS -->
+      <button onclick="saveSale()">
+        💾 Sauvegarder
+      </button>
+
+      <button onclick="printInvoice()">
+        🖨 Imprimer
+      </button>
+
+      <button onclick="resetInvoice()">
+        🆕 Nouvelle facture
+      </button>
+
+    </div>
+
   </div>
 
 </div>
 
-<!-- RIGHT FACTURE -->
-<div id="invoice-print-area" class="panel right">
-
-  <div class="invoice-header">
-    <h2>ÉCLAT DE COCO OFFICIAL</h2>
-    <p class="sub-title">Abidjan - Côte d’Ivoire</p>
-  </div>
-
-  <h3>Facture N°: <span id="invoice-id"></span></h3>
-
-  <input id="client-name" placeholder="Nom client">
-  <input id="client-phone" placeholder="Téléphone">
-  <input id="client-address" placeholder="Adresse">
-
-  <input type="date" id="date">
-
-  <!-- 🧾 TABLE FACTURE (IMPORTANT MANQUE CHEZ TOI) -->
-  <table>
-    <thead>
-      <tr>
-        <th>Produit</th>
-        <th>Qté</th>
-        <th>Prix</th>
-        <th>Total</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="invoice-body"></tbody>
-  </table>
-
-  <!--  DELIVERY -->
-  <input id="delivery" type="number" placeholder="Livraison">
-
-  <!-- TOTAL -->
-  <h2 id="grand-total">0 FCFA</h2>
-
-  <!--  PAYMENT -->
-  <div class="payment-boxes">
-    <div class="pay-btn" onclick="selectPayment(this,'cash')">Cash</div>
-    <div class="pay-btn" onclick="selectPayment(this,'orange')">Orange</div>
-    <div class="pay-btn" onclick="selectPayment(this,'wave')">Wave</div>
-  </div>
-
-  <!-- 🧾 QR CODE -->
-  <div id="qr-code"></div>
-
-  <!-- 💬 MESSAGE FINAL -->
-  <p style="text-align:center; font-size:12px;">
-    Merci de faire partie de l’univers Éclat de Coco 💖
-  </p>
-
-  <!-- ACTION BUTTONS -->
-  <button onclick="saveSale()">💾 Sauvegarder</button>
-  <button onclick="printInvoice()">🖨 Imprimer</button>
-
-</div>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Produit</th>
-        <th>Qté</th>
-        <th>Prix</th>
-        <th>Total</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="invoice-body"></tbody>
-  </table>
-
-  <h3>🚚 Livraison</h3>
-  <input id="delivery" type="number" placeholder="Frais livraison">
-
-  <h2 id="grand-total">0 FCFA</h2>
-
-  <div class="payment-boxes">
-    <div class="pay-btn" onclick="selectPayment(this,'cash')">Cash</div>
-    <div class="pay-btn" onclick="selectPayment(this,'orange')">Orange</div>
-    <div class="pay-btn" onclick="selectPayment(this,'wave')">Wave</div>
-  </div>
-<div class="action-button">
-  <button onclick="saveSale()">💾 Sauvegarder</button>
-  <button onclick="printInvoice()">🖨 Imprimer</button>
-  <button onclick="newInvoice()">🆕 Nouvelle facture</button>
-
-</div>
-
+<!-- LOGIN CHECK -->
 <script>
+
 if(localStorage.getItem("eclat_logged") !== "true"){
   window.location.href="./index.html";
 }
 
 window.addEventListener("load", ()=>{
+
   const d = document.getElementById("date");
-  if(d) d.valueAsDate = new Date();
+
+  if(d){
+    d.valueAsDate = new Date();
+  }
+
 });
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
 </script>
+
+<!-- QR CODE -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+<!-- MAIN SCRIPT -->
 <script src="./script.js?v=61"></script>
 
 </body>
