@@ -411,28 +411,37 @@ function addCustomSoap(){
  #custom-soap-form input {
   margin-top: 5px;
 }   
-@media print{
+@media print {
 
-  body *{
-    visibility:hidden;
+  body {
+    background: white !important;
+    color: black !important;
   }
 
-  .panel.center,
-  .panel.center * ,
-  .panel.right,
-  .panel.right *{
-    visibility:visible;
+  nav, button, .pink-box, .panel.left {
+    display: none !important;
   }
 
-  .panel.left{
-    display:none;
+  .panel {
+    width: 100% !important;
+    box-shadow: none !important;
   }
 
-  button{
-    display:none !important;
+  textarea {
+    border: none !important;
+    width: 100% !important;
+    height: 250px !important;
   }
 
-  input, select{
-    border:none !important;
+  #print-header h1 {
+    font-size: 20px;
+  }
+
+  #print-header p {
+    font-size: 14px;
+  }
+
+  .signature {
+    margin-top: 40px;
   }
 }
