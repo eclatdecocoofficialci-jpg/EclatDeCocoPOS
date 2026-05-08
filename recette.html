@@ -7,7 +7,6 @@
 <title>Éclat de Coco Official</title>
 
 <link rel="stylesheet" href="./style.css">
-
 </head>
 
 <body>
@@ -31,25 +30,17 @@
 
   <h3> Nom de la recette</h3>
 
-  <!-- TITLE INPUT -->
   <input id="recipe-name"
     placeholder="Ex: Savon Coco Luxe"
     oninput="updateRecipeTitle()"
-    style="
-      font-weight:bold;
-      text-align:center;
-      border:2px solid #f8bbd0;
-      border-radius:10px;
-      padding:10px;
-    "
+    style="font-weight:bold;text-align:center;border:2px solid #f8bbd0;border-radius:10px;padding:10px;"
   >
 
-  <!-- DISPLAY TITLE -->
   <div class="pink-box" style="margin-top:10px;">
-    🧼 <span id="recipe-title" style="font-weight:bold;">Nouvelle recette</span>
+    🧼 <span id="recipe-title">Nouvelle recette</span>
   </div>
 
-  <hr style="margin:15px 0; border:1px solid #ffd6e5;">
+  <hr style="margin:15px 0;border:1px solid #ffd6e5;">
 
   <h3>➕ Ajouter ingrédient</h3>
 
@@ -64,7 +55,6 @@
   </select>
 
   <input id="ing_qty" type="number" placeholder="Quantité">
-
   <input id="ing_price" type="number" placeholder="Prix total">
 
   <div class="pink-box" onclick="addIngredient()">
@@ -76,7 +66,7 @@
 <!-- ================= CENTER ================= -->
 <div class="panel center">
 
-  <h3>Recette en cours</h3>
+  <h3> Recette en cours</h3>
 
   <table>
     <thead>
@@ -98,7 +88,7 @@
 <!-- ================= RIGHT ================= -->
 <div class="panel right">
 
-  <h3>Résumé recette</h3>
+  <h3>Résumé</h3>
 
   <div class="pink-box">
     Total recette :
@@ -110,48 +100,48 @@
     <span id="recipe-weight">0</span>
   </div>
 
-  <button onclick="saveRecipe()">
-    💾 Sauvegarder recette
-<button onclick="window.print()">
-🖨 Imprimer recette
-</button>
+  <button onclick="saveRecipe()">💾 Sauvegarder</button>
+
+  <button onclick="printRecipe()">🖨 Imprimer recette</button>
+
 </div>
 
-<!-- ================= NOTES RECETTE ================= -->
+</div>
+
+<!-- ================= NOTES ================= -->
 <div class="panel center" style="margin-top:12px;">
 
   <h3>🧾 Étapes & Notes de fabrication</h3>
 
-  <!-- zone texte libre -->
-  <textarea id="recipe-notes" 
-    placeholder="Écris ici les étapes de fabrication, instructions, observations..."
-    style="width:100%; height:150px; padding:10px; border-radius:12px; border:2px solid #f8bbd0;">
+  <textarea id="recipe-notes"
+    placeholder="Écris ici les étapes de fabrication..."
+    style="width:100%;height:150px;padding:10px;border-radius:12px;border:2px solid #f8bbd0;">
   </textarea>
 
-  <!-- signature fixe -->
-  <div style="margin-top:15px; text-align:right; font-style:italic;">
+  <div style="margin-top:15px;text-align:right;font-style:italic;">
     ___________________________<br>
     Signature du responsable
   </div>
 
-  <!-- bouton impression -->
-  <button onclick="printRecipe()" style="margin-top:10px;">
-    🖨 Imprimer recette
-  </button>
+</div>
 
 </div>
 
+<!-- ================= SCRIPT ================= -->
 <script src="./recette.js"></script>
 
-<!-- ================= TITLE SCRIPT ================= -->
 <script>
 function updateRecipeTitle(){
   const name = document.getElementById("recipe-name").value;
   document.getElementById("recipe-title").innerText =
     name || "Nouvelle recette";
 }
+
+/* PRINT PROPRE */
+function printRecipe(){
+  window.print();
+}
 </script>
- 
 
 </body>
 </html>
