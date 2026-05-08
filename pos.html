@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -37,20 +36,18 @@
   <a href="./suppliers.html">Fournisseurs</a>
 
 </nav>
+
 <div class="main-content">
 
 <div class="pos-container">
 
-<!-- ================= LEFT ================= -->
+<!-- LEFT -->
 <div class="panel left">
-
   <h3>📂 Catégories</h3>
   <div id="category-boxes"></div>
-
-
 </div>
 
-<!-- ================= CENTER ================= -->
+<!-- CENTER -->
 <div class="panel center">
 
   <h3>🔎 Recherche</h3>
@@ -63,7 +60,6 @@
   <input id="display">
 
   <div class="calc">
-
     <button onclick="press(7)">7</button>
     <button onclick="press(8)">8</button>
     <button onclick="press(9)">9</button>
@@ -83,13 +79,12 @@
     <button onclick="clearCalc()">C</button>
     <button onclick="calculate()">=</button>
     <button onclick="press('/')">÷</button>
-
   </div>
 
 </div>
 
-<!-- ================= RIGHT ================= -->
-<div class="panel right">
+<!-- RIGHT FACTURE -->
+<div id="invoice-print-area" class="panel right">
 
   <div class="invoice-header">
     <h2>ÉCLAT DE COCO OFFICIAL</h2>
@@ -114,28 +109,29 @@
         <th>Action</th>
       </tr>
     </thead>
-
     <tbody id="invoice-body"></tbody>
   </table>
 
-  <input id="delivery" type="number" placeholder="Livraison">
+  <h3>🚚 Livraison</h3>
+  <input id="delivery" type="number" placeholder="Frais livraison">
 
   <h2 id="grand-total">0 FCFA</h2>
 
   <div class="payment-boxes">
-
     <div class="pay-btn" onclick="selectPayment(this,'cash')">Cash</div>
     <div class="pay-btn" onclick="selectPayment(this,'orange')">Orange</div>
     <div class="pay-btn" onclick="selectPayment(this,'wave')">Wave</div>
-
   </div>
 
   <button onclick="saveSale()">💾 Sauvegarder</button>
   <button onclick="printInvoice()">🖨 Imprimer</button>
+  <button onclick="newInvoice()">🆕 Nouvelle facture</button>
 
 </div>
 
-<!-- LOGIN CHECK -->
+</div>
+</div>
+
 <script>
 if(localStorage.getItem("eclat_logged") !== "true"){
   window.location.href="./index.html";
