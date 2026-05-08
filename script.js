@@ -22,12 +22,11 @@ function generateInvoiceId(){
 function setInvoiceDate(){
   const el = document.getElementById("date");
   if(el){
-    const d = new Date();
-    el.value = d.toISOString().split("T")[0];
+    el.value = new Date().toISOString().split("T")[0];
   }
 }
 
-/* ================= CATEGORIES (FIXED STABLE) ================= */
+/* ================= CATEGORIES ================= */
 function loadCategories(){
   const box = document.getElementById("category-boxes");
   if(!box) return;
@@ -43,29 +42,33 @@ function loadCategories(){
 
 function showAll(){
   activeCategory = "ALL";
-  const search = document.getElementById("search");
-  if(search) search.value = "";
-  renderProducts(products);
+  applyFilters();
 }
 
 function filterProducts(cat){
   activeCategory = cat;
-  const search = document.getElementById("search");
-  if(search) search.value = "";
-  renderProducts(products.filter(p => p.category === cat));
+  applyFilters();
 }
 
-/* ================= SEARCH (FIXED) ================= */
+/* ================= SEARCH + FILTER ================= */
 function searchProducts(v){
+  applyFilters(v);
+}
 
-  const value = v.toLowerCase();
+function applyFilters(searchValue = ""){
 
-  let base = activeCategory === "ALL"
-    ? products
-    : products.filter(p => p.category === activeCategory);
+  let filtered = products;
 
-  const filtered = base.filter(p =>
-    p.name.toLowerCase().includes(value)
+  if(activeCategory !== "ALL"){
+    filtered = filtered.filter(p => p.category === activeCategory);
+  }
+
+  if(searchValue === ""){
+    searchValue = document.getElementById("search")?.value || "";
+  }
+
+  filtered = filtered.filter(p =>
+    p.name.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   renderProducts(filtered);
@@ -134,7 +137,7 @@ function removeItem(i){
   renderInvoice();
 }
 
-/* ================= TOTAL ================= */
+/* ================= TOTAL LIVE (IMPORTANT FIX) ================= */
 function updateTotal(){
 
   let total = 0;
@@ -147,17 +150,23 @@ function updateTotal(){
 
   currentTotal = total + delivery;
 
-  const display = document.getElementById("grand-total");
-  if(display){
-    display.innerText = currentTotal + " FCFA";
+  const el = document.getElementById("grand-total");
+  if(el){
+    el.innerText = currentTotal + " FCFA";
   }
 
   return currentTotal;
 }
 
+/* LIVE DELIVERY UPDATE */
+document.addEventListener("input", (e)=>{
+  if(e.target.id === "delivery"){
+    updateTotal();
+  }
+});
+
 /* ================= PAYMENT ================= */
 function selectPayment(el, method){
-
   paymentMethod = method;
 
   document.querySelectorAll(".pay-btn")
@@ -166,7 +175,7 @@ function selectPayment(el, method){
   el.classList.add("active");
 }
 
-/* ================= SAVE SALE ================= */
+/* ================= SAVE SALE (FIX PAYMENT + CLIENT) ================= */
 function saveSale(){
 
   const total = updateTotal();
@@ -190,14 +199,14 @@ function saveSale(){
     },
 
     items: invoice,
-    payment: paymentMethod,
-    delivery: delivery,
-    total: total
+    payment: paymentMethod,   // ✔ FIX ICI
+    delivery,
+    total
   });
 
   localStorage.setItem("sales", JSON.stringify(sales));
 
-  alert("✔ Vente sauvegardée complète");
+  alert("✔ Vente sauvegardée avec paiement + livraison");
 
   resetInvoice();
 }
@@ -217,7 +226,7 @@ function resetInvoice(){
   generateInvoiceId();
 }
 
-/* ================= PRINT ================= */
+/* ================= PRINT 5x7 FIX FINAL ================= */
 function printInvoice(){
 
   const clientName = document.getElementById("client-name")?.value || "";
@@ -230,7 +239,7 @@ function printInvoice(){
   let total = 0;
   let itemsHTML = "";
 
-  invoice.forEach(i => {
+  invoice.forEach(i=>{
     const line = i.qty * i.price;
     total += line;
 
@@ -260,11 +269,11 @@ function printInvoice(){
 
         h1 { text-align:center; color:#e91e63; }
 
-        .info, .client { text-align:center; font-size:11px; margin-bottom:8px; }
+        .info,.client { text-align:center; font-size:11px; }
 
         table { width:100%; border-collapse:collapse; }
 
-        th, td { border:1px solid #ddd; padding:4px; text-align:center; }
+        th,td { border:1px solid #ddd; padding:4px; text-align:center; }
 
         th { background:#f8c8d8; }
 
@@ -286,8 +295,8 @@ function printInvoice(){
       </div>
 
       <div class="client">
-        ${clientName} <br>
-        ${clientPhone} <br>
+        ${clientName}<br>
+        ${clientPhone}<br>
         ${clientAddress}
       </div>
 
@@ -300,15 +309,12 @@ function printInvoice(){
             <th>Total</th>
           </tr>
         </thead>
-
-        <tbody>
-          ${itemsHTML}
-        </tbody>
+        <tbody>${itemsHTML}</tbody>
       </table>
 
       <div class="total">
         Livraison: ${delivery} FCFA <br>
-        TOTAL: ${finalTotal} FCFA
+        TOTAL FINAL: ${finalTotal} FCFA
       </div>
 
       <div class="footer">
@@ -320,15 +326,11 @@ function printInvoice(){
   `);
 
   win.document.close();
-
-  setTimeout(() => {
-    win.print();
-    win.close();
-  }, 500);
+  setTimeout(()=>{ win.print(); win.close(); }, 500);
 }
 
-/* ================= INIT (FIXED CLEAN) ================= */
-window.addEventListener("DOMContentLoaded", () => {
+/* ================= INIT ================= */
+document.addEventListener("DOMContentLoaded", ()=>{
 
   loadCategories();
   renderProducts(products);
