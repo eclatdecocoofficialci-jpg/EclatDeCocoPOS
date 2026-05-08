@@ -245,18 +245,17 @@ function printInvoice(){
   let total = 0;
 
   let itemsHTML = invoice.map(i => {
-    const line = i.qty * i.price;
-    total += line;
+  const line = i.qty * i.price;
 
-    return `
-      <tr>
-        <td>${i.name}</td>
-        <td>${i.qty}</td>
-        <td>${i.price}</td>
-        <td>${line}</td>
-      </tr>
-    `;
-  }).join("");
+  return `
+    <tr>
+      <td>${i.name}</td>
+      <td>${i.qty}</td>
+      <td>${i.price} FCFA</td>
+      <td>${line} FCFA</td>
+    </tr>
+  `;
+}).join("");
 
   const finalTotal = total + delivery;
 
@@ -285,8 +284,12 @@ function printInvoice(){
 
     <body onload="window.print(); window.close();">
 
-      <h1>ÉCLAT DE COCO OFFICIAL</h1>
+      
+<h1>ÉCLAT DE COCO OFFICIAL</h1>
 
+<div style="text-align:center; font-size:12px; margin-top:-8px;">
+  Abidjan, Côte d’Ivoire 
+</div>
       <div>
         ID: ${invoiceId} <br>
         Date: ${date}
@@ -299,8 +302,19 @@ function printInvoice(){
       </div>
 
       <table>
-        <tbody>${itemsHTML}</tbody>
-      </table>
+  <thead>
+    <tr>
+      <th>Produit</th>
+      <th>Qté</th>
+      <th>Prix</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    ${itemsHTML}
+  </tbody>
+</table>
 
       <h3>
         Livraison: ${delivery} FCFA <br>
