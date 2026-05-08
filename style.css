@@ -411,3 +411,28 @@ function addCustomSoap(){
  #custom-soap-form input {
   margin-top: 5px;
 }   
+@media print{
+
+  body *{
+    visibility:hidden;
+  }
+
+  .panel.center,
+  .panel.center * ,
+  .panel.right,
+  .panel.right *{
+    visibility:visible;
+  }
+
+  .panel.left{
+    display:none;
+  }
+
+  button{
+    display:none !important;
+  }
+
+  input, select{
+    border:none !important;
+  }
+}
