@@ -1,14 +1,54 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-
 <meta charset="UTF-8">
 <title>Ventes | Éclat de Coco</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="stylesheet" href="style.css?v=62">
+
+<style>
+/* ================= TABLE CLEAN ================= */
+.sales-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.sales-table th,
+.sales-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+/* header */
+.sales-table th {
+  background: #f8c8d8;
+}
+
+/* action buttons compact */
+.action-btn {
+  padding: 4px 6px;
+  font-size: 12px;
+  margin: 2px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.view { background: #4caf50; color: white; }
+.edit { background: #2196f3; color: white; }
+.delete { background: #e91e63; color: white; }
+
+.action-cell {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+</style>
 
 </head>
 
@@ -20,7 +60,6 @@
 
 <main style="padding:10px;">
 
-  <!-- TOTAL GLOBAL -->
   <h3>
     Total des ventes :
     <span id="total-sales">0 FCFA</span>
@@ -49,229 +88,159 @@
 <script>
 
 /* ================= GET SALES ================= */
-
 function getSales(){
   return JSON.parse(localStorage.getItem("sales")) || [];
 }
 
 /* ================= LOAD SALES ================= */
-
 function loadSales(){
 
   let sales = getSales();
 
   let tbody = document.getElementById("sales-body");
-
   tbody.innerHTML = "";
 
   if(sales.length === 0){
-
     tbody.innerHTML = `
       <tr>
-        <td colspan="7">
-          Aucune vente enregistrée
-        </td>
+        <td colspan="7">Aucune vente enregistrée</td>
       </tr>
     `;
-
     updateTotalSales();
-
     return;
   }
 
-  /* TRI RÉCENT → ANCIEN */
-  sales.sort((a, b) =>
-    new Date(b.date || 0) - new Date(a.date || 0)
+  // tri propre
+  sales.sort((a,b) =>
+    new Date(b.date) - new Date(a.date)
   );
 
   sales.forEach((s, index) => {
 
-    let total = Number(s.total || 0);
-
     let tr = document.createElement("tr");
 
     tr.innerHTML = `
-
       <td>${s.id || "-"}</td>
-
+      <td>${new Date(s.date).toLocaleString()}</td>
       <td>
-        ${s.date || "-"}
+        ${s.client?.name || "-"}<br>
+        <small>${s.client?.phone || ""}</small>
       </td>
 
-      <td>
-        ${s.client?.name || "-"}
-      </td>
+      <!-- 🔥 IMPORTANT: payment (pas paymentMethod) -->
+      <td>${s.payment || "-"}</td>
 
-      <td>
-        ${s.payment || "-"}
-      </td>
-
-      <td>
-        ${s.delivery || 0} FCFA
-      </td>
+      <td>${s.delivery || 0} FCFA</td>
 
       <td style="color:#e91e63;font-weight:bold;">
-        ${Math.round(total)} FCFA
+        ${Math.round(s.total || 0)} FCFA
       </td>
 
-      <td>
+      <td class="action-cell">
 
-        <button onclick="viewInvoice(${index})">
-          👁 Voir
+        <button class="action-btn view" onclick="viewInvoice(${index})">
+          👁
         </button>
 
-        <button onclick="editSale(${index})">
-          ✏️ Modifier
+        <button class="action-btn edit" onclick="editSale(${index})">
+          ✏️
         </button>
 
-        <button onclick="deleteSale(${index})">
-          🗑 Supprimer
+        <button class="action-btn delete" onclick="deleteSale(${index})">
+          🗑
         </button>
 
       </td>
     `;
 
     tbody.appendChild(tr);
-
   });
 
   updateTotalSales();
 }
 
-/* ================= VIEW INVOICE ================= */
-
+/* ================= VIEW ================= */
 function viewInvoice(i){
 
   let sales = getSales();
-
-  sales.sort((a, b) =>
-    new Date(b.date || 0) - new Date(a.date || 0)
-  );
+  sales.sort((a,b)=> new Date(b.date) - new Date(a.date));
 
   let s = sales[i];
 
   if(!s){
-
     alert("Facture introuvable");
-
     return;
   }
 
   let items = (s.items || []).map(p =>
-
     `${p.name} x${p.qty} = ${p.price * p.qty} FCFA`
-
   ).join("\n");
 
   alert(
-
     "FACTURE #" + s.id +
-
-    "\nDATE : " + (s.date || "-") +
-
-    "\nCLIENT : " + (s.client?.name || "-") +
-
-    "\nTEL : " + (s.client?.phone || "-") +
-
-    "\n\nPRODUITS :\n" + items +
-
-    "\n\nLIVRAISON : " + (s.delivery || 0) + " FCFA" +
-
-    "\nPAIEMENT : " + (s.payment || "-") +
-
-    "\nTOTAL : " + Math.round(s.total || 0) + " FCFA"
+    "\nDATE: " + new Date(s.date).toLocaleString() +
+    "\nCLIENT: " + (s.client?.name || "-") +
+    "\nTEL: " + (s.client?.phone || "-") +
+    "\n\nPRODUITS:\n" + items +
+    "\n\nLIVRAISON: " + (s.delivery || 0) + " FCFA" +
+    "\nPAIEMENT: " + (s.payment || "-") +
+    "\nTOTAL: " + Math.round(s.total || 0) + " FCFA"
   );
 }
 
-/* ================= EDIT SALE ================= */
-
+/* ================= EDIT ================= */
 function editSale(i){
 
   let sales = getSales();
-
-  sales.sort((a, b) =>
-    new Date(b.date || 0) - new Date(a.date || 0)
-  );
+  sales.sort((a,b)=> new Date(b.date) - new Date(a.date));
 
   let sale = sales[i];
 
   if(!sale){
-
     alert("Facture introuvable");
-
     return;
   }
 
-  /* sauvegarde temporaire */
-  localStorage.setItem(
-    "edit_sale",
-    JSON.stringify(sale)
-  );
-
-  /* ouvrir POS */
+  localStorage.setItem("edit_sale", JSON.stringify(sale));
   window.location.href = "./pos.html";
 }
 
 /* ================= DELETE ================= */
-
 function deleteSale(i){
 
   if(!confirm("Supprimer cette vente ?")) return;
 
   let sales = getSales();
 
-  sales.sort((a, b) =>
-    new Date(b.date || 0) - new Date(a.date || 0)
-  );
+  sales.sort((a,b)=> new Date(b.date) - new Date(a.date));
 
-  sales.splice(i, 1);
+  sales.splice(i,1);
 
-  localStorage.setItem(
-    "sales",
-    JSON.stringify(sales)
-  );
+  localStorage.setItem("sales", JSON.stringify(sales));
 
   loadSales();
 }
 
-/* ================= TOTAL GLOBAL ================= */
-
+/* ================= TOTAL ================= */
 function updateTotalSales(){
 
   let sales = getSales();
 
-  let total = sales.reduce((sum, s) => {
-
-    return sum + Number(s.total || 0);
-
-  }, 0);
+  let total = sales.reduce((sum,s)=>
+    sum + Number(s.total || 0), 0
+  );
 
   document.getElementById("total-sales").innerText =
     Math.round(total) + " FCFA";
 }
 
 /* ================= INIT ================= */
-
 window.onload = loadSales;
 
 </script>
 
-<div class="main-content"></div>
-
-<footer class="site-footer">
-
-  <div class="footer-inner">
-
-    <p>
-      © 2025 Éclat de Coco Official
-    </p>
-
-    <p class="sub">
-      All rights reserved • Natural beauty inspired by Côte d’Ivoire 🌿🥥
-    </p>
-
-  </div>
-
+<footer style="text-align:center;margin-top:20px;">
+  <p>© 2025 Éclat de Coco Official</p>
 </footer>
 
 </body>
