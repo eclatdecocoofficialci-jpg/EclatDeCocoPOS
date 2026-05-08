@@ -20,12 +20,10 @@
 
 <body>
 
-<!-- HEADER -->
 <header>
   <h1>✨ Éclat de Coco POS</h1>
 </header>
 
-<!-- NAV -->
 <nav class="top-nav">
 
   <a href="./dashboard.html">Dashboard</a>
@@ -37,13 +35,10 @@
   <a href="./reports.html">Rapports</a>
   <a href="./expenses.html">Dépenses</a>
   <a href="./suppliers.html">Fournisseurs</a>
-
-  <!-- RECETTE -->
   <a href="./recette.html">🧼 Recette</a>
 
 </nav>
 
-<!-- MAIN -->
 <div class="main-content">
 
 <div class="pos-container">
@@ -59,7 +54,7 @@
 🧴 Savon UI
 </div>
 
-<!-- RECETTE QUICK ACCESS -->
+<!-- QUICK RECETTE -->
 <div class="pink-box" onclick="window.location.href='./recette.html'">
 🧼 Créer une recette
 </div>
@@ -69,7 +64,7 @@
 
   <div class="payment-boxes">
 
-    <div class="pay-btn active" onclick="setSoapMode('standard')">
+    <div class="pay-btn" onclick="setSoapMode('standard')">
       Standard
     </div>
 
@@ -80,7 +75,7 @@
   </div>
 
   <!-- STANDARD -->
-  <div id="soap-standard">
+  <div id="soap-standard" style="display:block;">
 
     <input id="std_name" placeholder="Nom savon">
     <input id="std_price" type="number" placeholder="Prix">
@@ -185,9 +180,11 @@
 <h2 id="grand-total">0 FCFA</h2>
 
 <div class="payment-boxes">
+
 <div class="pay-btn" onclick="selectPayment(this,'cash')">Cash</div>
 <div class="pay-btn" onclick="selectPayment(this,'orange')">Orange</div>
 <div class="pay-btn" onclick="selectPayment(this,'wave')">Wave</div>
+
 </div>
 
 <button onclick="saveSale()">💾 Sauvegarder</button>
