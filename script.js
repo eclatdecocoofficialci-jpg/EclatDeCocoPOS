@@ -9,16 +9,20 @@ let invoice = [];
 let activeCategory = "ALL";
 let paymentMethod = "cash";
 
-/* ================= INVOICE ID ================= */
+/* ================= INVOICE ID AUTO ================= */
 let lastInvoiceId = Number(localStorage.getItem("invoice_id") || 20206000);
 
 function generateInvoiceId(){
-  lastInvoiceId++;
-  localStorage.setItem("invoice_id", lastInvoiceId);
-
   const el = document.getElementById("invoice-id");
   if(el) el.innerText = lastInvoiceId;
 }
+
+/* ================= DELIVERY LIVE UPDATE ================= */
+document.addEventListener("input", (e)=>{
+  if(e.target.id === "delivery"){
+    updateTotal();
+  }
+});
 
 /* ================= PRODUCTS ================= */
 function loadCategories(){
@@ -137,6 +141,42 @@ function updateTotal(){
   return total;
 }
 
+/* ================= CLIENT SYSTEM (CRM LINK) ================= */
+function saveClientFromPOS(total, invoiceId){
+
+  const name = document.getElementById("client-name")?.value || "";
+  const phone = document.getElementById("client-phone")?.value || "";
+  const address = document.getElementById("client-address")?.value || "";
+
+  if(!phone) return;
+
+  let clients = JSON.parse(localStorage.getItem("clients")) || [];
+
+  let client = clients.find(c => c.phone === phone);
+
+  if(!client){
+    client = {
+      id: "CL" + String(clients.length + 1).padStart(3,"0"),
+      name,
+      phone,
+      address,
+      totalInvoices: 0,
+      sales: []
+    };
+    clients.push(client);
+  }
+
+  client.totalInvoices += 1;
+
+  client.sales.push({
+    id: invoiceId,
+    date: new Date(),
+    total: total
+  });
+
+  localStorage.setItem("clients", JSON.stringify(clients));
+}
+
 /* ================= PAYMENT ================= */
 function selectPayment(el, method){
   paymentMethod = method;
@@ -154,8 +194,10 @@ function saveSale(){
 
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
+  const id = lastInvoiceId;
+
   sales.push({
-    id: lastInvoiceId,
+    id,
     date: new Date(),
     items: invoice,
     total,
@@ -164,6 +206,9 @@ function saveSale(){
 
   localStorage.setItem("sales", JSON.stringify(sales));
 
+  /* 🔥 LINK CLIENT SYSTEM */
+  saveClientFromPOS(total, id);
+
   alert("✔ Vente sauvegardée");
 
   resetInvoice();
@@ -171,16 +216,20 @@ function saveSale(){
 
 /* ================= RESET ================= */
 function resetInvoice(){
+
   invoice = [];
 
   const delivery = document.getElementById("delivery");
   if(delivery) delivery.value = "";
 
+  lastInvoiceId++;
+  localStorage.setItem("invoice_id", lastInvoiceId);
+
   renderInvoice();
   generateInvoiceId();
 }
 
-/* ================= PRINT (FACTURE 5x7 ONLY) ================= */
+/* ================= PRINT (FACTURE ONLY 5x7) ================= */
 function printInvoice(){
   window.print();
 }
