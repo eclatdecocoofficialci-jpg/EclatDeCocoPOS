@@ -285,12 +285,14 @@ function printInvoice() {
     }
   });
 
-  const win = window.open("", "", "width=400,height=700");
+  const win = window.open("", "_blank", "width=400,height=700");
+
+  win.document.open();
 
   win.document.write(`
     <html>
     <head>
-      <title>Ticket</title>
+      <title>Éclat de Coco</title>
 
       <style>
         @page {
@@ -301,14 +303,11 @@ function printInvoice() {
         body {
           font-family: Arial;
           font-size: 12px;
-          width: 100%;
         }
 
         h1 {
           text-align: center;
           color: #e91e63;
-          font-size: 18px;
-          margin-bottom: 2px;
         }
 
         .info, .client {
@@ -320,7 +319,6 @@ function printInvoice() {
         table {
           width: 100%;
           border-collapse: collapse;
-          font-size: 11px;
         }
 
         th, td {
@@ -335,24 +333,22 @@ function printInvoice() {
 
         .total {
           text-align: right;
-          margin-top: 8px;
-          font-size: 13px;
+          margin-top: 10px;
           font-weight: bold;
           color: #e91e63;
         }
 
         .footer {
-          margin-top: 12px;
           text-align: center;
-          font-size: 11px;
+          margin-top: 15px;
         }
 
         .message {
           text-align: center;
           font-style: italic;
-          font-size: 10px;
-          margin-top: 5px;
+          font-size: 11px;
         }
+
       </style>
     </head>
 
@@ -375,7 +371,7 @@ function printInvoice() {
       <table>
         <thead>
           <tr>
-            <th>Prod</th>
+            <th>Produit</th>
             <th>Qté</th>
             <th>Prix</th>
             <th>Total</th>
@@ -397,12 +393,20 @@ function printInvoice() {
       </div>
 
       <div class="message">
-        Naturel • Luxe • Respect de la peau 🌿
+        Naturel • Luxe • Respect 🌿
       </div>
 
     </body>
     </html>
   `);
+
+  win.document.close();
+
+  setTimeout(() => {
+    win.print();
+    win.close();
+  }, 400);
+}
 
   win.document.close();
 }
