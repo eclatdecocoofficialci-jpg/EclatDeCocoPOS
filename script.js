@@ -40,7 +40,7 @@ function generateQR(total, id){
   });
 }
 
-/* ================= PRODUCTS ================= */
+/* ================= CATEGORIES ================= */
 function loadCategories(){
   const box = document.getElementById("category-boxes");
   if(!box) return;
@@ -147,12 +147,12 @@ function updateTotal(){
 
   const delivery = Number(document.getElementById("delivery")?.value || 0);
 
-  total += delivery;
+  const finalTotal = total + delivery;
 
   document.getElementById("grand-total").innerText =
-    Math.round(total) + " FCFA";
+    finalTotal + " FCFA";
 
-  return total;
+  return finalTotal;
 }
 
 /* ================= PAYMENT ================= */
@@ -207,7 +207,7 @@ function resetInvoice(){
   generateInvoiceId();
 }
 
-/* ================= PRINT 5x7 INCH ================= */
+/* ================= PRINT FIX 5x7 ================= */
 function printInvoice() {
 
   const clientName = document.getElementById("client-name")?.value || "";
@@ -215,29 +215,28 @@ function printInvoice() {
   const clientAddress = document.getElementById("client-address")?.value || "";
   const date = document.getElementById("date")?.value || "";
   const invoiceId = document.getElementById("invoice-id")?.innerText || "";
-  const delivery = document.getElementById("delivery")?.value || 0;
-  const total = document.getElementById("grand-total")?.innerText || "0 FCFA";
+  const delivery = Number(document.getElementById("delivery")?.value || 0);
 
-  const rows = document.querySelectorAll("#invoice-body tr");
-
+  let total = 0;
   let itemsHTML = "";
 
-  rows.forEach(row => {
-    const cols = row.querySelectorAll("td");
+  invoice.forEach(i => {
+    const line = i.qty * i.price;
+    total += line;
 
-    if (cols.length >= 4) {
-      itemsHTML += `
-        <tr>
-          <td>${cols[0].innerText}</td>
-          <td>${cols[1].innerText}</td>
-          <td>${cols[2].innerText}</td>
-          <td>${cols[3].innerText}</td>
-        </tr>
-      `;
-    }
+    itemsHTML += `
+      <tr>
+        <td>${i.name}</td>
+        <td>${i.qty}</td>
+        <td>${i.price}</td>
+        <td>${line}</td>
+      </tr>
+    `;
   });
 
-  const win = window.open("", "_blank", "width=400,height=700");
+  const finalTotal = total + delivery;
+
+  const win = window.open("", "_blank", "width=400,height=800");
 
   win.document.write(`
     <html>
@@ -276,11 +275,18 @@ function printInvoice() {
 
         th { background: #f8c8d8; }
 
-        .total {
+        .delivery {
           text-align: right;
           margin-top: 10px;
+          font-size: 12px;
+        }
+
+        .total {
+          text-align: right;
+          margin-top: 5px;
           font-weight: bold;
           color: #e91e63;
+          font-size: 14px;
         }
 
         .footer {
@@ -327,9 +333,12 @@ function printInvoice() {
         </tbody>
       </table>
 
+      <div class="delivery">
+        Livraison: ${delivery} FCFA
+      </div>
+
       <div class="total">
-        Livraison: ${delivery} FCFA <br>
-        Total: ${total}
+        TOTAL FINAL: ${finalTotal} FCFA
       </div>
 
       <div class="footer">
@@ -347,6 +356,7 @@ function printInvoice() {
   win.document.close();
 
   setTimeout(() => {
+    win.focus();
     win.print();
     win.close();
   }, 500);
