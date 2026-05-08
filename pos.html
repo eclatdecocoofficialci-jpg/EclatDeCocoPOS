@@ -20,10 +20,12 @@
 
 <body>
 
+<!-- HEADER -->
 <header>
   <h1>✨ Éclat de Coco POS</h1>
 </header>
 
+<!-- NAV -->
 <nav class="top-nav">
 
   <a href="./dashboard.html">Dashboard</a>
@@ -35,32 +37,35 @@
   <a href="./reports.html">Rapports</a>
   <a href="./expenses.html">Dépenses</a>
   <a href="./suppliers.html">Fournisseurs</a>
-  <a href="#" onclick="toggleSoapUI()">Savon UI</a>
-  <a href="./recette.html">Recette</a>
+
+  <a href="./recette.html">🧼 Recette</a>
 
 </nav>
-<div class="pink-box" onclick="window.location.href='./recette.html'">
-  🧼 Créer une recette
-</div>
+
+<!-- MAIN -->
 <div class="main-content">
 
 <div class="pos-container">
 
-<!-- LEFT -->
+<!-- ================= LEFT ================= -->
 <div class="panel left">
 
 <h3>📂 Catégories</h3>
 <div id="category-boxes"></div>
 
-<!-- 🧴 SAVON UI -->
+<!-- SAVON UI -->
 <div class="pink-box" onclick="toggleSoapUI()">
 🧴 Savon UI
+</div>
+
+<!-- RECETTE QUICK ACCESS -->
+<div class="pink-box" onclick="window.location.href='./recette.html'">
+🧼 Créer une recette
 </div>
 
 <!-- SOAP UI -->
 <div id="soap-ui" style="display:none; margin-top:10px;">
 
-  <!-- SWITCH -->
   <div class="payment-boxes">
 
     <div class="pay-btn active" onclick="setSoapMode('standard')">
@@ -76,46 +81,21 @@
   <!-- STANDARD -->
   <div id="soap-standard">
 
-    <div class="pink-box">
-      <input id="std_name" placeholder="Nom savon">
-    </div>
-
-    <div class="pink-box">
-      <input id="std_price" type="number" placeholder="Prix">
-    </div>
-
-    <div class="pink-box">
-      <input id="std_stock" type="number" placeholder="Stock">
-    </div>
+    <input id="std_name" placeholder="Nom savon">
+    <input id="std_price" type="number" placeholder="Prix">
+    <input id="std_stock" type="number" placeholder="Stock">
 
   </div>
 
   <!-- CUSTOM -->
   <div id="soap-custom" style="display:none;">
 
-    <div class="pink-box">
-      <input id="c_oil" type="number" placeholder="Huile (L)" oninput="calcSoap()">
-    </div>
-
-    <div class="pink-box">
-      <input id="c_base" type="number" placeholder="Base (kg)" oninput="calcSoap()">
-    </div>
-
-    <div class="pink-box">
-      <input id="c_perfume" type="number" placeholder="Parfum (ml)" oninput="calcSoap()">
-    </div>
-
-    <div class="pink-box">
-      <input id="c_mold" type="number" placeholder="Moule" oninput="calcSoap()">
-    </div>
-
-    <div class="pink-box">
-      <input id="c_labor" type="number" placeholder="Main d'œuvre" oninput="calcSoap()">
-    </div>
-
-    <div class="pink-box">
-      <input id="c_pack" type="number" placeholder="Packaging" oninput="calcSoap()">
-    </div>
+    <input id="c_oil" type="number" placeholder="Huile (L)" oninput="calcSoap()">
+    <input id="c_base" type="number" placeholder="Base (kg)" oninput="calcSoap()">
+    <input id="c_perfume" type="number" placeholder="Parfum (ml)" oninput="calcSoap()">
+    <input id="c_mold" type="number" placeholder="Moule" oninput="calcSoap()">
+    <input id="c_labor" type="number" placeholder="Main d'œuvre" oninput="calcSoap()">
+    <input id="c_pack" type="number" placeholder="Packaging" oninput="calcSoap()">
 
   </div>
 
@@ -132,7 +112,7 @@
 
 </div>
 
-<!-- CENTER -->
+<!-- ================= CENTER ================= -->
 <div class="panel center">
 
 <h3>🔎 Recherche</h3>
@@ -170,7 +150,7 @@
 
 </div>
 
-<!-- RIGHT -->
+<!-- ================= RIGHT ================= -->
 <div class="panel right">
 
 <div class="invoice-header">
@@ -215,9 +195,9 @@
 </div>
 
 </div>
-
 </div>
 
+<!-- LOGIN CHECK -->
 <script>
 if(localStorage.getItem("eclat_logged") !== "true"){
   window.location.href="./index.html";
