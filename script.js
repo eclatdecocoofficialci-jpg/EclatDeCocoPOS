@@ -165,87 +165,76 @@ function selectPayment(el, method){
   el.classList.add("active");
 }
 
-/* ================= SAVE SALE (IMPORTANT FIX PAYMENT) ================= */
 function saveSale(){
 
   const total = updateTotal();
 
+  const clientName = document.getElementById("client-name")?.value || "";
+  const clientPhone = document.getElementById("client-phone")?.value || "";
+  const clientAddress = document.getElementById("client-address")?.value || "";
+
+  if(!clientName){
+    alert("Nom client obligatoire");
+    return;
+  }
+
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
-  sales.push({
+  const saleObject = {
     id: lastInvoiceId,
     date: new Date().toLocaleString(),
 
     client: {
-      name: document.getElementById("client-name")?.value || "",
-      phone: document.getElementById("client-phone")?.value || "",
-      address: document.getElementById("client-address")?.value || ""
+      name: clientName,
+      phone: clientPhone,
+      address: clientAddress
     },
 
     items: invoice,
 
-    // 🔥 IMPORTANT: même clé partout
+    // ✅ IMPORTANT UNIQUE KEY
     payment: paymentMethod,
 
     delivery: Number(document.getElementById("delivery")?.value || 0),
     total: total
-  });
+  };
+
+  sales.push(saleObject);
 
   localStorage.setItem("sales", JSON.stringify(sales));
-  /* ================= CUSTOMERS AUTO SAVE ================= */
 
-let customers =
-  JSON.parse(localStorage.getItem("customers")) || [];
+  /* ================= CUSTOMERS SYNC ================= */
 
-const clientName =
-  document.getElementById("client-name")?.value || "";
+  let customers = JSON.parse(localStorage.getItem("customers")) || [];
 
-const clientPhone =
-  document.getElementById("client-phone")?.value || "";
+  let existingCustomer = customers.find(c =>
+    c.phone === clientPhone
+  );
 
-const clientAddress =
-  document.getElementById("client-address")?.value || "";
+  if(existingCustomer){
 
-/* chercher client existant */
-let existingCustomer = customers.find(c =>
-  c.phone === clientPhone
-);
+    existingCustomer.totalInvoices =
+      (existingCustomer.totalInvoices || 0) + 1;
 
-/* total facture */
-const saleTotal = total;
+    existingCustomer.totalSpent =
+      (existingCustomer.totalSpent || 0) + total;
 
-/* si client existe */
-if(existingCustomer){
+  } else {
 
-  existingCustomer.totalInvoices =
-    (existingCustomer.totalInvoices || 0) + 1;
+    customers.push({
+      name: clientName,
+      phone: clientPhone,
+      address: clientAddress,
+      totalInvoices: 1,
+      totalSpent: total
+    });
 
-  existingCustomer.totalSpent =
-    (existingCustomer.totalSpent || 0) + saleTotal;
+  }
 
-}else{
-
-  customers.push({
-
-    name: clientName,
-
-    phone: clientPhone,
-
-    address: clientAddress,
-
-    totalInvoices: 1,
-
-    totalSpent: saleTotal
-  });
-}
-
-/* sauvegarde */
-localStorage.setItem(
-  "customers",
-  JSON.stringify(customers)
-);
+  localStorage.setItem("customers", JSON.stringify(customers));
 
   updateSalesView();
+
   alert("✔ Vente sauvegardée");
 
   resetInvoice();
