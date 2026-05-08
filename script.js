@@ -165,7 +165,7 @@ function selectPayment(el, method){
   el.classList.add("active");
 }
 
-/* ================= SAVE SALE ================= */
+/* ================= SAVE SALE (IMPORTANT FIX PAYMENT) ================= */
 function saveSale(){
 
   const total = updateTotal();
@@ -183,7 +183,10 @@ function saveSale(){
     },
 
     items: invoice,
-    paymentMethod: paymentMethod,
+
+    // 🔥 IMPORTANT: même clé partout
+    payment: paymentMethod,
+
     delivery: Number(document.getElementById("delivery")?.value || 0),
     total: total
   });
@@ -191,13 +194,12 @@ function saveSale(){
   localStorage.setItem("sales", JSON.stringify(sales));
 
   updateSalesView();
-
   alert("✔ Vente sauvegardée");
 
   resetInvoice();
 }
 
-/* ================= SALES TABLE ================= */
+/* ================= SALES TABLE FIX ================= */
 function updateSalesView(){
 
   const table = document.getElementById("sales-table-body");
@@ -210,7 +212,7 @@ function updateSalesView(){
       <td>${s.id}</td>
       <td>${s.client?.name || "-"}</td>
       <td>${s.client?.phone || "-"}</td>
-      <td>${s.paymentMethod || "-"}</td>
+      <td>${s.payment || "-"}</td>
       <td>${s.delivery || 0}</td>
       <td>${s.total}</td>
     </tr>
@@ -232,7 +234,7 @@ function resetInvoice(){
   generateInvoiceId();
 }
 
-/* ================= PRINT (5x7 FIX IPAD SAFE) ================= */
+/* ================= PRINT FIX 5x7 ================= */
 function printInvoice(){
 
   const clientName = document.getElementById("client-name")?.value || "";
@@ -245,17 +247,18 @@ function printInvoice(){
   let total = 0;
 
   let itemsHTML = invoice.map(i => {
-  const line = i.qty * i.price;
+    const line = i.qty * i.price;
+    total += line;
 
-  return `
-    <tr>
-      <td>${i.name}</td>
-      <td>${i.qty}</td>
-      <td>${i.price} FCFA</td>
-      <td>${line} FCFA</td>
-    </tr>
-  `;
-}).join("");
+    return `
+      <tr>
+        <td>${i.name}</td>
+        <td>${i.qty}</td>
+        <td>${i.price} FCFA</td>
+        <td>${line} FCFA</td>
+      </tr>
+    `;
+  }).join("");
 
   const finalTotal = total + delivery;
 
@@ -284,14 +287,11 @@ function printInvoice(){
 
     <body onload="window.print(); window.close();">
 
-      
-<h1>ÉCLAT DE COCO OFFICIAL</h1>
+      <h1>ÉCLAT DE COCO OFFICIAL</h1>
+      <div style="text-align:center;">Abidjan, Côte d’Ivoire</div>
 
-<div style="text-align:center; font-size:12px; margin-top:-8px;">
-  Abidjan, Côte d’Ivoire 
-</div>
       <div>
-        ID: ${invoiceId} <br>
+        ID: ${invoiceId}<br>
         Date: ${date}
       </div>
 
@@ -302,19 +302,16 @@ function printInvoice(){
       </div>
 
       <table>
-  <thead>
-    <tr>
-      <th>Produit</th>
-      <th>Qté</th>
-      <th>Prix</th>
-      <th>Total</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    ${itemsHTML}
-  </tbody>
-</table>
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th>Qté</th>
+            <th>Prix</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>${itemsHTML}</tbody>
+      </table>
 
       <h3>
         Livraison: ${delivery} FCFA <br>
