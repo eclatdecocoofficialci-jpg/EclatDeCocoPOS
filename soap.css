@@ -1,0 +1,23 @@
+#custom-soap-form {
+  background: #fff0f5;
+  padding: 12px;
+  border-radius: 14px;
+  border: 2px solid #f8bbd0;
+  margin-top: 10px;
+}
+
+#custom-soap-form input {
+  margin-top: 5px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 2px solid #f8bbd0;
+  width: 100%;
+}
+
+#custom-total {
+  font-size: 24px;
+  font-weight: bold;
+  color: #e91e63;
+  text-align: center;
+  margin-top: 10px;
+}
