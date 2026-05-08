@@ -40,7 +40,7 @@ header h1{
   font-weight:700;
 }
 
-/ ================= NAV ================= /
+/ ================= NAVIGATION ================= /
 .top-nav{
   display:flex;
   flex-wrap:wrap;
@@ -70,11 +70,13 @@ header h1{
 / ================= POS LAYOUT ================= /
 .pos-container{
   display:flex;
-  gap:22px;
-  padding:18px;
+  flex-direction:row;
   align-items:flex-start;
   justify-content:space-between;
+  gap:16px;
+
   width:100%;
+  padding:16px;
 }
 
 / ================= PANELS ================= /
@@ -82,30 +84,28 @@ header h1{
   background:white;
   border-radius:18px;
   padding:18px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.06);
+  box-shadow:0 6px 18px rgba(0,0,0,0.05);
+
   display:flex;
   flex-direction:column;
 }
 
 / ================= LEFT PANEL ================= /
 .left{
-  width:18%;
-  min-width:210px;
+  width:19%;
+  min-width:190px;
 }
 
 / ================= CENTER PANEL ================= /
 .center{
-  width:47%;
-  min-width:420px;
+  width:46%;
+  min-width:430px;
 }
 
 / ================= RIGHT PANEL ================= /
 .right{
   width:35%;
-  min-width:360px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+  min-width:340px;
 }
 
 / ================= TITLES ================= /
@@ -114,53 +114,52 @@ h2{
 }
 
 h3{
-  margin-bottom:12px;
   color:#222;
+  margin-bottom:12px;
 }
 
 / ================= CATEGORY ================= /
 #category-boxes{
   display:flex;
   flex-direction:column;
-  gap:14px;
+  gap:12px;
 }
 
 / ================= PRODUCTS ================= /
 #product-list{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:14px;
+  gap:12px;
   margin-top:10px;
 }
 
-/ ================= PINK BOX ================= /
+/ ================= BOXES ================= /
 .pink-box{
   background:linear-gradient(135deg,#f8bbd0,#ffe6ef);
-  padding:18px;
+  padding:16px;
   border-radius:16px;
   text-align:center;
   cursor:pointer;
   transition:0.2s;
   font-size:15px;
   font-weight:500;
-  margin-bottom:10px;
   box-shadow:0 3px 8px rgba(0,0,0,0.04);
 }
 
 .pink-box:hover{
-  transform:scale(1.03);
+  transform:scale(1.02);
   background:#e91e63;
   color:white;
 }
 
-/ ================= INPUT ================= /
+/ ================= INPUTS ================= /
 input,
 select{
   width:100%;
   padding:12px;
   border-radius:12px;
   border:2px solid #f8bbd0;
-  margin-bottom:12px;
+  margin-bottom:10px;
   font-size:15px;
   outline:none;
   background:white;
@@ -171,7 +170,6 @@ table{
   width:100%;
   border-collapse:collapse;
   margin-top:10px;
-  table-layout:fixed;
 }
 
 th,
@@ -179,8 +177,7 @@ td{
   border:1px solid #eee;
   padding:9px;
   text-align:center;
-  font-size:14px;
-  word-break:break-word;
+  font-size:13px;
 }
 
 th{
@@ -188,34 +185,29 @@ th{
   font-weight:700;
 }
 
-/ ================= FACTURE HEADER ================= /
+/ ================= FACTURE ================= /
 .invoice-header{
   text-align:center;
-  padding-bottom:10px;
+  margin-bottom:10px;
   border-bottom:1px solid #ffd6e5;
+  padding-bottom:10px;
 }
 
 .sub-title{
-  font-size:15px;
   margin-top:4px;
+  font-size:15px;
 }
 
 #invoice-id{
   color:#e91e63;
-  font-weight:800;
+  font-weight:900;
 }
 
-/ ================= FACTURE TABLE ================= /
-.right table{
-  font-size:13px;
-}
-
-.right th{
-  font-size:13px;
-}
-
-.right td{
-  font-size:13px;
+/ ================= QR CODE ================= /
+#qr-code{
+  display:flex;
+  justify-content:center;
+  margin-top:10px;
 }
 
 / ================= TOTAL ================= /
@@ -228,7 +220,7 @@ th{
   margin-bottom:10px;
 }
 
-/ ================= BUTTON ================= /
+/ ================= BUTTONS ================= /
 button{
   background:#f8bbd0;
   border:none;
@@ -249,48 +241,10 @@ button:hover{
   margin-top:6px;
 }
 
-/ ================= CALCULATOR ================= /
-.calc{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-  margin-top:10px;
-}
-
-.calc button{
-  height:80px;
-  border:none;
-  background:linear-gradient(135deg,#f8bbd0,#ffe6ef);
-  border-radius:16px;
-  font-size:24px;
-  font-weight:800;
-  cursor:pointer;
-  box-shadow:0 3px 8px rgba(0,0,0,0.08);
-  transition:0.2s;
-}
-
-.calc button:hover{
-  background:#e91e63;
-  color:white;
-}
-
-/ ================= DISPLAY ================= /
-#display{
-  width:100%;
-  height:78px;
-  border-radius:16px;
-  border:2px solid #f8bbd0;
-  font-size:30px;
-  text-align:right;
-  padding:12px;
-  font-weight:bold;
-  margin-bottom:14px;
-}
-
 / ================= PAYMENT ================= /
 .payment-boxes{
   display:flex;
-  gap:12px;
+  gap:10px;
   margin-top:10px;
   margin-bottom:10px;
 }
@@ -298,11 +252,11 @@ button:hover{
 .pay-btn{
   flex:1;
   padding:14px;
-  background:#f8bbd0;
   border-radius:14px;
   text-align:center;
-  cursor:pointer;
+  background:#f8bbd0;
   font-weight:bold;
+  cursor:pointer;
   transition:0.2s;
 }
 
@@ -316,11 +270,49 @@ button:hover{
   color:white;
 }
 
-/ ================= QR CODE ================= /
-#qr-code{
-  display:flex;
-  justify-content:center;
-  margin-top:8px;
+/ ================= CALCULATOR ================= /
+.calc{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:10px;
+}
+
+.calc button{
+  height:74px;
+  border:none;
+  border-radius:16px;
+  background:linear-gradient(135deg,#f8bbd0,#ffe6ef);
+  font-size:24px;
+  font-weight:800;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.calc button:hover{
+  background:#e91e63;
+  color:white;
+}
+
+/ ================= DISPLAY ================= /
+#display{
+  width:100%;
+  height:74px;
+  border-radius:16px;
+  border:2px solid #f8bbd0;
+  font-size:30px;
+  text-align:right;
+  padding:12px;
+  font-weight:bold;
+  margin-bottom:12px;
+}
+
+/ ================= FACTURE MESSAGE ================= /
+.invoice-message{
+  text-align:center;
+  font-size:12px;
+  margin-top:10px;
+  color:#444;
 }
 
 / ================= PRINT ================= */
@@ -339,15 +331,17 @@ button:hover{
     position:absolute;
     left:0;
     top:0;
+
     width:5in;
     min-height:7in;
+
     background:white;
     padding:14px;
     box-shadow:none !important;
     border-radius:0;
   }
 
-  / cache POS /
+  / hide POS /
   nav,
   .left,
   .center,
@@ -356,13 +350,13 @@ button:hover{
     display:none !important;
   }
 
-  / cache action tableau /
+  / hide action column /
   table th:last-child,
   table td:last-child{
     display:none !important;
   }
 
-  / table print /
+  / print table /
   table{
     width:100%;
     border-collapse:collapse;
@@ -379,30 +373,28 @@ button:hover{
     background:#f2f2f2 !important;
   }
 
-  / total /
+  / print total /
   #grand-total{
-    font-size:26px;
+    font-size:28px;
   }
 
-  / titre /
+  / title /
   .invoice-header h2{
-    font-size:17px;
+    font-size:18px;
   }
 
-  / texte /
-  #invoice-print-area p{
-    text-align:center;
+  / message /
+  .invoice-message{
     font-size:11px;
     margin-top:10px;
   }
 }
 
-/ ================= MOBILE / IPAD ================= */
+/ ================= MOBILE + IPAD ================= */
 @media(max-width:1100px){
 
   .pos-container{
     flex-direction:column;
-    gap:16px;
   }
 
   .left,
@@ -417,12 +409,12 @@ button:hover{
   }
 
   .calc button{
-    height:70px;
+    height:68px;
     font-size:20px;
   }
 
   #display{
-    height:70px;
+    height:68px;
     font-size:24px;
   }
 }
