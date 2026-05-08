@@ -99,6 +99,47 @@
 
   <input type="date" id="date">
 
+  <!-- 🧾 TABLE FACTURE (IMPORTANT MANQUE CHEZ TOI) -->
+  <table>
+    <thead>
+      <tr>
+        <th>Produit</th>
+        <th>Qté</th>
+        <th>Prix</th>
+        <th>Total</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="invoice-body"></tbody>
+  </table>
+
+  <!--  DELIVERY -->
+  <input id="delivery" type="number" placeholder="Livraison">
+
+  <!-- TOTAL -->
+  <h2 id="grand-total">0 FCFA</h2>
+
+  <!--  PAYMENT -->
+  <div class="payment-boxes">
+    <div class="pay-btn" onclick="selectPayment(this,'cash')">Cash</div>
+    <div class="pay-btn" onclick="selectPayment(this,'orange')">Orange</div>
+    <div class="pay-btn" onclick="selectPayment(this,'wave')">Wave</div>
+  </div>
+
+  <!-- 🧾 QR CODE -->
+  <div id="qr-code"></div>
+
+  <!-- 💬 MESSAGE FINAL -->
+  <p style="text-align:center; font-size:12px;">
+    Merci de faire partie de l’univers Éclat de Coco 💖
+  </p>
+
+  <!-- ACTION BUTTONS -->
+  <button onclick="saveSale()">💾 Sauvegarder</button>
+  <button onclick="printInvoice()">🖨 Imprimer</button>
+
+</div>
+
   <table>
     <thead>
       <tr>
