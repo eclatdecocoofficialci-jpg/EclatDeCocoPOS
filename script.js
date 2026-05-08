@@ -24,78 +24,7 @@ let paymentMethod = "cash";
 let discount = 0;
 let activeCategory = "ALL";
 
-/* ================= SOAP UI ================= */
-let soapMode = "standard";
-
-function toggleSoapUI(){
-  const ui = document.getElementById("soap-ui");
-  if(!ui) return;
-
-  ui.style.display = (ui.style.display === "block") ? "none" : "block";
-}
-
-function setSoapMode(mode){
-
-  soapMode = mode;
-
-  const std = document.getElementById("soap-standard");
-  const cus = document.getElementById("soap-custom");
-
-  if(std && cus){
-
-    std.style.display = mode === "standard" ? "block" : "none";
-    cus.style.display = mode === "custom" ? "block" : "none";
-  }
-
-  calcSoap();
-}
-
-function calcSoap(){
-
-  const oil = Number(document.getElementById("c_oil")?.value || 0);
-  const base = Number(document.getElementById("c_base")?.value || 0);
-  const perfume = Number(document.getElementById("c_perfume")?.value || 0);
-  const mold = Number(document.getElementById("c_mold")?.value || 0);
-  const labor = Number(document.getElementById("c_labor")?.value || 0);
-  const pack = Number(document.getElementById("c_pack")?.value || 0);
-
-  let total = 0;
-
-  if(soapMode === "custom"){
-    total =
-      (oil * 2000) +
-      (base * 3000) +
-      (perfume * 20) +
-      mold + labor + pack;
-  } else {
-    total = (base * 2500) + pack;
-  }
-
-  const el = document.getElementById("soap-total");
-  if(el) el.innerText = Math.round(total);
-}
-
-function addSoapToInvoice(){
-
-  const total = Number(document.getElementById("soap-total")?.innerText || 0);
-
-  if(total <= 0){
-    alert("⚠ Remplis les champs savon");
-    return;
-  }
-
-  invoice.push({
-    name: soapMode === "custom"
-      ? "Savon Personnalisé"
-      : "Savon Standard",
-    price: total,
-    qty: 1
-  });
-
-  renderInvoice();
-}
-
-/* ================= PRODUCTS ================= */
+/* ================= PRICE CALC ================= */
 function calculateCustomPrice(product){
 
   if(!product || !product.recipe) return product.price;
@@ -112,6 +41,7 @@ function calculateCustomPrice(product){
   );
 }
 
+/* ================= CATEGORIES ================= */
 function loadCategories(){
 
   const box = document.getElementById("category-boxes");
@@ -136,6 +66,7 @@ function filterProducts(category){
   renderProducts(products.filter(p => p.category === category));
 }
 
+/* ================= SEARCH ================= */
 function searchProducts(value){
 
   const v = value.toLowerCase();
@@ -154,6 +85,7 @@ function searchProducts(value){
   );
 }
 
+/* ================= PRODUCTS ================= */
 function renderProducts(list){
 
   const box = document.getElementById("product-list");
