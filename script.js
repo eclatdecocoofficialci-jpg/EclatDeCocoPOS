@@ -27,7 +27,7 @@ function setInvoiceDate(){
   }
 }
 
-/* ================= PRODUCTS ================= */
+/* ================= CATEGORIES (RESTORED) ================= */
 function loadCategories(){
   const box = document.getElementById("category-boxes");
   if(!box) return;
@@ -48,20 +48,50 @@ function showAll(){
 
 function filterProducts(cat){
   activeCategory = cat;
-  renderProducts(products.filter(p => p.category === cat));
+  applyFilters();
 }
 
-function searchProducts(v){
-  const value = v.toLowerCase();
+/* ================= SEARCH (RESTORED CLEAN) ================= */
+function searchProducts(value){
 
-  let base = activeCategory === "ALL"
-    ? products
-    : products.filter(p => p.category === activeCategory);
+  const search = value.toLowerCase();
 
-  renderProducts(base.filter(p => p.name.toLowerCase().includes(value)));
+  let filtered = products;
+
+  if(activeCategory !== "ALL"){
+    filtered = filtered.filter(p => p.category === activeCategory);
+  }
+
+  filtered = filtered.filter(p =>
+    p.name.toLowerCase().includes(search)
+  );
+
+  renderProducts(filtered);
 }
 
+/* ================= APPLY FILTERS ================= */
+function applyFilters(){
+
+  let filtered = products;
+
+  if(activeCategory !== "ALL"){
+    filtered = filtered.filter(p => p.category === activeCategory);
+  }
+
+  const searchInput = document.getElementById("search")?.value || "";
+
+  if(searchInput){
+    filtered = filtered.filter(p =>
+      p.name.toLowerCase().includes(searchInput.toLowerCase())
+    );
+  }
+
+  renderProducts(filtered);
+}
+
+/* ================= PRODUCTS ================= */
 function renderProducts(list){
+
   const box = document.getElementById("product-list");
   if(!box) return;
 
@@ -153,7 +183,7 @@ function selectPayment(el, method){
   el.classList.add("active");
 }
 
-/* ================= SAVE SALE (CORRIGÉ IMPORTANT) ================= */
+/* ================= SAVE SALE ================= */
 function saveSale(){
 
   const total = updateTotal();
@@ -204,7 +234,17 @@ function resetInvoice(){
   generateInvoiceId();
 }
 
-/* ================= PRINT ================= */
+/* ================= INIT ================= */
+document.addEventListener("DOMContentLoaded", ()=>{
+
+  loadCategories();
+  renderProducts(products);
+  generateInvoiceId();
+  setInvoiceDate();
+
+  document.getElementById("search")
+    ?.addEventListener("input", e => searchProducts(e.target.value));
+});
 function printInvoice(){
 
   const clientName = document.getElementById("client-name")?.value || "";
@@ -245,13 +285,13 @@ function printInvoice(){
 
         body { font-family: Arial; font-size: 12px; }
 
-        h1 { text-align: center; color:#e91e63; }
+        h1 { text-align:center; color:#e91e63; }
 
-        .info,.client { text-align:center; font-size:11px; }
+        .info, .client { text-align:center; font-size:11px; margin-bottom:8px; }
 
         table { width:100%; border-collapse:collapse; }
 
-        th,td { border:1px solid #ddd; padding:4px; text-align:center; }
+        th, td { border:1px solid #ddd; padding:4px; text-align:center; }
 
         th { background:#f8c8d8; }
 
@@ -273,8 +313,8 @@ function printInvoice(){
       </div>
 
       <div class="client">
-        ${clientName}<br>
-        ${clientPhone}<br>
+        ${clientName} <br>
+        ${clientPhone} <br>
         ${clientAddress}
       </div>
 
@@ -287,7 +327,9 @@ function printInvoice(){
             <th>Total</th>
           </tr>
         </thead>
-        <tbody>${itemsHTML}</tbody>
+        <tbody>
+          ${itemsHTML}
+        </tbody>
       </table>
 
       <div class="total">
@@ -296,7 +338,7 @@ function printInvoice(){
       </div>
 
       <div class="footer">
-        Merci de faire parti de l`univers  Éclat de Coco
+        Merci de faire partie de l’univers Éclat de Coco 💖
       </div>
 
     </body>
@@ -304,17 +346,9 @@ function printInvoice(){
   `);
 
   win.document.close();
-  setTimeout(()=>{ win.print(); win.close(); }, 500);
+
+  setTimeout(() => {
+    win.print();
+    win.close();
+  }, 500);
 }
-
-/* ================= INIT ================= */
-document.addEventListener("DOMContentLoaded", ()=>{
-
-  loadCategories();
-  renderProducts(products);
-  generateInvoiceId();
-  setInvoiceDate();
-
-  document.getElementById("search")
-    ?.addEventListener("input", e => searchProducts(e.target.value));
-});
