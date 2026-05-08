@@ -3,7 +3,6 @@ let products = JSON.parse(localStorage.getItem("products")) || [
   {name:"Savon Coco", price:3500, stock:8, category:"Savon"},
   {name:"Lotion Vanille", price:5000, stock:5, category:"Lotion"},
   {name:"Beurre Karité", price:4000, stock:7, category:"Beurre"},
-
   {
     name: "Savon Baptême",
     price: 0,
@@ -28,16 +27,11 @@ let activeCategory = "ALL";
 /* ================= SOAP UI ================= */
 let soapMode = "standard";
 
-function openSavonUI(){
-  const ui = document.getElementById("soap-ui");
-  if(ui) ui.style.display = "block";
-}
-
 function toggleSoapUI(){
   const ui = document.getElementById("soap-ui");
-  if(ui){
-    ui.style.display = (ui.style.display === "none") ? "block" : "none";
-  }
+  if(!ui) return;
+
+  ui.style.display = (ui.style.display === "block") ? "none" : "block";
 }
 
 function setSoapMode(mode){
@@ -47,30 +41,20 @@ function setSoapMode(mode){
   const std = document.getElementById("soap-standard");
   const cus = document.getElementById("soap-custom");
 
-  const btns = document.querySelectorAll(".payment-boxes .pay-btn");
+  if(std && cus){
 
-  btns.forEach(b => b.classList.remove("active"));
-
-  if(mode === "standard"){
-    std.style.display = "block";
-    cus.style.display = "none";
-    btns[0].classList.add("active");
+    std.style.display = mode === "standard" ? "block" : "none";
+    cus.style.display = mode === "custom" ? "block" : "none";
   }
 
-  if(mode === "custom"){
-    std.style.display = "none";
-    cus.style.display = "block";
-    btns[1].classList.add("active");
-  }
+  calcSoap();
 }
 
-/* ================= CALC SOAP ================= */
 function calcSoap(){
 
   const oil = Number(document.getElementById("c_oil")?.value || 0);
   const base = Number(document.getElementById("c_base")?.value || 0);
   const perfume = Number(document.getElementById("c_perfume")?.value || 0);
-
   const mold = Number(document.getElementById("c_mold")?.value || 0);
   const labor = Number(document.getElementById("c_labor")?.value || 0);
   const pack = Number(document.getElementById("c_pack")?.value || 0);
@@ -96,7 +80,7 @@ function addSoapToInvoice(){
   const total = Number(document.getElementById("soap-total")?.innerText || 0);
 
   if(total <= 0){
-    alert("⚠ Remplis les champs");
+    alert("⚠ Remplis les champs savon");
     return;
   }
 
@@ -104,7 +88,6 @@ function addSoapToInvoice(){
     name: soapMode === "custom"
       ? "Savon Personnalisé"
       : "Savon Standard",
-
     price: total,
     qty: 1
   });
@@ -112,12 +95,7 @@ function addSoapToInvoice(){
   renderInvoice();
 }
 
-/* ================= SAVE ================= */
-function saveProducts(){
-  localStorage.setItem("products", JSON.stringify(products));
-}
-
-/* ================= CALCUL PRIX RECETTE ================= */
+/* ================= PRODUCTS ================= */
 function calculateCustomPrice(product){
 
   if(!product || !product.recipe) return product.price;
@@ -134,7 +112,6 @@ function calculateCustomPrice(product){
   );
 }
 
-/* ================= CATEGORIES ================= */
 function loadCategories(){
 
   const box = document.getElementById("category-boxes");
@@ -159,7 +136,6 @@ function filterProducts(category){
   renderProducts(products.filter(p => p.category === category));
 }
 
-/* ================= SEARCH ================= */
 function searchProducts(value){
 
   const v = value.toLowerCase();
@@ -178,7 +154,6 @@ function searchProducts(value){
   );
 }
 
-/* ================= PRODUCTS ================= */
 function renderProducts(list){
 
   const box = document.getElementById("product-list");
@@ -186,9 +161,7 @@ function renderProducts(list){
 
   box.innerHTML = list.map(p => {
 
-    const price = p.recipe
-      ? calculateCustomPrice(p)
-      : p.price;
+    const price = p.recipe ? calculateCustomPrice(p) : p.price;
 
     return `
       <div class="pink-box"
@@ -281,8 +254,8 @@ function updateTotal(){
   total = total - (total * discount / 100);
   total += delivery;
 
-  document.getElementById("grand-total").innerText =
-    Math.round(total) + " FCFA";
+  const el = document.getElementById("grand-total");
+  if(el) el.innerText = Math.round(total) + " FCFA";
 }
 
 /* ================= INIT ================= */
@@ -298,15 +271,3 @@ document.addEventListener("DOMContentLoaded", function(){
     );
   }
 });
-function toggleSoapUI(){
-
-  const box = document.getElementById("soap-ui");
-
-  if(!box) return;
-
-  if(box.style.display === "none" || box.style.display === ""){
-    box.style.display = "block";
-  } else {
-    box.style.display = "none";
-  }
-}
