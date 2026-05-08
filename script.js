@@ -1,88 +1,75 @@
 let activeCategory = "ALL";
 let searchValue = "";
 
-/* ================= CATEGORIES ================= */
-function loadCategories(){
+/* ================= CATEGORIES FIXED ================= */
+
+function loadCategories() {
   const box = document.getElementById("category-boxes");
-  if(!box) return;
+  if (!box) return;
 
   const categories = [...new Set(products.map(p => p.category))];
 
-  box.innerHTML = "";
-
-  // ALL button
-  const all = document.createElement("div");
-  all.className = "pink-box";
-  all.innerText = "ALL";
-  all.onclick = () => {
-    activeCategory = "ALL";
-    applyFilters();
-  };
-  box.appendChild(all);
-
-  // categories
-  categories.forEach(cat => {
-    const div = document.createElement("div");
-    div.className = "pink-box";
-    div.innerText = cat;
-
-    div.onclick = () => {
-      activeCategory = cat;
-      applyFilters();
-    };
-
-    box.appendChild(div);
-  });
+  box.innerHTML = `
+    <div class="pink-box" onclick="showAll()">ALL</div>
+    ${categories.map(cat => `
+      <div class="pink-box" onclick="filterCategory('${cat}')">
+        ${cat}
+      </div>
+    `).join("")}
+  `;
 }
 
-/* ================= SEARCH ================= */
-function searchProducts(v){
-  searchValue = v.toLowerCase();
-  applyFilters();
+function showAll() {
+  activeCategory = "ALL";
+  renderProducts(products);
 }
 
-/* ================= FILTER ENGINE ================= */
-function applyFilters(){
+/* IMPORTANT FIX */
+function filterCategory(cat) {
+  activeCategory = cat;
 
-  let filtered = products;
-
-  if(activeCategory !== "ALL"){
-    filtered = filtered.filter(p => p.category === activeCategory);
-  }
-
-  if(searchValue){
-    filtered = filtered.filter(p =>
-      p.name.toLowerCase().includes(searchValue)
-    );
-  }
-
+  const filtered = products.filter(p => p.category === cat);
   renderProducts(filtered);
 }
 
+/* ================= SEARCH FIX ================= */
+
+document.addEventListener("input", (e) => {
+  if (e.target.id === "search") {
+    const value = e.target.value.toLowerCase();
+
+    let base = products;
+
+    if (activeCategory !== "ALL") {
+      base = base.filter(p => p.category === activeCategory);
+    }
+
+    const filtered = base.filter(p =>
+      p.name.toLowerCase().includes(value)
+    );
+
+    renderProducts(filtered);
+  }
+
+  if (e.target.id === "delivery") {
+    updateTotal();
+  }
+});
+
 /* ================= PRODUCTS ================= */
-function renderProducts(list){
 
+function renderProducts(list) {
   const box = document.getElementById("product-list");
-  if(!box) return;
+  if (!box) return;
 
-  box.innerHTML = "";
-
-  list.forEach(p => {
-    const div = document.createElement("div");
-    div.className = "pink-box";
-
-    div.innerHTML = `
+  box.innerHTML = list.map(p => `
+    <div class="pink-box" onclick="addToInvoice('${p.name}', ${p.price})">
       <strong>${p.name}</strong><br>
       💰 ${p.price} FCFA<br>
       📦 ${p.stock}
-    `;
-
-    div.onclick = () => addToInvoice(p.name, p.price);
-
-    box.appendChild(div);
-  });
+    </div>
+  `).join("");
 }
-
 /* ================= TOTAL LIVE ================= */
 function updateTotal(){
 
