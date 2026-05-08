@@ -282,3 +282,88 @@ button:hover{
     font-size:20px;
   }
 }
+@media print {
+
+  /* ❌ cache tout le site */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* ✅ affiche uniquement la facture */
+  #invoice-print-area,
+  #invoice-print-area * {
+    visibility: visible !important;
+  }
+
+  /* 📄 zone facture imprimée */
+  #invoice-print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    width: 5in;     /* ⭐ format demandé */
+    height: 7in;
+
+    background: white;
+    padding: 12px;
+    box-shadow: none !important;
+  }
+
+  /* ❌ cache navigation + POS */
+  nav,
+  .pos-container,
+  .left,
+  .center,
+  .calc,
+  input,
+  .payment-boxes {
+    display: none !important;
+  }
+
+  /* ❌ cache boutons */
+  button {
+    display: none !important;
+  }
+
+  /* ❌ cache colonne ACTION du tableau */
+  table th:last-child,
+  table td:last-child {
+    display: none !important;
+  }
+
+  /* 📊 tableau propre impression */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    border: 1px solid #000;
+    padding: 6px;
+    font-size: 12px;
+  }
+
+  th {
+    background: #f2f2f2 !important;
+  }
+
+  /* 🧾 titre facture */
+  .invoice-header h2 {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  /* 📌 QR centré */
+  #qr-code {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  /* 💬 message final */
+  #invoice-print-area p {
+    font-size: 11px;
+    text-align: center;
+    margin-top: 10px;
+  }
+}
