@@ -256,9 +256,207 @@ function resetInvoice(){
   generateInvoiceId();
 }
 
-/* ================= PRINT ================= */
-function printInvoice(){
-  window.print();
+function printInvoice() {
+
+  const clientName = document.getElementById("client-name")?.value || "";
+  const clientPhone = document.getElementById("client-phone")?.value || "";
+  const clientAddress = document.getElementById("client-address")?.value || "";
+  const date = document.getElementById("date")?.value || "";
+  const invoiceId = document.getElementById("invoice-id")?.innerText || "";
+  const delivery = document.getElementById("delivery")?.value || 0;
+  const total = document.getElementById("grand-total")?.innerText || "0 FCFA";
+
+  const rows = document.querySelectorAll("#invoice-body tr");
+
+  let itemsHTML = "";
+
+  rows.forEach(row => {
+    const cols = row.querySelectorAll("td");
+
+    if (cols.length >= 4) {
+      itemsHTML += `
+        <tr>
+          <td>${cols[0].innerText}</td>
+          <td>${cols[1].innerText}</td>
+          <td>${cols[2].innerText}</td>
+          <td>${cols[3].innerText}</td>
+        </tr>
+      `;
+    }
+  });
+
+  const win = window.open("", "", "width=400,height=700");
+
+  win.document.write(`
+    <html>
+    <head>
+      <title>Ticket</title>
+
+      <style>
+        @page {
+          size: 5in 7in;
+          margin: 5mm;
+        }
+
+        body {
+          font-family: Arial;
+          font-size: 12px;
+          width: 100%;
+        }
+
+        h1 {
+          text-align: center;
+          color: #e91e63;
+          font-size: 18px;
+          margin-bottom: 2px;
+        }
+
+        .info, .client {
+          text-align: center;
+          font-size: 11px;
+          margin-bottom: 8px;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 11px;
+        }
+
+        th, td {
+          border: 1px solid #ddd;
+          padding: 4px;
+          text-align: center;
+        }
+
+        th {
+          background: #f8c8d8;
+        }
+
+        .total {
+          text-align: right;
+          margin-top: 8px;
+          font-size: 13px;
+          font-weight: bold;
+          color: #e91e63;
+        }
+
+        .footer {
+          margin-top: 12px;
+          text-align: center;
+          font-size: 11px;
+        }
+
+        .message {
+          text-align: center;
+          font-style: italic;
+          font-size: 10px;
+          margin-top: 5px;
+        }
+      </style>
+    </head>
+
+    <body onload="window.print(); window.close();">
+
+      <h1>ÉCLAT DE COCO OFFICIAL</h1>
+
+      <div class="info">
+        Abidjan - Côte d’Ivoire <br>
+        ${date} <br>
+        ID: ${invoiceId}
+      </div>
+
+      <div class="client">
+        ${clientName} <br>
+        ${clientPhone} <br>
+        ${clientAddress}
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Prod</th>
+            <th>Qté</th>
+            <th>Prix</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${itemsHTML}
+        </tbody>
+      </table>
+
+      <div class="total">
+        Livraison: ${delivery} FCFA <br>
+        Total: ${total}
+      </div>
+
+      <div class="footer">
+        Merci de faire partie de l’univers Éclat de Coco 💖
+      </div>
+
+      <div class="message">
+        Naturel • Luxe • Respect de la peau 🌿
+      </div>
+
+    </body>
+    </html>
+  `);
+
+  win.document.close();
+}
+    </head>
+
+    <body onload="window.print(); window.close();">
+
+      <h1>ÉCLAT DE COCO OFFICIAL</h1>
+
+      <div class="info">
+        Abidjan - Côte d’Ivoire <br>
+        Date: ${date} <br>
+        Facture ID: ${invoiceId}
+      </div>
+
+      <div class="client">
+        <strong>Client :</strong> ${clientName} <br>
+        <strong>Téléphone :</strong> ${clientPhone} <br>
+        <strong>Adresse :</strong> ${clientAddress} <br>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th>Qté</th>
+            <th>Prix</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${itemsHTML}
+        </tbody>
+      </table>
+
+      <div class="total">
+        Livraison: ${delivery} FCFA <br>
+        Total Final: ${total}
+      </div>
+
+      <div class="footer">
+        Merci de faire partie de l’univers Éclat de Coco 💖
+      </div>
+
+      <div class="message">
+        Produits naturels - respect de la peau et de la nature 🌿
+      </div>
+
+    </body>
+    </html>
+  `);
+
+  win.document.close();
 }
 
 /* ================= INIT ================= */
