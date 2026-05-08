@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Éclat de Coco Official</title>
+<title>Éclat de Coco Official - Recette</title>
 
 <link rel="stylesheet" href="./style.css">
+
 </head>
 
 <body>
@@ -28,12 +29,18 @@
 <!-- ================= LEFT ================= -->
 <div class="panel left">
 
-  <h3> Nom de la recette</h3>
+  <h3>Nom de la recette</h3>
 
   <input id="recipe-name"
     placeholder="Ex: Savon Coco Luxe"
     oninput="updateRecipeTitle()"
-    style="font-weight:bold;text-align:center;border:2px solid #f8bbd0;border-radius:10px;padding:10px;"
+    style="
+      font-weight:bold;
+      text-align:center;
+      border:2px solid #f8bbd0;
+      border-radius:10px;
+      padding:10px;
+    "
   >
 
   <div class="pink-box" style="margin-top:10px;">
@@ -66,7 +73,22 @@
 <!-- ================= CENTER ================= -->
 <div class="panel center">
 
-  <h3> Recette en cours</h3>
+  <!-- HEADER PRINT -->
+  <div id="print-header">
+
+    <h1 style="text-align:center;font-weight:bold;">
+      ÉCLAT DE COCO OFFICIAL
+    </h1>
+
+    <p style="text-align:center;">
+      Abidjan - Côte d’Ivoire
+    </p>
+
+    <input type="date" id="recipe-date"
+      style="display:block;margin:auto;text-align:center;">
+  </div>
+
+  <h3>📋 Recette en cours</h3>
 
   <table>
     <thead>
@@ -88,7 +110,7 @@
 <!-- ================= RIGHT ================= -->
 <div class="panel right">
 
-  <h3>Résumé</h3>
+  <h3>Résumé recette</h3>
 
   <div class="pink-box">
     Total recette :
@@ -114,12 +136,19 @@
   <h3>🧾 Étapes & Notes de fabrication</h3>
 
   <textarea id="recipe-notes"
-    placeholder="Écris ici les étapes de fabrication..."
-    style="width:100%;height:150px;padding:10px;border-radius:12px;border:2px solid #f8bbd0;">
+    placeholder="Écris ici les étapes complètes de fabrication..."
+    style="
+      width:100%;
+      height:250px;
+      padding:12px;
+      border-radius:12px;
+      border:2px solid #f8bbd0;
+    ">
   </textarea>
 
-  <div style="margin-top:15px;text-align:right;font-style:italic;">
-    ___________________________<br>
+  <!-- SIGNATURE -->
+  <div style="margin-top:20px;text-align:right;font-style:italic;">
+    <hr>
     Signature du responsable
   </div>
 
@@ -137,7 +166,6 @@ function updateRecipeTitle(){
     name || "Nouvelle recette";
 }
 
-/* PRINT PROPRE */
 function printRecipe(){
   window.print();
 }
