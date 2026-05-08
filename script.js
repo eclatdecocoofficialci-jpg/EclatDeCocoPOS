@@ -352,3 +352,17 @@ function printInvoice(){
     win.close();
   }, 500);
 }
+window.addEventListener("DOMContentLoaded", () => {
+
+  console.log("POS INIT OK");
+
+  try {
+    loadCategories();
+    renderProducts(products);
+    generateInvoiceId();
+    setInvoiceDate();
+  } catch (e) {
+    console.error("ERREUR INIT POS:", e);
+  }
+
+});
