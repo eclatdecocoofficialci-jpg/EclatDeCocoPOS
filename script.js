@@ -27,21 +27,7 @@ function setInvoiceDate(){
   }
 }
 
-/* ================= QR CODE ================= */
-function generateQR(total, id){
-  const container = document.getElementById("qrcode");
-  if(!container) return;
-
-  container.innerHTML = "";
-
-  new QRCode(container, {
-    text: `FACTURE: ${id} | TOTAL: ${total} FCFA`,
-    width: 100,
-    height: 100
-  });
-}
-
-/* ================= CATEGORIES ================= */
+/* ================= PRODUCTS ================= */
 function loadCategories(){
   const box = document.getElementById("category-boxes");
   if(!box) return;
@@ -72,9 +58,7 @@ function searchProducts(v){
     ? products
     : products.filter(p => p.category === activeCategory);
 
-  renderProducts(
-    base.filter(p => p.name.toLowerCase().includes(value))
-  );
+  renderProducts(base.filter(p => p.name.toLowerCase().includes(value)));
 }
 
 function renderProducts(list){
@@ -120,9 +104,9 @@ function renderInvoice(){
   `).join("");
 
   updateTotal();
-  updateLivePreview();
 }
 
+/* ================= UPDATE ================= */
 function updateQty(i,v){
   invoice[i].qty = Math.max(1, Number(v));
   renderInvoice();
@@ -138,7 +122,7 @@ function removeItem(i){
   renderInvoice();
 }
 
-/* ================= TOTAL LIVE ================= */
+/* ================= TOTAL ================= */
 function updateTotal(){
 
   let total = 0;
@@ -159,24 +143,8 @@ function updateTotal(){
   return currentTotal;
 }
 
-function updateLivePreview(){
-  const el = document.getElementById("live-invoice-preview");
-  if(el){
-    el.innerText = "TOTAL FACTURE: " + currentTotal + " FCFA";
-  }
-}
-
-/* ================= LIVE DELIVERY ================= */
-document.addEventListener("input", (e)=>{
-  if(e.target.id === "delivery"){
-    updateTotal();
-    updateLivePreview();
-  }
-});
-
 /* ================= PAYMENT ================= */
 function selectPayment(el, method){
-
   paymentMethod = method;
 
   document.querySelectorAll(".pay-btn")
@@ -185,28 +153,38 @@ function selectPayment(el, method){
   el.classList.add("active");
 }
 
-/* ================= SAVE ================= */
+/* ================= SAVE SALE (CORRIGÉ IMPORTANT) ================= */
 function saveSale(){
 
   const total = updateTotal();
   const id = lastInvoiceId;
+
+  const clientName = document.getElementById("client-name")?.value || "";
+  const clientPhone = document.getElementById("client-phone")?.value || "";
+  const clientAddress = document.getElementById("client-address")?.value || "";
+  const delivery = Number(document.getElementById("delivery")?.value || 0);
 
   let sales = JSON.parse(localStorage.getItem("sales")) || [];
 
   sales.push({
     id,
     date: new Date(),
+
+    client: {
+      name: clientName,
+      phone: clientPhone,
+      address: clientAddress
+    },
+
     items: invoice,
-    total,
-    payment: paymentMethod
+    payment: paymentMethod,
+    delivery: delivery,
+    total: total
   });
 
   localStorage.setItem("sales", JSON.stringify(sales));
 
-  setInvoiceDate();
-  generateQR(total, id);
-
-  alert("✔ Vente sauvegardée");
+  alert("✔ Vente sauvegardée complète");
 
   resetInvoice();
 }
@@ -226,8 +204,8 @@ function resetInvoice(){
   generateInvoiceId();
 }
 
-/* ================= PRINT FIX 5x7 ================= */
-function printInvoice() {
+/* ================= PRINT ================= */
+function printInvoice(){
 
   const clientName = document.getElementById("client-name")?.value || "";
   const clientPhone = document.getElementById("client-phone")?.value || "";
@@ -255,7 +233,7 @@ function printInvoice() {
 
   const finalTotal = total + delivery;
 
-  const win = window.open("", "_blank", "width=400,height=800");
+  const win = window.open("", "_blank", "width=400,height=700");
 
   win.document.write(`
     <html>
@@ -265,59 +243,22 @@ function printInvoice() {
       <style>
         @page { size: 5in 7in; margin: 5mm; }
 
-        body {
-          font-family: Arial;
-          font-size: 12px;
-        }
+        body { font-family: Arial; font-size: 12px; }
 
-        h1 {
-          text-align: center;
-          color: #e91e63;
-        }
+        h1 { text-align: center; color:#e91e63; }
 
-        .info, .client {
-          text-align: center;
-          font-size: 11px;
-          margin-bottom: 8px;
-        }
+        .info,.client { text-align:center; font-size:11px; }
 
-        table {
-          width: 100%;
-          border-collapse: collapse;
-        }
+        table { width:100%; border-collapse:collapse; }
 
-        th, td {
-          border: 1px solid #ddd;
-          padding: 4px;
-          text-align: center;
-        }
+        th,td { border:1px solid #ddd; padding:4px; text-align:center; }
 
-        th { background: #f8c8d8; }
+        th { background:#f8c8d8; }
 
-        .delivery {
-          text-align: right;
-          margin-top: 10px;
-          font-size: 12px;
-        }
+        .total { text-align:right; font-weight:bold; color:#e91e63; }
 
-        .total {
-          text-align: right;
-          margin-top: 5px;
-          font-weight: bold;
-          color: #e91e63;
-          font-size: 14px;
-        }
+        .footer { text-align:center; margin-top:10px; }
 
-        .footer {
-          text-align: center;
-          margin-top: 15px;
-        }
-
-        .message {
-          text-align: center;
-          font-style: italic;
-          font-size: 11px;
-        }
       </style>
     </head>
 
@@ -332,8 +273,8 @@ function printInvoice() {
       </div>
 
       <div class="client">
-        ${clientName} <br>
-        ${clientPhone} <br>
+        ${clientName}<br>
+        ${clientPhone}<br>
         ${clientAddress}
       </div>
 
@@ -346,26 +287,16 @@ function printInvoice() {
             <th>Total</th>
           </tr>
         </thead>
-
-        <tbody>
-          ${itemsHTML}
-        </tbody>
+        <tbody>${itemsHTML}</tbody>
       </table>
 
-      <div class="delivery">
-        Livraison: ${delivery} FCFA
-      </div>
-
       <div class="total">
-        TOTAL FINAL: ${finalTotal} FCFA
+        Livraison: ${delivery} FCFA <br>
+        TOTAL: ${finalTotal} FCFA
       </div>
 
       <div class="footer">
-        Merci de faire partie de l’univers Éclat de Coco 💖
-      </div>
-
-      <div class="message">
-        Naturel • Luxe • Respect 🌿
+        Merci de faire parti de l`univers  Éclat de Coco
       </div>
 
     </body>
@@ -373,12 +304,7 @@ function printInvoice() {
   `);
 
   win.document.close();
-
-  setTimeout(() => {
-    win.focus();
-    win.print();
-    win.close();
-  }, 500);
+  setTimeout(()=>{ win.print(); win.close(); }, 500);
 }
 
 /* ================= INIT ================= */
