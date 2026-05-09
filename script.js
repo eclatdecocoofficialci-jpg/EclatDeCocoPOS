@@ -35,19 +35,19 @@ function loadCategories(){
 
   if(!box) return;
 
-  // reload produits depuis localStorage
-  products = JSON.parse(localStorage.getItem("products")) || products;
+  // 🔥 recharge toujours les produits récents
+  products = JSON.parse(localStorage.getItem("products")) || [];
 
-  // récupérer catégories valides
+  // 🔥 catégories uniques
   const categories = [
     ...new Set(
       products
         .map(p => p.category)
-        .filter(cat => cat && cat.trim() !== "")
+        .filter(c => c)
     )
   ];
 
-  // si aucune catégorie
+  // 🔥 si aucune catégorie
   if(categories.length === 0){
 
     box.innerHTML = `
@@ -59,14 +59,13 @@ function loadCategories(){
     return;
   }
 
-  // bouton ALL
   let html = `
-    <div class="pink-box" onclick="showAll()">
+    <div class="pink-box"
+      onclick="showAll()">
       ALL
     </div>
   `;
 
-  // catégories dynamiques
   categories.forEach(cat => {
 
     html += `
@@ -82,7 +81,6 @@ function loadCategories(){
 
   box.innerHTML = html;
 }
-
 /* ================= FILTER CATEGORY ================= */
 function showAll(){
 
@@ -96,6 +94,51 @@ function filterCategory(cat){
   activeCategory = cat;
 
   applyFilters();
+}
+/* ================= SEARCH ================= */
+document.addEventListener("input", (e) => {
+
+  if(e.target.id === "search"){
+    applyFilters();
+  }
+
+  if(e.target.id === "delivery"){
+    updateTotal();
+  }
+
+});
+
+/* ================= APPLY FILTERS ================= */
+function applyFilters(){
+
+  const search =
+    document.getElementById("search")?.value.toLowerCase() || "";
+
+  let filtered = [...products];
+
+  // filtre catégorie
+  if(activeCategory !== "ALL"){
+
+    filtered = filtered.filter(p =>
+      p.category === activeCategory
+    );
+
+  }
+
+  // filtre recherche
+  if(search){
+
+    filtered = filtered.filter(p =>
+
+      p.name.toLowerCase().includes(search) ||
+
+      (p.code && p.code.toLowerCase().includes(search))
+
+    );
+
+  }
+
+  renderProducts(filtered);
 }
 /* ================= PRODUCTS ================= */
 function renderProducts(list){
@@ -377,11 +420,21 @@ function printInvoice(){
 }
 
 /* ================= INIT ================= */
+/* ================= INIT ================= */
 window.onload = () => {
+
+  products =
+    JSON.parse(localStorage.getItem("products")) || [];
+
   loadCategories();
-  renderProducts(products);
+
+  applyFilters();
+
   generateInvoiceId();
+
   setInvoiceDate();
+
   updateSalesView();
+
   loadEditSale();
 };
