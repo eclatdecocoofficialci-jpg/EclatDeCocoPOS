@@ -418,8 +418,42 @@ function printInvoice(){
     win.close();
   }, 600);
 }
+/* ================= CALCULATOR ================= */
 
-/* ================= INIT ================= */
+function press(value){
+
+  const display = document.getElementById("display");
+
+  if(!display) return;
+
+  display.value += value;
+}
+
+function clearCalc(){
+
+  const display = document.getElementById("display");
+
+  if(!display) return;
+
+  display.value = "";
+}
+
+function calculate(){
+
+  const display = document.getElementById("display");
+
+  if(!display) return;
+
+  try{
+
+    display.value = eval(display.value);
+
+  }catch{
+
+    display.value = "Erreur";
+
+  }
+}
 /* ================= INIT ================= */
 window.onload = () => {
 
