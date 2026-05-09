@@ -1,9 +1,18 @@
-let products = JSON.parse(localStorage.getItem("products")) || [
-  {name:"Savon Rose", price:3000, stock:10, category:"Savon"},
-  {name:"Savon Coco", price:3500, stock:8, category:"Savon"},
-  {name:"Lotion Vanille", price:5000, stock:5, category:"Lotion"},
-  {name:"Beurre Karité", price:4000, stock:7, category:"Beurre"}
-];
+/* ================= PRODUCTS SAFE LOAD ================= */
+
+let products = JSON.parse(localStorage.getItem("products"));
+
+if (!Array.isArray(products) || products.length === 0) {
+  products = [
+    {name:"Savon Rose", price:3000, stock:10, category:"Savon"},
+    {name:"Savon Coco", price:3500, stock:8, category:"Savon"},
+    {name:"Lotion Vanille", price:5000, stock:5, category:"Lotion"},
+    {name:"Beurre Karité", price:4000, stock:7, category:"Beurre"}
+  ];
+  localStorage.setItem("products", JSON.stringify(products));
+}
+
+/* ================= GLOBAL STATE ================= */
 
 let invoice = [];
 let activeCategory = "ALL";
@@ -12,6 +21,7 @@ let currentTotal = 0;
 let editMode = false;
 
 /* ================= INVOICE ID ================= */
+
 let lastInvoiceId = Number(localStorage.getItem("invoice_id") || 20206000);
 
 function generateInvoiceId(){
@@ -20,6 +30,7 @@ function generateInvoiceId(){
 }
 
 /* ================= DATE ================= */
+
 function setInvoiceDate(){
   const el = document.getElementById("date");
   if(el){
@@ -27,121 +38,69 @@ function setInvoiceDate(){
   }
 }
 
-
 /* ================= CATEGORIES ================= */
+
 function loadCategories(){
 
   const box = document.getElementById("category-boxes");
-
   if(!box) return;
 
-  // 🔥 recharge toujours les produits récents
   products = JSON.parse(localStorage.getItem("products")) || [];
 
-  // 🔥 catégories uniques
   const categories = [
-    ...new Set(
-      products
-        .map(p => p.category)
-        .filter(c => c)
-    )
+    ...new Set(products.map(p => p.category).filter(Boolean))
   ];
 
-  // 🔥 si aucune catégorie
-  if(categories.length === 0){
-
-    box.innerHTML = `
-      <div class="pink-box">
-        Aucune catégorie
-      </div>
-    `;
-
-    return;
-  }
-
-  let html = `
-    <div class="pink-box"
-      onclick="showAll()">
-      ALL
-    </div>
-  `;
+  let html = `<div class="pink-box" onclick="showAll()">ALL</div>`;
 
   categories.forEach(cat => {
-
-    html += `
-      <div class="pink-box"
-        onclick="filterCategory('${cat}')">
-
-        ${cat}
-
-      </div>
-    `;
-
+    html += `<div class="pink-box" onclick="filterCategory('${cat}')">${cat}</div>`;
   });
 
   box.innerHTML = html;
 }
-/* ================= FILTER CATEGORY ================= */
+
 function showAll(){
-
   activeCategory = "ALL";
-
   applyFilters();
 }
 
 function filterCategory(cat){
-
   activeCategory = cat;
-
   applyFilters();
 }
-/* ================= SEARCH ================= */
+
+/* ================= SEARCH + FILTER ================= */
+
 document.addEventListener("input", (e) => {
-
-  if(e.target.id === "search"){
-    applyFilters();
-  }
-
-  if(e.target.id === "delivery"){
-    updateTotal();
-  }
-
+  if(e.target.id === "search") applyFilters();
+  if(e.target.id === "delivery") updateTotal();
 });
 
-/* ================= APPLY FILTERS ================= */
 function applyFilters(){
 
-  const search =
-    document.getElementById("search")?.value.toLowerCase() || "";
+  const search = document.getElementById("search")?.value.toLowerCase() || "";
 
   let filtered = [...products];
 
-  // filtre catégorie
   if(activeCategory !== "ALL"){
-
-    filtered = filtered.filter(p =>
-      p.category === activeCategory
-    );
-
+    filtered = filtered.filter(p => p.category === activeCategory);
   }
 
-  // filtre recherche
   if(search){
-
     filtered = filtered.filter(p =>
-
       p.name.toLowerCase().includes(search) ||
-
       (p.code && p.code.toLowerCase().includes(search))
-
     );
-
   }
 
   renderProducts(filtered);
 }
+
 /* ================= PRODUCTS ================= */
+
 function renderProducts(list){
+
   const box = document.getElementById("product-list");
   if(!box) return;
 
@@ -155,6 +114,7 @@ function renderProducts(list){
 }
 
 /* ================= INVOICE ================= */
+
 function addToInvoice(name, price){
 
   const item = invoice.find(i => i.name === name);
@@ -169,6 +129,7 @@ function addToInvoice(name, price){
 }
 
 function renderInvoice(){
+
   const body = document.getElementById("invoice-body");
   if(!body) return;
 
@@ -201,6 +162,7 @@ function removeItem(i){
 }
 
 /* ================= TOTAL ================= */
+
 function updateTotal(){
 
   let total = 0;
@@ -220,7 +182,9 @@ function updateTotal(){
 }
 
 /* ================= PAYMENT ================= */
+
 function selectPayment(el, method){
+
   paymentMethod = method;
 
   document.querySelectorAll(".pay-btn")
@@ -230,6 +194,7 @@ function selectPayment(el, method){
 }
 
 /* ================= SAVE SALE ================= */
+
 function saveSale(){
 
   const total = updateTotal();
@@ -271,34 +236,8 @@ function saveSale(){
   resetInvoice();
 }
 
-/* ================= EDIT MODE ================= */
-function loadEditSale(){
+/* ================= SALES TABLE ================= */
 
-  const data = localStorage.getItem("edit_sale");
-  if(!data) return;
-
-  const sale = JSON.parse(data);
-
-  invoice = sale.items || [];
-
-  document.getElementById("client-name").value = sale.client?.name || "";
-  document.getElementById("client-phone").value = sale.client?.phone || "";
-  document.getElementById("client-address").value = sale.client?.address || "";
-  document.getElementById("delivery").value = sale.delivery || 0;
-
-  paymentMethod = sale.payment || "cash";
-
-  lastInvoiceId = sale.id;
-
-  generateInvoiceId();
-  renderInvoice();
-
-  localStorage.removeItem("edit_sale");
-
-  editMode = true;
-}
-
-/* ================= UPDATE TABLE ================= */
 function updateSalesView(){
 
   const table = document.getElementById("sales-table-body");
@@ -319,15 +258,16 @@ function updateSalesView(){
 }
 
 /* ================= RESET ================= */
+
 function resetInvoice(){
 
   invoice = [];
   renderInvoice();
 
-  document.getElementById("delivery")?.value = "";
-  document.getElementById("client-name")?.value = "";
-  document.getElementById("client-phone")?.value = "";
-  document.getElementById("client-address")?.value = "";
+  document.getElementById("delivery").value = "";
+  document.getElementById("client-name").value = "";
+  document.getElementById("client-phone").value = "";
+  document.getElementById("client-address").value = "";
 
   paymentMethod = "cash";
 
@@ -343,7 +283,29 @@ function resetInvoice(){
   editMode = false;
 }
 
-/* ================= PRINT 5x7 ================= */
+/* ================= CALCULATOR ================= */
+
+function press(v){
+  const d = document.getElementById("display");
+  if(d) d.value += v;
+}
+
+function clearCalc(){
+  const d = document.getElementById("display");
+  if(d) d.value = "";
+}
+
+function calculate(){
+  const d = document.getElementById("display");
+  try{
+    d.value = eval(d.value);
+  }catch{
+    d.value = "Erreur";
+  }
+}
+
+/* ================= PRINT INVOICE ================= */
+
 function printInvoice(){
 
   const clientName = document.getElementById("client-name")?.value || "";
@@ -418,57 +380,18 @@ function printInvoice(){
     win.close();
   }, 600);
 }
-/* ================= CALCULATOR ================= */
 
-function press(value){
-
-  const display = document.getElementById("display");
-
-  if(!display) return;
-
-  display.value += value;
-}
-
-function clearCalc(){
-
-  const display = document.getElementById("display");
-
-  if(!display) return;
-
-  display.value = "";
-}
-
-function calculate(){
-
-  const display = document.getElementById("display");
-
-  if(!display) return;
-
-  try{
-
-    display.value = eval(display.value);
-
-  }catch{
-
-    display.value = "Erreur";
-
-  }
-}
 /* ================= INIT ================= */
+
 window.onload = () => {
 
-  products =
-    JSON.parse(localStorage.getItem("products")) || [];
+  products = JSON.parse(localStorage.getItem("products")) || products;
 
   loadCategories();
-
   applyFilters();
 
   generateInvoiceId();
-
   setInvoiceDate();
 
   updateSalesView();
-
-  loadEditSale();
 };
