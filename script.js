@@ -27,56 +27,76 @@ function setInvoiceDate(){
   }
 }
 
+
 /* ================= CATEGORIES ================= */
 function loadCategories(){
+
   const box = document.getElementById("category-boxes");
+
   if(!box) return;
 
-  const categories = [...new Set(products.map(p => p.category))];
+  // reload produits depuis localStorage
+  products = JSON.parse(localStorage.getItem("products")) || products;
 
-  let html = `<div class="pink-box" onclick="showAll()">ALL</div>`;
+  // récupérer catégories valides
+  const categories = [
+    ...new Set(
+      products
+        .map(p => p.category)
+        .filter(cat => cat && cat.trim() !== "")
+    )
+  ];
 
+  // si aucune catégorie
+  if(categories.length === 0){
+
+    box.innerHTML = `
+      <div class="pink-box">
+        Aucune catégorie
+      </div>
+    `;
+
+    return;
+  }
+
+  // bouton ALL
+  let html = `
+    <div class="pink-box" onclick="showAll()">
+      ALL
+    </div>
+  `;
+
+  // catégories dynamiques
   categories.forEach(cat => {
-    html += `<div class="pink-box" onclick="filterCategory('${cat}')">${cat}</div>`;
+
+    html += `
+      <div class="pink-box"
+        onclick="filterCategory('${cat}')">
+
+        ${cat}
+
+      </div>
+    `;
+
   });
 
   box.innerHTML = html;
 }
 
+/* ================= FILTER CATEGORY ================= */
 function showAll(){
+
   activeCategory = "ALL";
+
   applyFilters();
 }
 
 function filterCategory(cat){
+
   activeCategory = cat;
+
   applyFilters();
 }
-
-/* ================= SEARCH ================= */
-document.addEventListener("input", (e) => {
-  if(e.target.id === "search") applyFilters();
-  if(e.target.id === "delivery") updateTotal();
-});
-
-function applyFilters(){
-  const search = document.getElementById("search")?.value.toLowerCase() || "";
-
-  let filtered = products;
-
-  if(activeCategory !== "ALL"){
-    filtered = filtered.filter(p => p.category === activeCategory);
-  }
-
-  if(search){
-    filtered = filtered.filter(p =>
-      p.name.toLowerCase().includes(search)
-    );
-  }
-
-  renderProducts(filtered);
-}
-
 /* ================= PRODUCTS ================= */
 function renderProducts(list){
   const box = document.getElementById("product-list");
