@@ -1,4 +1,4 @@
-const CACHE_NAME = "eclat-de-coco-pos-v120";
+const CACHE_NAME = "eclat-de-coco-pos-v121";
 
 const urlsToCache = [
   "./",
