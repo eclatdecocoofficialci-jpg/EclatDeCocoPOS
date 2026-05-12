@@ -25,7 +25,6 @@
   background: #f8c8d8;
 }
 
-/* ACTION BUTTONS CLEAN */
 .action-btn {
   padding: 4px 6px;
   font-size: 12px;
@@ -46,7 +45,6 @@
   gap: 3px;
 }
 </style>
-
 </head>
 
 <body>
@@ -63,7 +61,6 @@
   </h3>
 
   <table class="sales-table">
-
     <thead>
       <tr>
         <th>Facture</th>
@@ -78,19 +75,15 @@
     </thead>
 
     <tbody id="sales-body"></tbody>
-
   </table>
 
 </main>
 
 <script>
-
-/* ================= GET SALES ================= */
 function getSales(){
   return JSON.parse(localStorage.getItem("sales")) || [];
 }
 
-/* ================= LOAD SALES ================= */
 function loadSales(){
 
   let sales = getSales();
@@ -121,9 +114,7 @@ function loadSales(){
     tr.innerHTML = `
       <td>${s.id || "-"}</td>
 
-      <td>
-        ${s.date ? new Date(s.date).toLocaleString() : "-"}
-      </td>
+      <td>${s.date || "-"}</td>
 
       <td>
         ${s.client?.name || "-"}<br>
@@ -141,22 +132,9 @@ function loadSales(){
       </td>
 
       <td class="action-cell">
-
-        <button class="action-btn view"
-          onclick="viewInvoice(${s.id})">
-          👁
-        </button>
-
-        <button class="action-btn edit"
-          onclick="editSale(${s.id})">
-          ✏️
-        </button>
-
-        <button class="action-btn delete"
-          onclick="deleteSale(${s.id})">
-          🗑
-        </button>
-
+        <button class="action-btn view" onclick="viewInvoice(${s.id})">👁</button>
+        <button class="action-btn edit" onclick="editSale(${s.id})">✏️</button>
+        <button class="action-btn delete" onclick="deleteSale(${s.id})">🗑</button>
       </td>
     `;
 
@@ -166,7 +144,6 @@ function loadSales(){
   updateTotalSales();
 }
 
-/* ================= VIEW ================= */
 function viewInvoice(id){
 
   let sales = getSales();
@@ -183,7 +160,7 @@ function viewInvoice(id){
 
   alert(
     "FACTURE #" + s.id +
-    "\nDATE: " + (s.date ? new Date(s.date).toLocaleString() : "-") +
+    "\nDATE: " + (s.date || "-") +
     "\nCLIENT: " + (s.client?.name || "-") +
     "\nTEL: " + (s.client?.phone || "-") +
 
@@ -197,7 +174,6 @@ function viewInvoice(id){
   );
 }
 
-/* ================= EDIT ================= */
 function editSale(id){
 
   let sales = getSales();
@@ -212,7 +188,6 @@ function editSale(id){
   window.location.href = "./pos.html";
 }
 
-/* ================= DELETE ================= */
 function deleteSale(id){
 
   if(!confirm("Supprimer cette vente ?")) return;
@@ -225,7 +200,6 @@ function deleteSale(id){
   loadSales();
 }
 
-/* ================= TOTAL ================= */
 function updateTotalSales(){
 
   let sales = getSales();
@@ -238,9 +212,7 @@ function updateTotalSales(){
     Math.round(total) + " FCFA";
 }
 
-/* ================= INIT ================= */
 window.onload = loadSales;
-
 </script>
 
 <footer style="text-align:center;margin-top:20px;">
