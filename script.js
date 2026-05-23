@@ -33,8 +33,9 @@ function generateInvoiceId(){
 
 function setInvoiceDate(){
   const el = document.getElementById("date");
-  if(el){
-    el.value = new Date().toISOString().split("T")[0];
+
+  if(el && !el.value){
+    el.value = "";
   }
 }
 
