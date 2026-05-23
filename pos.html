@@ -119,7 +119,7 @@
 
       <input id="client-address" placeholder="Adresse">
 
-      <input type="date" id="date">
+      <input type="text" id="date" placeholder="Date facture ex: 02-02-2024">
 
       <table>
 
@@ -194,13 +194,7 @@ if(localStorage.getItem("eclat_logged") !== "true"){
   window.location.href="./index.html";
 }
 
-window.addEventListener("load", ()=>{
 
-  const d = document.getElementById("date");
-
-  if(d){
-    d.valueAsDate = new Date();
-  }
 
 });
 
