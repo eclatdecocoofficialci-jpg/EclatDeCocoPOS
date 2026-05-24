@@ -33,12 +33,10 @@ function generateInvoiceId(){
 
 function setInvoiceDate(){
   const el = document.getElementById("date");
-
   if(el && !el.value){
     el.value = "";
   }
 }
-
 /* ================= CATEGORIES ================= */
 
 function loadCategories(){
