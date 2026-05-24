@@ -99,9 +99,11 @@ function loadSales(){
     `;
     updateTotalSales();
     return;
-let sorted = [...sales].sort((a,b)=>
-  (b.date || "").localeCompare(a.date || "")
-);
+  }
+
+  let sorted = [...sales].sort((a,b)=>
+    (b.date || "").localeCompare(a.date || "")
+  );
 
   sorted.forEach((s) => {
 
