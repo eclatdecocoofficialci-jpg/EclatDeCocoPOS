@@ -211,7 +211,9 @@ function saveSale(){
 
   const saleObject = {
     id: lastInvoiceId,
-    date: new Date().toISOString(),
+
+    // 🔥 CORRECTION ICI
+    date: document.getElementById("date")?.value || "-",
 
     client: {
       name: clientName,
