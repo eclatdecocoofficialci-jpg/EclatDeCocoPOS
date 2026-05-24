@@ -1,3 +1,15 @@
+
+
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -260,9 +272,13 @@ function updateTotalSales(){
 
   let sales = getSales();
 
-  let total = sales.reduce((sum,s)=>
-    sum + Number(s.total || 0), 0
-  );
+  let total = sales.reduce((sum,s)=>{
+
+    let subtotal = s.subtotal || (s.total - (s.delivery || 0));
+
+    return sum + Number(subtotal || 0);
+
+  }, 0);
 
   document.getElementById("total-sales").innerText =
     Math.round(total) + " FCFA";
