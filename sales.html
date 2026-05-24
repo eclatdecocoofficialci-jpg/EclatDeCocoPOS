@@ -25,6 +25,25 @@
   background: #f8c8d8;
 }
 
+.filter-box {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 15px 0;
+}
+
+.filter-box input,
+.filter-box button {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #f8c8d8;
+}
+
+.filter-box button {
+  background: #f8c8d8;
+  cursor: pointer;
+}
+
 .action-btn {
   padding: 4px 6px;
   font-size: 12px;
@@ -55,10 +74,15 @@
 
 <main style="padding:10px;">
 
-  <h3>
-    Total des ventes :
-    <span id="total-sales">0 FCFA</span>
-  </h3>
+  <h3>Total des ventes : <span id="total-sales">0 FCFA</span></h3>
+
+  <div class="filter-box">
+    <input type="month" id="filter-month" onchange="loadSales()">
+    <input type="number" id="filter-year" placeholder="Année ex: 2024" onchange="loadSales()">
+    <button onclick="clearFilters()">Tous</button>
+  </div>
+
+  <h3>Total période : <span id="period-total">0 FCFA</span></h3>
 
   <table class="sales-table">
     <thead>
@@ -73,7 +97,6 @@
         <th>Action</th>
       </tr>
     </thead>
-
     <tbody id="sales-body"></tbody>
   </table>
 
@@ -84,24 +107,56 @@ function getSales(){
   return JSON.parse(localStorage.getItem("sales")) || [];
 }
 
+function getDateParts(dateText){
+  if(!dateText) return { year:"", month:"" };
+
+  // accepte 2024-02-02
+  if(dateText.includes("-") && dateText.split("-")[0].length === 4){
+    const parts = dateText.split("-");
+    return { year: parts[0], month: parts[1] };
+  }
+
+  // accepte 02-02-2024
+  if(dateText.includes("-") && dateText.split("-")[2]?.length === 4){
+    const parts = dateText.split("-");
+    return { year: parts[2], month: parts[1] };
+  }
+
+  return { year:"", month:"" };
+}
+
 function loadSales(){
 
   let sales = getSales();
   let tbody = document.getElementById("sales-body");
 
+  const filterMonth = document.getElementById("filter-month").value; // 2024-02
+  const filterYear = document.getElementById("filter-year").value.trim();
+
   tbody.innerHTML = "";
 
-  if(sales.length === 0){
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="8">Aucune vente enregistrée</td>
-      </tr>
-    `;
+  let filteredSales = sales.filter(s => {
+    const parts = getDateParts(s.date);
+
+    if(filterMonth){
+      return `${parts.year}-${parts.month}` === filterMonth;
+    }
+
+    if(filterYear){
+      return parts.year === filterYear;
+    }
+
+    return true;
+  });
+
+  if(filteredSales.length === 0){
+    tbody.innerHTML = `<tr><td colspan="8">Aucune vente enregistrée</td></tr>`;
     updateTotalSales();
+    updatePeriodTotal(filteredSales);
     return;
   }
 
-  let sorted = [...sales].sort((a,b)=>
+  let sorted = [...filteredSales].sort((a,b)=>
     (b.date || "").localeCompare(a.date || "")
   );
 
@@ -113,24 +168,12 @@ function loadSales(){
 
     tr.innerHTML = `
       <td>${s.id || "-"}</td>
-
       <td>${s.date || "-"}</td>
-
-      <td>
-        ${s.client?.name || "-"}<br>
-        <small>${s.client?.phone || ""}</small>
-      </td>
-
+      <td>${s.client?.name || "-"}<br><small>${s.client?.phone || ""}</small></td>
       <td>${s.payment || "-"}</td>
-
       <td>${Math.round(subtotal)} FCFA</td>
-
       <td>${s.delivery || 0} FCFA</td>
-
-      <td style="color:#e91e63;font-weight:bold;">
-        ${Math.round(s.total || 0)} FCFA
-      </td>
-
+      <td style="color:#e91e63;font-weight:bold;">${Math.round(s.total || 0)} FCFA</td>
       <td class="action-cell">
         <button class="action-btn view" onclick="viewInvoice(${s.id})">👁</button>
         <button class="action-btn edit" onclick="editSale(${s.id})">✏️</button>
@@ -142,6 +185,22 @@ function loadSales(){
   });
 
   updateTotalSales();
+  updatePeriodTotal(filteredSales);
+}
+
+function updatePeriodTotal(sales){
+  let total = sales.reduce((sum,s)=>
+    sum + Number(s.total || 0), 0
+  );
+
+  document.getElementById("period-total").innerText =
+    Math.round(total) + " FCFA";
+}
+
+function clearFilters(){
+  document.getElementById("filter-month").value = "";
+  document.getElementById("filter-year").value = "";
+  loadSales();
 }
 
 function viewInvoice(id){
@@ -163,13 +222,10 @@ function viewInvoice(id){
     "\nDATE: " + (s.date || "-") +
     "\nCLIENT: " + (s.client?.name || "-") +
     "\nTEL: " + (s.client?.phone || "-") +
-
     "\n\nPRODUITS:\n" + items +
-
     "\n\nSOUS-TOTAL: " + Math.round((s.subtotal || (s.total - (s.delivery || 0)))) + " FCFA" +
     "\nLIVRAISON: " + (s.delivery || 0) + " FCFA" +
     "\nTOTAL: " + Math.round(s.total || 0) + " FCFA" +
-
     "\n\nPAIEMENT: " + (s.payment || "-")
   );
 }
