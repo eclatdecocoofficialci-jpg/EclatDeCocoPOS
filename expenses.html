@@ -63,51 +63,84 @@
 </div>
 
 <script>
-let expenses = [];
+let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
-// Ajouter dépense
-document.getElementById('add-expense-btn').addEventListener('click', ()=>{
-  const name = document.getElementById('expense-name').value.trim();
-  const category = document.getElementById('expense-category').value;
-  const amount = parseFloat(document.getElementById('expense-amount').value) || 0;
-  const date = document.getElementById('expense-date').value || new Date().toISOString().split('T')[0];
+document.getElementById("expense-date").value =
+  new Date().toISOString().split("T")[0];
 
-  if(!name){ alert("Nom obligatoire"); return; }
+document.getElementById("add-expense-btn").addEventListener("click", () => {
+  const name = document.getElementById("expense-name").value.trim();
+  const category = document.getElementById("expense-category").value;
+  const amount = Number(document.getElementById("expense-amount").value) || 0;
+  const date = document.getElementById("expense-date").value;
 
-  expenses.push({name, category, amount, date});
+  if (!name) {
+    alert("Nom obligatoire");
+    return;
+  }
+
+  if (amount <= 0) {
+    alert("Montant obligatoire");
+    return;
+  }
+
+  expenses.push({
+    id: Date.now(),
+    name,
+    category,
+    amount,
+    date
+  });
+
+  saveExpenses();
+
+  document.getElementById("expense-name").value = "";
+  document.getElementById("expense-amount").value = "";
+
   updateTable();
-
-  document.getElementById('expense-name').value='';
-  document.getElementById('expense-amount').value='';
 });
 
-// Mettre à jour tableau
-function updateTable(){
-  const tbody = document.querySelector('#expenses-table tbody');
-  tbody.innerHTML='';
-  if(expenses.length===0){ tbody.innerHTML='<tr><td colspan="5">Aucune dépense</td></tr>'; return; }
+function saveExpenses() {
+  localStorage.setItem("expenses", JSON.stringify(expenses));
+}
 
-  expenses.forEach((item,i)=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML=`
-      <td contenteditable="true">${item.name}</td>
-      <td>${item.category}</td>
-      <td contenteditable="true">${item.amount}</td>
-      <td contenteditable="true">${item.date}</td>
-      <td><button class="remove-btn" data-index="${i}">X</button></td>
+function formatFCFA(amount) {
+  return Number(amount).toLocaleString("fr-FR") + " FCFA";
+}
+
+function updateTable() {
+  const tbody = document.querySelector("#expenses-table tbody");
+  tbody.innerHTML = "";
+
+  if (expenses.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5">Aucune dépense</td></tr>';
+    return;
+  }
+
+  expenses.forEach((item, i) => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${item.name}</td>
+        <td>${item.category}</td>
+        <td>${formatFCFA(item.amount)}</td>
+        <td>${item.date}</td>
+        <td>
+          <button class="remove-btn" onclick="deleteExpense(${i})">X</button>
+        </td>
+      </tr>
     `;
-    tbody.appendChild(tr);
   });
 }
 
-// Supprimer dépense
-document.querySelector('#expenses-table tbody').addEventListener('click', e=>{
-  if(e.target.classList.contains('remove-btn')){
-    const index = parseInt(e.target.dataset.index);
-    expenses.splice(index,1);
-    updateTable();
-  }
-});
+function deleteExpense(index) {
+  if (!confirm("Supprimer cette dépense ?")) return;
+
+  expenses.splice(index, 1);
+  saveExpenses();
+  updateTable();
+}
+
+updateTable();
 </script>
 <div class="main-content">
 
