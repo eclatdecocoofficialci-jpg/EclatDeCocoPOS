@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Éclat de Coco Dashboard</title>
 
-<!-- PWA -->
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#e91e63">
 
@@ -15,9 +13,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-<!-- CSS -->
 <link rel="stylesheet" href="./style.css">
-
 </head>
 
 <body>
@@ -26,33 +22,19 @@
   <h1>✨ Éclat de Coco</h1>
 
   <nav class="top-nav">
-
     <a href="./pos.html?v=1">POS</a>
-
-    <a href="./dashboard.html?v=1" class="active-nav">
-      Dashboard
-    </a>
-
+    <a href="./dashboard.html?v=1" class="active-nav">Dashboard</a>
     <a href="./sales.html?v=1">Sales</a>
-
     <a href="./products.html?v=1">Products</a>
-
-    <a href="./inventory.html?v=1">
-      Raw Materials
-    </a>
-
+    <a href="./inventory.html?v=1">Raw Materials</a>
     <a href="./expenses.html?v=1">Expenses</a>
-
+    <a href="./avances-entreprise.html?v=1">Avances Entreprise</a>
     <a href="./orders.html?v=1">Orders</a>
-
     <a href="./customers.html?v=1">Customers</a>
-
     <a href="./reports.html?v=1">Reports</a>
-
   </nav>
 </header>
 
-<!-- ================= DASHBOARD ================= -->
 <main class="dashboard-grid">
 
   <div class="card">
@@ -85,48 +67,41 @@
     <span id="total-expenses">0 FCFA</span>
   </div>
 
+  <div class="card">
+    Avances entreprise<br>
+    <span id="total-avances">0 FCFA</span>
+  </div>
+
+  <div class="card">
+    Reste à rembourser<br>
+    <span id="reste-rembourser">0 FCFA</span>
+  </div>
+
 </main>
 
-<!-- CHART -->
 <div class="chart-container">
   <canvas id="salesChart"></canvas>
 </div>
 
-<footer>
-  <p>
-    2026 | Éclat de Coco Official | All Rights Reserved
-  </p>
-</footer>
-
-<!-- CHART JS -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<!-- DASHBOARD JS -->
-<script src="./dashboard.js"></script>
-
-<!-- SERVICE WORKER -->
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-
-    navigator.serviceWorker.register("./service-worker.js")
-      .then(() => console.log("SW OK ✔"))
-      .catch(err => console.log("SW ERROR ❌", err));
-
-  });
-}
-</script>
-<div class="main-content">
-
-  <!-- tout ton contenu ici -->
-  
-</div>
-
 <footer class="site-footer">
   <div class="footer-inner">
-    <p>© 2025 Éclat de Coco Official</p>
+    <p>© 2026 Éclat de Coco Official</p>
     <p class="sub">All rights reserved • Natural beauty inspired by Côte d’Ivoire 🌿🥥</p>
   </div>
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="./dashboard.js"></script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js")
+      .then(() => console.log("SW OK ✔"))
+      .catch(err => console.log("SW ERROR ❌", err));
+  });
+}
+</script>
+
 </body>
 </html>
