@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avances & Remboursements</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #fff1f7;
+      color: #222;
+    }
+
+    .page {
+      padding: 25px;
+    }
+
+    h1 {
+      color: #e91e63;
+      font-size: 32px;
+      margin: 0 0 8px;
+    }
+
+    .subtitle {
+      color: #555;
+      margin-bottom: 25px;
+      font-size: 16px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 32% 68%;
+      gap: 25px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(233, 30, 99, 0.08);
+    }
+
+    .form-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #e91e63;
+      font-size: 22px;
+      margin-bottom: 25px;
+      font-weight: bold;
+    }
+
+    .icon-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #ffe1ec;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e91e63;
+      font-size: 24px;
+    }
+
+    label {
+      display: block;
+      color: #e91e63;
+      font-weight: bold;
+      margin-bottom: 7px;
+      font-size: 15px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #ffb3cf;
+      border-radius: 11px;
+      margin-bottom: 18px;
+      font-size: 16px;
+      outline: none;
+      background: white;
+    }
+
+    input:focus, select:focus {
+      border-color: #e91e63;
+    }
+
+    .status-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .status-btn {
+      padding: 16px;
+      border: 2px solid #ffb3cf;
+      border-radius: 11px;
+      background: white;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .status-btn.active {
+      background: #ffe1ec;
+      color: #e91e63;
+      font-weight: bold;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+    .yellow { background: #f7b500; }
+    .green { background: #36c739; }
+
+    .save-btn {
+      width: 100%;
+      padding: 17px;
+      border: none;
+      border-radius: 11px;
+      background: #e91e63;
+      color: white;
+      font-size: 17px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .summary-card {
+      background: #fff1f7;
+      border-radius: 15px;
+      padding: 20px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .summary-icon {
+      width: 45px;
+      height: 45px;
+      background: #ffd6e6;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e91e63;
+      font-size: 22px;
+    }
+
+    .summary-card span {
+      display: block;
+      color: #555;
+      font-size: 14px;
+    }
+
+    .summary-card strong {
+      display: block;
+      color: #e91e63;
+      font-size: 22px;
+      margin-top: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 2px solid #ffb3cf;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th {
+      background: #ffe1ec;
+      color: #e91e63;
+      padding: 16px;
+      font-size: 15px;
+    }
+
+    td {
+      padding: 15px;
+      text-align: center;
+      border-top: 1px solid #ffb3cf;
+      font-size: 15px;
+    }
+
+    .empty {
+      height: 250px;
+      color: #e91e63;
+      font-weight: bold;
+      font-size: 17px;
+    }
+
+    .badge {
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .badge.pending {
+      background: #fff3cd;
+      color: #9a7400;
+    }
+
+    .badge.refunded {
+      background: #d8f3dc;
+      color: #2d6a4f;
+    }
+
+    .delete-btn {
+      background: #ffe1ec;
+      color: #e91e63;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    footer {
+      margin-top: 30px;
+      font-size: 15px;
+      color: #111;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .summary {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <h1>Avances & Remboursements</h1>
+    <p class="subtitle">
+      Argent retiré de la caisse pour une dépense extérieure, puis remboursé après.
+    </p>
+
+    <div class="layout">
+      <div class="card">
+        <div class="form-title">
+          <div class="icon-circle">+</div>
+          Ajouter un mouvement
+        </div>
+
+        <label>Date</label>
+        <input type="date" id="dateInput" />
+
+        <label>Montant (FCFA)</label>
+        <input type="number" id="amountInput" placeholder="Ex : 10 000" />
+
+        <label>Motif / description</label>
+        <input type="text" id="reasonInput" placeholder="Ex : Achat emballages, transport, etc." />
+
+        <label>Personne concernée</label>
+        <input type="text" id="personInput" placeholder="Ex : Moi, Mari, Autre..." />
+
+        <label>Catégorie</label>
+        <select id="categoryInput">
+          <option>Marketing</option>
+          <option>Transport</option>
+          <option>Fournitures</option>
+          <option>Emballages</option>
+          <option>Matières premières</option>
+          <option>Autre</option>
+        </select>
+
+        <label>Statut</label>
+        <div class="status-row">
+          <button class="status-btn active" onclick="selectStatus('En attente', this)">
+            <span class="dot yellow"></span> En attente
+          </button>
+          <button class="status-btn" onclick="selectStatus('Remboursé', this)">
+            <span class="dot green"></span> Remboursé
+          </button>
+        </div>
+
+        <button class="save-btn" onclick="addMovement()">💾 Enregistrer le mouvement</button>
+      </div>
+
+      <div class="card">
+        <div class="summary">
+          <div class="summary-card">
+            <div class="summary-icon">↓</div>
+            <div>
+              <span>Total sorti</span>
+              <strong id="totalOut">0 FCFA</strong>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-icon">↩</div>
+            <div>
+              <span>Remboursé</span>
+              <strong id="totalRefunded">0 FCFA</strong>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-icon">⏱</div>
+            <div>
+              <span>En attente</span>
+              <strong id="totalPending">0 FCFA</strong>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-icon">💼</div>
+            <div>
+              <span>Solde net</span>
+              <strong id="netBalance">0 FCFA</strong>
+            </div>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Motif / Description</th>
+              <th>Catégorie</th>
+              <th>Personne</th>
+              <th>Montant</th>
+              <th>Statut</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr>
+              <td colspan="7" class="empty">Aucun mouvement enregistré</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2025 Éclat de Coco Official</p>
+      <p>All rights reserved • Natural beauty inspired by Côte d’Ivoire 🌿🥥</p>
+    </footer>
+  </div>
+
+  <script>
+    let selectedStatus = "En attente";
+    let movements = JSON.parse(localStorage.getItem("remboursements")) || [];
+
+    document.getElementById("dateInput").valueAsDate = new Date();
+
+    function selectStatus(status, button) {
+      selectedStatus = status;
+      document.querySelectorAll(".status-btn").forEach(btn => btn.classList.remove("active"));
+      button.classList.add("active");
+    }
+
+    function formatFCFA(amount) {
+      return Number(amount).toLocaleString("fr-FR") + " FCFA";
+    }
+
+    function addMovement() {
+      const date = document.getElementById("dateInput").value;
+      const amount = Number(document.getElementById("amountInput").value);
+      const reason = document.getElementById("reasonInput").value.trim();
+      const person = document.getElementById("personInput").value.trim();
+      const category = document.getElementById("categoryInput").value;
+
+      if (!date || !amount || !reason) {
+        alert("Remplis la date, le montant et le motif.");
+        return;
+      }
+
+      movements.push({
+        id: Date.now(),
+        date,
+        amount,
+        reason,
+        person,
+        category,
+        status: selectedStatus
+      });
+
+      localStorage.setItem("remboursements", JSON.stringify(movements));
+
+      document.getElementById("amountInput").value = "";
+      document.getElementById("reasonInput").value = "";
+      document.getElementById("personInput").value = "";
+
+      renderMovements();
+    }
+
+    function toggleStatus(id) {
+      movements = movements.map(item => {
+        if (item.id === id) {
+          item.status = item.status === "En attente" ? "Remboursé" : "En attente";
+        }
+        return item;
+      });
+
+      localStorage.setItem("remboursements", JSON.stringify(movements));
+      renderMovements();
+    }
+
+    function deleteMovement(id) {
+      if (!confirm("Supprimer ce mouvement ?")) return;
+
+      movements = movements.filter(item => item.id !== id);
+      localStorage.setItem("remboursements", JSON.stringify(movements));
+      renderMovements();
+    }
+
+    function renderMovements() {
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = "";
+
+      let totalOut = 0;
+      let totalRefunded = 0;
+      let totalPending = 0;
+
+      if (movements.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="empty">Aucun mouvement enregistré</td>
+          </tr>
+        `;
+      }
+
+      movements.forEach(item => {
+        totalOut += item.amount;
+
+        if (item.status === "Remboursé") {
+          totalRefunded += item.amount;
+        } else {
+          totalPending += item.amount;
+        }
+
+        tbody.innerHTML += `
+          <tr>
+            <td>${item.date}</td>
+            <td>${item.reason}</td>
+            <td>${item.category}</td>
+            <td>${item.person || "-"}</td>
+            <td>${formatFCFA(item.amount)}</td>
+            <td>
+              <span onclick="toggleStatus(${item.id})" class="badge ${item.status === "Remboursé" ? "refunded" : "pending"}">
+                ${item.status}
+              </span>
+            </td>
+            <td>
+              <button class="delete-btn" onclick="deleteMovement(${item.id})">X</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      document.getElementById("totalOut").textContent = formatFCFA(totalOut);
+      document.getElementById("totalRefunded").textContent = formatFCFA(totalRefunded);
+      document.getElementById("totalPending").textContent = formatFCFA(totalPending);
+      document.getElementById("netBalance").textContent = formatFCFA(totalOut - totalRefunded);
+    }
+
+    renderMovements();
+  </script>
+</body>
+</html>
