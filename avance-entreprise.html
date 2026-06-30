@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avances Entreprise</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  font-family:Arial, sans-serif;
+}
+
+body{
+  margin:0;
+  background:#fff1f7;
+  color:#222;
+}
+
+.page{
+  padding:25px;
+}
+
+h1{
+  margin:0;
+  color:#e91e63;
+  font-size:32px;
+}
+
+.subtitle{
+  color:#666;
+  margin:8px 0 22px;
+}
+
+.search-box{
+  margin-bottom:18px;
+}
+
+.search-box input{
+  width:100%;
+  padding:16px;
+  border:2px solid #ffb3cf;
+  border-radius:14px;
+  font-size:16px;
+  outline:none;
+}
+
+.search-box input:focus{
+  border-color:#e91e63;
+}
+
+.summary{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin-bottom:22px;
+}
+
+.summary-card{
+  background:white;
+  border-radius:18px;
+  padding:18px;
+  display:flex;
+  gap:14px;
+  align-items:center;
+  box-shadow:0 10px 25px rgba(233,30,99,.08);
+  border:1px solid #ffd6e6;
+}
+
+.summary-icon{
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  background:#ffe1ec;
+  color:#e91e63;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+}
+
+.summary-card span{
+  display:block;
+  color:#666;
+  font-size:13px;
+}
+
+.summary-card strong{
+  display:block;
+  color:#e91e63;
+  font-size:20px;
+  margin-top:5px;
+}
+
+.layout{
+  display:grid;
+  grid-template-columns:34% 66%;
+  gap:22px;
+}
+
+.card{
+  background:white;
+  border-radius:20px;
+  padding:22px;
+  box-shadow:0 10px 28px rgba(233,30,99,.08);
+  border:1px solid #ffd6e6;
+}
+
+.form-title{
+  color:#e91e63;
+  font-size:21px;
+  font-weight:bold;
+  margin-bottom:18px;
+}
+
+label{
+  display:block;
+  color:#e91e63;
+  font-weight:bold;
+  font-size:14px;
+  margin-bottom:7px;
+}
+
+input, textarea{
+  width:100%;
+  padding:14px;
+  border:2px solid #ffb3cf;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:15px;
+  outline:none;
+}
+
+textarea{
+  min-height:80px;
+  resize:none;
+}
+
+input:focus, textarea:focus{
+  border-color:#e91e63;
+}
+
+.save-btn{
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:13px;
+  background:#e91e63;
+  color:white;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  border:2px solid #ffb3cf;
+  border-radius:14px;
+  overflow:hidden;
+}
+
+th{
+  background:#ffe1ec;
+  color:#e91e63;
+  padding:14px;
+  font-size:14px;
+  white-space:nowrap;
+}
+
+td{
+  padding:13px;
+  text-align:center;
+  border-top:1px solid #ffd6e6;
+  font-size:14px;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:90px;
+  height:32px;
+  padding:0 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:bold;
+  white-space:nowrap;
+}
+
+.badge.open{
+  background:#fff3cd;
+  color:#9a7400;
+}
+
+.badge.done{
+  background:#d8f3dc;
+  color:#2d6a4f;
+}
+
+.small-btn{
+  border:none;
+  border-radius:10px;
+  padding:8px 10px;
+  font-size:13px;
+  cursor:pointer;
+  font-weight:bold;
+  margin:2px;
+}
+
+.refund-btn{
+  background:#e91e63;
+  color:white;
+}
+
+.history-btn{
+  background:#ffe1ec;
+  color:#e91e63;
+}
+
+.delete-btn{
+  background:#ffe1ec;
+  color:#e91e63;
+}
+
+.empty{
+  height:180px;
+  color:#e91e63;
+  font-weight:bold;
+}
+
+.history-box{
+  margin-top:18px;
+  background:#fff1f7;
+  border:1px solid #ffd6e6;
+  border-radius:16px;
+  padding:15px;
+  display:none;
+}
+
+.history-box h3{
+  margin:0 0 10px;
+  color:#e91e63;
+}
+
+.history-line{
+  display:flex;
+  justify-content:space-between;
+  background:white;
+  border-radius:10px;
+  padding:10px;
+  margin-bottom:8px;
+  font-size:14px;
+}
+
+@media(max-width:950px){
+  .layout{
+    grid-template-columns:1fr;
+  }
+
+  .summary{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <h1>Avances Entreprise</h1>
+  <p class="subtitle">
+    Suivez les avances reçues pour financer temporairement l’entreprise et les remboursements effectués.
+  </p>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="🔍 Rechercher par prêteur..." oninput="renderAvances()">
+  </div>
+
+  <div class="summary">
+    <div class="summary-card">
+      <div class="summary-icon">💰</div>
+      <div>
+        <span>Total avances</span>
+        <strong id="totalAvances">0 FCFA</strong>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-icon">↩</div>
+      <div>
+        <span>Total remboursé</span>
+        <strong id="totalRefunded">0 FCFA</strong>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-icon">⏳</div>
+      <div>
+        <span>Reste à rembourser</span>
+        <strong id="totalRemaining">0 FCFA</strong>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-icon">📋</div>
+      <div>
+        <span>Nombre d’avances</span>
+        <strong id="totalCount">0</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <div class="card">
+      <div class="form-title">➕ Nouvelle avance</div>
+
+      <label>Date de l’avance</label>
+      <input type="date" id="dateInput">
+
+      <label>Prêteur</label>
+      <input type="text" id="lenderInput" placeholder="Ex : Mohammed Diab">
+
+      <label>Montant avancé</label>
+      <input type="number" id="amountInput" placeholder="Ex : 50000">
+
+      <label>Motif</label>
+      <textarea id="reasonInput" placeholder="Ex : Achat matières premières, emballages..."></textarea>
+
+      <button class="save-btn" onclick="addAvance()">💾 Enregistrer l’avance</button>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Prêteur</th>
+              <th>Motif</th>
+              <th>Montant</th>
+              <th>Remboursé</th>
+              <th>Reste</th>
+              <th>Statut</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="avanceTable"></tbody>
+        </table>
+      </div>
+
+      <div id="historyBox" class="history-box"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let avances = JSON.parse(localStorage.getItem("avancesEntreprise")) || [];
+
+document.getElementById("dateInput").valueAsDate = new Date();
+
+function formatFCFA(amount){
+  return Number(amount).toLocaleString("fr-FR") + " FCFA";
+}
+
+function saveData(){
+  localStorage.setItem("avancesEntreprise", JSON.stringify(avances));
+}
+
+function addAvance(){
+  const date = document.getElementById("dateInput").value;
+  const lender = document.getElementById("lenderInput").value.trim();
+  const amount = Number(document.getElementById("amountInput").value);
+  const reason = document.getElementById("reasonInput").value.trim();
+
+  if(!date || !lender || !amount || !reason){
+    alert("Remplis la date, le prêteur, le montant et le motif.");
+    return;
+  }
+
+  avances.push({
+    id: Date.now(),
+    date,
+    lender,
+    amount,
+    reason,
+    refunds:[]
+  });
+
+  saveData();
+
+  document.getElementById("lenderInput").value = "";
+  document.getElementById("amountInput").value = "";
+  document.getElementById("reasonInput").value = "";
+
+  renderAvances();
+}
+
+function getRefunded(item){
+  return item.refunds.reduce((sum, r) => sum + Number(r.amount), 0);
+}
+
+function addRefund(id){
+  const amount = Number(prompt("Montant remboursé en FCFA :"));
+
+  if(!amount || amount <= 0){
+    alert("Montant invalide.");
+    return;
+  }
+
+  const item = avances.find(a => a.id === id);
+  const alreadyRefunded = getRefunded(item);
+  const remaining = item.amount - alreadyRefunded;
+
+  if(amount > remaining){
+    alert("Le montant dépasse le reste à rembourser.");
+    return;
+  }
+
+  item.refunds.push({
+    id: Date.now(),
+    date: new Date().toISOString().split("T")[0],
+    amount
+  });
+
+  saveData();
+  renderAvances();
+}
+
+function deleteAvance(id){
+  if(!confirm("Supprimer cette avance ?")) return;
+
+  avances = avances.filter(a => a.id !== id);
+  saveData();
+  renderAvances();
+}
+
+function showHistory(id){
+  const item = avances.find(a => a.id === id);
+  const box = document.getElementById("historyBox");
+
+  let html = `<h3>Historique - ${item.lender}</h3>`;
+  html += `<div class="history-line"><span>Avance reçue le ${item.date}</span><strong>+ ${formatFCFA(item.amount)}</strong></div>`;
+
+  if(item.refunds.length === 0){
+    html += `<div class="history-line"><span>Aucun remboursement enregistré</span><strong>0 FCFA</strong></div>`;
+  }
+
+  item.refunds.forEach(r => {
+    html += `<div class="history-line"><span>Remboursement le ${r.date}</span><strong>- ${formatFCFA(r.amount)}</strong></div>`;
+  });
+
+  const refunded = getRefunded(item);
+  const remaining = item.amount - refunded;
+
+  html += `<div class="history-line"><span>Reste à rembourser</span><strong>${formatFCFA(remaining)}</strong></div>`;
+
+  box.innerHTML = html;
+  box.style.display = "block";
+}
+
+function renderAvances(){
+  const tbody = document.getElementById("avanceTable");
+  const search = document.getElementById("searchInput").value.toLowerCase();
+
+  const filtered = avances.filter(item =>
+    item.lender.toLowerCase().includes(search)
+  );
+
+  tbody.innerHTML = "";
+
+  let totalAvances = 0;
+  let totalRefunded = 0;
+  let totalRemaining = 0;
+
+  if(filtered.length === 0){
+    tbody.innerHTML = `<tr><td colspan="8" class="empty">Aucune avance enregistrée</td></tr>`;
+  }
+
+  filtered.forEach(item => {
+    const refunded = getRefunded(item);
+    const remaining = item.amount - refunded;
+    const status = remaining === 0 ? "Soldée" : "En cours";
+
+    totalAvances += item.amount;
+    totalRefunded += refunded;
+    totalRemaining += remaining;
+
+    tbody.innerHTML += `
+      <tr>
+        <td>${item.date}</td>
+        <td>${item.lender}</td>
+        <td>${item.reason}</td>
+        <td>${formatFCFA(item.amount)}</td>
+        <td>${formatFCFA(refunded)}</td>
+        <td>${formatFCFA(remaining)}</td>
+        <td>
+          <span class="badge ${status === "Soldée" ? "done" : "open"}">${status}</span>
+        </td>
+        <td>
+          <button class="small-btn refund-btn" onclick="addRefund(${item.id})">+ Remb.</button>
+          <button class="small-btn history-btn" onclick="showHistory(${item.id})">Historique</button>
+          <button class="small-btn delete-btn" onclick="deleteAvance(${item.id})">X</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("totalAvances").textContent = formatFCFA(totalAvances);
+  document.getElementById("totalRefunded").textContent = formatFCFA(totalRefunded);
+  document.getElementById("totalRemaining").textContent = formatFCFA(totalRemaining);
+  document.getElementById("totalCount").textContent = filtered.length;
+}
+
+renderAvances();
+</script>
+
+</body>
+</html>
