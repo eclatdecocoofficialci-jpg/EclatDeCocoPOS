@@ -327,3 +327,35 @@ button:hover {
 #category-boxes, #product-list {
   min-height: 50px;
 }
+.dashboard-grid{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:18px;
+  padding:25px;
+}
+
+.dashboard-grid .card{
+  background:white;
+  border:1px solid #ffd6e6;
+  border-radius:20px;
+  padding:22px;
+  color:#e91e63;
+  font-weight:bold;
+  box-shadow:0 10px 25px rgba(233,30,99,.08);
+}
+
+.dashboard-grid .card span{
+  display:block;
+  margin-top:10px;
+  color:#222;
+  font-size:22px;
+}
+
+.chart-container{
+  background:white;
+  margin:0 25px 25px;
+  padding:25px;
+  border-radius:22px;
+  border:1px solid #ffd6e6;
+  box-shadow:0 10px 25px rgba(233,30,99,.08);
+}
