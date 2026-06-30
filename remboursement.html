@@ -206,13 +206,25 @@
       font-size: 17px;
     }
 
-    .badge {
-      padding: 8px 12px;
-      border-radius: 20px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 13px;
-    }
+ .badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    min-width:110px;
+    height:34px;
+
+    padding:0 16px;
+
+    border-radius:999px;
+
+    font-size:13px;
+    font-weight:600;
+
+    white-space:nowrap;
+
+    cursor:pointer;
+}
 
     .badge.pending {
       background: #fff3cd;
